@@ -30,9 +30,9 @@ import {
 
 const { Title } = Typography;
 
-const CHANNEL_COLORS = ['var(--color-primary-700)', '#10b981', '#f59e0b'];
-const TYPE_COLORS = ['#8b5cf6', '#ef4444', '#f59e0b', '#10b981', 'var(--color-primary-700)', '#ec4899'];
-const PIE_COLORS = ['var(--color-primary-700)', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899'];
+const CHANNEL_COLORS = ['var(--color-chart-1)', 'var(--color-chart-2)', 'var(--color-chart-3)'];
+const TYPE_COLORS = ['var(--color-chart-2)', 'var(--color-chart-3)', 'var(--color-chart-4)', 'var(--color-chart-5)', 'var(--color-chart-1)', 'var(--color-chart-6)'];
+const PIE_COLORS = ['var(--color-chart-1)', 'var(--color-chart-2)', 'var(--color-chart-3)', 'var(--color-chart-4)', 'var(--color-chart-5)', 'var(--color-chart-6)'];
 
 const statusLabels: Record<string, string> = {
 	sent: '已发送',
