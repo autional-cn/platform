@@ -11,7 +11,7 @@ export function Header() {
 	const { user } = useAuth();
 
 	return (
-		<AntHeader className="flex items-center justify-between px-6 h-16 bg-[var(--color-bg-surface)] border-b border-[var(--color-border)]">
+		<AntHeader className="sticky top-0 z-10 flex items-center justify-between px-6 h-[var(--layout-header-height)] bg-[var(--color-bg-surface)] border-b border-[var(--color-border)]">
 			<Text strong>{t('app.brand')}</Text>
 			<div className="flex items-center gap-4">
 				<Button
