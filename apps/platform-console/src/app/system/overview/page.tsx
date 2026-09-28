@@ -23,7 +23,7 @@ import { PageLoading, PageError } from '@/components/ui/page-status';
 const statusConfig: Record<string, { color: string; icon: React.ReactNode }> = {
 	healthy: { color: 'var(--color-success)', icon: <CheckCircleFilled style={{ color: 'var(--color-success)' }} /> },
 	unhealthy: { color: 'var(--color-danger)', icon: <CloseCircleFilled style={{ color: 'var(--color-danger)' }} /> },
-	unknown: { color: '#bfbfbf', icon: <QuestionCircleFilled style={{ color: '#bfbfbf' }} /> },
+	unknown: { color: 'var(--color-text-disabled)', icon: <QuestionCircleFilled style={{ color: 'var(--color-text-disabled)' }} /> },
 };
 
 const categoryColors: Record<ServiceInfo['category'], string> = {

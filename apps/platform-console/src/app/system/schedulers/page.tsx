@@ -40,7 +40,7 @@ const statusConfig: Record<
 		label: '失败',
 	},
 	disabled: {
-		color: '#bfbfbf',
+		color: 'var(--color-text-disabled)',
 		icon: <CloseCircleFilled />,
 		labelKey: 'schedulers.statusDisabled',
 		label: '已禁用',
@@ -212,7 +212,7 @@ export default function SystemSchedulersPage() {
 						<Statistic
 							title={t('schedulers.statusDisabled', '已禁用')}
 							value={stats.disabled}
-							valueStyle={{ color: '#bfbfbf' }}
+							valueStyle={{ color: 'var(--color-text-disabled)' }}
 							prefix={<CloseCircleFilled />}
 						/>
 					</Card>

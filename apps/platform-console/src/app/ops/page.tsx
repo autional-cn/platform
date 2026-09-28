@@ -88,7 +88,7 @@ export default function OpsPage() {
 									title="健康服务"
 									value={healthData.servicesHealthy}
 									suffix={`/ ${healthData.servicesTotal}`}
-									valueStyle={{ color: '#3f8600' }}
+									valueStyle={{ color: 'var(--color-success-text)' }}
 									prefix={<CheckCircleOutlined />}
 								/>
 							</Card>
@@ -98,7 +98,7 @@ export default function OpsPage() {
 								<Statistic
 									title="活跃事件"
 									value={healthData.activeIncidents}
-									valueStyle={{ color: healthData.activeIncidents > 0 ? '#cf1322' : undefined }}
+									valueStyle={{ color: healthData.activeIncidents > 0 ? 'var(--color-danger-text)' : undefined }}
 									prefix={<WarningOutlined />}
 								/>
 							</Card>

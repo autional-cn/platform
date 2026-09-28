@@ -405,7 +405,7 @@ export default function CompliancePage() {
 											suffix="/ 100"
 											valueStyle={{
 												color:
-													(complianceScore ?? status?.score ?? 0) >= 80 ? '#3f8600' : '#cf1322',
+													(complianceScore ?? status?.score ?? 0) >= 80 ? 'var(--color-success-text)' : 'var(--color-danger-text)',
 											}}
 											prefix={<SafetyCertificateOutlined />}
 										/>
@@ -429,7 +429,7 @@ export default function CompliancePage() {
 										<Statistic
 											title="待处理 DSAR"
 											value={pendingDsarCount}
-											valueStyle={{ color: pendingDsarCount > 0 ? '#cf1322' : '#3f8600' }}
+											valueStyle={{ color: pendingDsarCount > 0 ? 'var(--color-danger-text)' : 'var(--color-success-text)' }}
 										/>
 									</Card>
 								</Col>
@@ -439,7 +439,7 @@ export default function CompliancePage() {
 											title="过期策略告警"
 											value={status?.expiredPolicies || 0}
 											valueStyle={{
-												color: (status?.expiredPolicies || 0) > 0 ? '#cf1322' : '#3f8600',
+												color: (status?.expiredPolicies || 0) > 0 ? 'var(--color-danger-text)' : 'var(--color-success-text)',
 											}}
 										/>
 									</Card>

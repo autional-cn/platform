@@ -99,7 +99,7 @@ export default function FeatureFlagsPage() {
 								</Tag>
 							);
 						}
-						return <MinusOutlined style={{ color: '#bfbfbf' }} />;
+						return <MinusOutlined style={{ color: 'var(--color-text-disabled)' }} />;
 					},
 				})),
 			],
@@ -169,7 +169,7 @@ export default function FeatureFlagsPage() {
 							title="已启用功能"
 							value={isLoading ? '-' : totalFeaturesEnabled}
 							prefix={<CheckCircleOutlined />}
-							valueStyle={{ color: '#3f8600' }}
+							valueStyle={{ color: 'var(--color-success-text)' }}
 						/>
 					</Card>
 				</Col>
