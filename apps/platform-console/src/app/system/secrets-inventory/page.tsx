@@ -971,31 +971,31 @@ function OverviewTab({
 					</Card>
 				</Col>
 				<Col xs={24} sm={12} md={6}>
-					<Card hoverable styles={{ body: { borderLeft: '3px solid #52c41a' } }}>
+					<Card hoverable styles={{ body: { borderLeft: '3px solid var(--color-success)' } }}>
 						<Statistic
 							title="活跃"
 							value={overview.activeCount}
-							valueStyle={{ color: '#52c41a' }}
+							valueStyle={{ color: 'var(--color-success)' }}
 							prefix={<CheckCircleOutlined />}
 						/>
 					</Card>
 				</Col>
 				<Col xs={24} sm={12} md={6}>
-					<Card hoverable styles={{ body: { borderLeft: '3px solid #faad14' } }}>
+					<Card hoverable styles={{ body: { borderLeft: '3px solid var(--color-warning)' } }}>
 						<Statistic
 							title="已过期"
 							value={overview.expiredCount}
-							valueStyle={{ color: '#faad14' }}
+							valueStyle={{ color: 'var(--color-warning)' }}
 							prefix={<ClockCircleOutlined />}
 						/>
 					</Card>
 				</Col>
 				<Col xs={24} sm={12} md={6}>
-					<Card hoverable styles={{ body: { borderLeft: '3px solid #ff4d4f' } }}>
+					<Card hoverable styles={{ body: { borderLeft: '3px solid var(--color-danger)' } }}>
 						<Statistic
 							title="已吊销"
 							value={overview.revokedCount}
-							valueStyle={{ color: '#ff4d4f' }}
+							valueStyle={{ color: 'var(--color-danger)' }}
 							prefix={<StopOutlined />}
 						/>
 					</Card>

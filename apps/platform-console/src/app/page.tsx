@@ -39,7 +39,7 @@ export default function DashboardPage() {
 								title="租户总数"
 								value={totalTenants}
 								prefix={<TeamOutlined />}
-								valueStyle={systemError ? { color: '#faad14' } : undefined}
+								valueStyle={systemError ? { color: 'var(--color-warning)' } : undefined}
 							/>
 						)}
 					</Card>
@@ -53,7 +53,7 @@ export default function DashboardPage() {
 								title="活跃事故"
 								value={activeIncidents}
 								prefix={<WarningOutlined />}
-								valueStyle={overviewError ? { color: '#faad14' } : undefined}
+								valueStyle={overviewError ? { color: 'var(--color-warning)' } : undefined}
 							/>
 						)}
 					</Card>
@@ -67,7 +67,7 @@ export default function DashboardPage() {
 								title="健康服务"
 								value={servicesHealthy}
 								prefix={<CloudServerOutlined />}
-								valueStyle={overviewError ? { color: '#faad14' } : undefined}
+								valueStyle={overviewError ? { color: 'var(--color-warning)' } : undefined}
 							/>
 						)}
 					</Card>

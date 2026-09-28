@@ -22,19 +22,19 @@ const statusConfig: Record<
 	{ color: string; icon: React.ReactNode; labelKey: string; label: string }
 > = {
 	running: {
-		color: '#52c41a',
+		color: 'var(--color-success)',
 		icon: <CheckCircleFilled />,
 		labelKey: 'schedulers.statusRunning',
 		label: '运行中',
 	},
 	paused: {
-		color: '#faad14',
+		color: 'var(--color-warning)',
 		icon: <MinusCircleFilled />,
 		labelKey: 'schedulers.statusPaused',
 		label: '已暂停',
 	},
 	failed: {
-		color: '#ff4d4f',
+		color: 'var(--color-danger)',
 		icon: <CloseCircleFilled />,
 		labelKey: 'schedulers.statusFailed',
 		label: '失败',
@@ -182,7 +182,7 @@ export default function SystemSchedulersPage() {
 						<Statistic
 							title={t('schedulers.statusRunning', '运行中')}
 							value={stats.running}
-							valueStyle={{ color: '#52c41a' }}
+							valueStyle={{ color: 'var(--color-success)' }}
 							prefix={<CheckCircleFilled />}
 						/>
 					</Card>
@@ -192,7 +192,7 @@ export default function SystemSchedulersPage() {
 						<Statistic
 							title={t('schedulers.statusPaused', '已暂停')}
 							value={stats.paused}
-							valueStyle={{ color: '#faad14' }}
+							valueStyle={{ color: 'var(--color-warning)' }}
 							prefix={<MinusCircleFilled />}
 						/>
 					</Card>
@@ -202,7 +202,7 @@ export default function SystemSchedulersPage() {
 						<Statistic
 							title={t('schedulers.statusFailed', '失败')}
 							value={stats.failed}
-							valueStyle={{ color: '#ff4d4f' }}
+							valueStyle={{ color: 'var(--color-danger)' }}
 							prefix={<CloseCircleFilled />}
 						/>
 					</Card>

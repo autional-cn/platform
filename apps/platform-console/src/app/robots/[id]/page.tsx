@@ -227,7 +227,7 @@ export default function RobotDetailPage() {
 							{canCommission && (
 								<Button
 									icon={<PlayCircleOutlined />}
-									style={{ color: '#52c41a', borderColor: '#52c41a' }}
+									style={{ color: 'var(--color-success)', borderColor: 'var(--color-success)' }}
 									onClick={handleCommission}
 									loading={commissionMut.isPending}
 								>

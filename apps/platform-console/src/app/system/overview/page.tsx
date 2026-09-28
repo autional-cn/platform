@@ -21,8 +21,8 @@ import type { ServiceInfo } from '@/hooks/use-system-overview';
 import { PageLoading, PageError } from '@/components/ui/page-status';
 
 const statusConfig: Record<string, { color: string; icon: React.ReactNode }> = {
-	healthy: { color: '#52c41a', icon: <CheckCircleFilled style={{ color: '#52c41a' }} /> },
-	unhealthy: { color: '#ff4d4f', icon: <CloseCircleFilled style={{ color: '#ff4d4f' }} /> },
+	healthy: { color: 'var(--color-success)', icon: <CheckCircleFilled style={{ color: 'var(--color-success)' }} /> },
+	unhealthy: { color: 'var(--color-danger)', icon: <CloseCircleFilled style={{ color: 'var(--color-danger)' }} /> },
 	unknown: { color: '#bfbfbf', icon: <QuestionCircleFilled style={{ color: '#bfbfbf' }} /> },
 };
 
