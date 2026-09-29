@@ -13,6 +13,7 @@ const Forbidden = <Navigate to={ROUTE.FORBIDDEN} replace />;
 
 import DashboardPage from './app/page';
 import ForbiddenPage from './app/403/page';
+import NotFoundPage from './app/not-found/page';
 import SettingsPage from './app/settings/page';
 
 import TenantsPage from './app/tenants/page';
@@ -88,6 +89,9 @@ export default function App() {
 				</Route>
 
 				<Route element={<LayoutWrapper />}>{appRoutes()}</Route>
+
+				{/* 未知路径 → 404（此前无匹配路由 = 空白页 + 控制台路由告警；全舰队其余站均有 catch-all） */}
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</ErrorBoundary>
 	);

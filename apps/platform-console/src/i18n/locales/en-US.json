@@ -143,5 +143,7 @@
   "schedulers.resumed": "Resumed {{name}}",
   "schedulers.triggerTitle": "Trigger: {{name}}",
   "schedulers.triggerConfirm": "Are you sure you want to manually trigger this scheduler?",
-  "schedulers.triggerReason": "Reason for manual trigger (recorded in the audit log)"
+  "schedulers.triggerReason": "Reason for manual trigger (recorded in the audit log)",
+  "notFound.description": "The page does not exist or has been moved",
+  "notFound.back": "Back to home"
 }

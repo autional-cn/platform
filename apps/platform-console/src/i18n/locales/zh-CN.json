@@ -143,5 +143,7 @@
   "schedulers.resumed": "已恢复 {{name}}",
   "schedulers.triggerTitle": "触发：{{name}}",
   "schedulers.triggerConfirm": "确定要手动触发该调度器吗？",
-  "schedulers.triggerReason": "手动触发原因（将记录到审计日志）"
+  "schedulers.triggerReason": "手动触发原因（将记录到审计日志）",
+  "notFound.description": "页面不存在或已被移动",
+  "notFound.back": "返回首页"
 }
