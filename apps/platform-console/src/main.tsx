@@ -7,6 +7,7 @@ import { ThemeProvider, ToastProvider } from '@autional-cn/ui';
 import { AntdAppProvider } from './lib/antd-app';
 import './i18n';
 import App from './App';
+import './non-tenant-segments';
 import './app/globals.css';
 
 const queryClient = new QueryClient({
