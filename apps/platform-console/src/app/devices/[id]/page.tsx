@@ -51,7 +51,7 @@ async function fetchDevice(id: string): Promise<DeviceInfo> {
 }
 
 async function updateDevice(id: string, values: Record<string, unknown>): Promise<DeviceInfo> {
-	const res = await apiClient.put(`/admin/iots/${id}`, values); // @generated-api-exempt — no generated endpoint
+	const res = await apiClient.put(`/identity/api/v1/admin/iots/${id}`, values); // @generated-api-exempt — no generated endpoint
 	return extractItem<DeviceInfo>(res.data) ?? ({} as DeviceInfo);
 }
 

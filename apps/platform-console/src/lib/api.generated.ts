@@ -222,7 +222,6 @@ export const getCreditBalance = Generated.billingCreditBalanceByCreditBalance;
 // Billing: Public Plans
 export const getPublicBillingPlans = Generated.billingPlans;
 
-export const getComplianceStatus = Generated.complianceStatus;
 export const getDSARs = Generated.adminComplianceGdprDsar;
 export const updateDSAR = Generated.adminComplianceGdprDsarByDsarPut;
 export const executeErasure = Generated.adminComplianceGdprRightToErasurePost;
@@ -339,7 +338,7 @@ export const activateTenant = Generated.adminTenantsActivateByTenantsPost;
 export const suspendTenant = Generated.adminTenantsSuspendByTenantsPost;
 export const getTenantQuota = Generated.adminTenantsQuotaByTenants;
 export const updateTenantQuota = Generated.adminTenantsQuotaByTenantsPut;
-export const getAnnouncements = Generated.announcements;
+export const getAnnouncements = Generated.adminAnnouncements;
 export const createAnnouncement = Generated.adminAnnouncementsPost;
 export const updateAnnouncement = Generated.adminAnnouncementsByAnnouncementsPut;
 export const deleteAnnouncement = Generated.adminAnnouncementsByAnnouncementsDelete;

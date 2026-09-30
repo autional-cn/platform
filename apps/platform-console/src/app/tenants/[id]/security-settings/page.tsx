@@ -28,9 +28,10 @@ export default function SecuritySettingsPage() {
 		setError(null);
 		try {
 			const res = await apiClient.get(API_PATHS.TENANT.SOD_CONFIG(tenantId));
-			const item = extractItem<{ sod_mode: string }>(res);
+			// U99：响应经 camelCaseKeys 拦截器，读取侧键为 sodMode；写入侧仍用 snake_case。
+			const item = extractItem<{ sodMode?: string }>(res);
 			if (item) {
-				form.setFieldsValue({ sod_mode: item.sod_mode as 'single' | 'strict' });
+				form.setFieldsValue({ sod_mode: item.sodMode as 'single' | 'strict' });
 			}
 		} catch (err) {
 			setError(err instanceof Error ? err : new Error(String(err)));
