@@ -28,7 +28,7 @@ export const ROUTE = {
 	NHI_POLICY: '/policies/nhi',
 
 	// ===== 平台通知 =====
-	PLATFORM_NOTIFICATIONS: '/platform/notifications',
+	PLATFORM_NOTIFICATIONS: '/notifications',
 
 	// ===== Feature Management =====
 	FEATURE_GATES: '/feature-gates',

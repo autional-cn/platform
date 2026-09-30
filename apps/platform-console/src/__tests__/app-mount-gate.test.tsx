@@ -84,4 +84,16 @@ describe('App 挂载闸门（/:tenantSlug 门户）', () => {
 		expect(screen.getByTestId('tenant-root-redirect')).toBeInTheDocument();
 		expect(screen.queryByTestId('require-auth')).not.toBeInTheDocument();
 	});
+
+	it('slug=platform 的路径 /platform/ → 放行给 RequireAuth（业务段名单不得吃掉真实租户 slug）', () => {
+		renderAt('/platform/');
+		expect(screen.getByTestId('require-auth')).toBeInTheDocument();
+		expect(screen.queryByText('404')).not.toBeInTheDocument();
+	});
+
+	it('裸业务路径 /notifications → 本地 404（路由段与名单同步，不误放行）', () => {
+		renderAt('/notifications');
+		expect(screen.getByText('404')).toBeInTheDocument();
+		expect(screen.queryByTestId('require-auth')).not.toBeInTheDocument();
+	});
 });

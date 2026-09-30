@@ -42,7 +42,7 @@ import AnnouncementsPage from './app/announcements/page';
 import IncidentsPage from './app/status/incidents/page';
 import MaintenancesPage from './app/status/maintenances/page';
 import OpsPage from './app/ops/page';
-import PlatformNotificationsPage from './app/platform/notifications/page';
+import PlatformNotificationsPage from './app/notifications/page';
 import SystemOverviewPage from './app/system/overview/page';
 import SystemConfigPage from './app/system/config/page';
 import SystemSecretsInventoryPage from './app/system/secrets-inventory/page';
@@ -271,7 +271,7 @@ function appRoutes() {
 
 			{/* 平台通知 */}
 			<Route
-				path="platform/notifications"
+				path="notifications"
 				element={
 					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<PlatformNotificationsPage />
