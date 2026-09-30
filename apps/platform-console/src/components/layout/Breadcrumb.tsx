@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router';
 import { Breadcrumb as AntBreadcrumb } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useTenantSlug } from '@autional-cn/shared';
 import { ROUTE } from '@/lib/route-paths';
 
 const routeLabels: Record<string, string> = {
@@ -34,12 +35,15 @@ const routeLabels: Record<string, string> = {
 export function Breadcrumb() {
 	const { t } = useTranslation();
 	const location = useLocation();
+	const tenantSlug = useTenantSlug();
 	const pathParts = location.pathname.split('/').filter(Boolean);
+	// 剥租户段（'/demo/tenants' → ['tenants']），routeLabels 键均为站内相对路径
+	const segments = tenantSlug && pathParts[0] === tenantSlug ? pathParts.slice(1) : pathParts;
 
-	if (pathParts.length === 0) return null;
+	if (segments.length === 0) return null;
 
-	const items = pathParts.map((part, index) => {
-		const path = '/' + pathParts.slice(0, index + 1).join('/');
+	const items = segments.map((part, index) => {
+		const path = '/' + segments.slice(0, index + 1).join('/');
 		const labelKey = routeLabels[path];
 		return {
 			title: labelKey ? t(labelKey) : part,

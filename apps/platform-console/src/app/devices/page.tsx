@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Space, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { PageHeader, StatusBadge, EmptyState, ErrorState } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminIots, adminIotsPost, adminIotsByIotsDelete } from '@autional-cn/shared/generated/api';
@@ -12,6 +12,7 @@ import { message } from '@/lib/antd-app';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref } from '@/lib/nav';
 
 interface DeviceRecord {
 	id: string;
@@ -71,6 +72,7 @@ async function deleteDevice(id: string): Promise<void> {
 export default function DevicesPage() {
 	usePageTitle('Device 管理');
 	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const queryClient = useQueryClient();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [form] = Form.useForm();
@@ -123,7 +125,7 @@ export default function DevicesPage() {
 			key: 'name',
 			render: (v: string, record: DeviceRecord) => (
 				<a
-					onClick={() => navigate(ROUTE.DEVICE_DETAIL.replace(':id', record.id))}
+					onClick={() => navigate(buildNavHref(ROUTE.DEVICE_DETAIL.replace(':id', record.id), tenantSlug))}
 					className="font-medium"
 				>
 					{v}
@@ -174,7 +176,7 @@ export default function DevicesPage() {
 						icon={<EditOutlined />}
 						onClick={(e) => {
 							e.stopPropagation();
-							navigate(ROUTE.DEVICE_DETAIL.replace(':id', record.id));
+							navigate(buildNavHref(ROUTE.DEVICE_DETAIL.replace(':id', record.id), tenantSlug));
 						}}
 					>
 						编辑
@@ -256,7 +258,7 @@ export default function DevicesPage() {
 					dataSource={devices}
 					pagination={{ pageSize: 10 }}
 					onRow={(record) => ({
-						onClick: () => navigate(ROUTE.DEVICE_DETAIL.replace(':id', record.id)),
+						onClick: () => navigate(buildNavHref(ROUTE.DEVICE_DETAIL.replace(':id', record.id), tenantSlug)),
 						style: { cursor: 'pointer' },
 					})}
 				/>

@@ -6,10 +6,29 @@ import { ErrorBoundary } from '@autional-cn/ui';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { Breadcrumb } from './components/layout/Breadcrumb';
-import { PlatformGuard, OAuthCallbackPage, useBootstrap, TenantSlugProvider } from '@autional-cn/shared';
+import {
+	PlatformGuard,
+	RequireAuth,
+	TenantIndexGuard,
+	TenantRootRedirect,
+	OAuthCallbackPage,
+	useBootstrap,
+	useTenantSlug,
+	TenantSlugProvider,
+	extractSlugFromPath,
+} from '@autional-cn/shared';
 import { ROUTE } from './lib/route-paths';
 
-const Forbidden = <Navigate to={ROUTE.FORBIDDEN} replace />;
+/**
+ * 角色不满足时的落点：/403 在本站是租户段内路由（/:tenantSlug/403），
+ * 必须带上当前 slug —— 裸 /403 会被当成租户 slug '403'。
+ */
+function ForbiddenRedirect() {
+	const tenantSlug = useTenantSlug();
+	return (
+		<Navigate to={tenantSlug ? `/${tenantSlug}${ROUTE.FORBIDDEN}` : ROUTE.FORBIDDEN} replace />
+	);
+}
 
 import DashboardPage from './app/page';
 import ForbiddenPage from './app/403/page';
@@ -48,6 +67,18 @@ import CaptchaPage from './app/security/captcha/page';
 
 const { Content } = Layout;
 
+/**
+ * 挂载级闸门：/demo/... 交给共享 RequireAuth（含 F-W6 未知 slug 闸门与同域 PKCE）；
+ * 首段解析不出 slug 的裸路径（/403、/agents —— 站内注册为业务段的单段路径）
+ * 一律本地 404 —— 不进入 RequireAuth，避免其无 slug 分支的 buildLoginUrl
+ * 弹跳与 auth 侧回跳构成无限往返（F-W7 只覆盖未注册 slug，未覆盖此类）。
+ */
+function PlatformMountGate({ children }: { children: React.ReactNode }) {
+	if (typeof window === 'undefined') return null;
+	if (!extractSlugFromPath(window.location.pathname)) return <NotFoundPage />;
+	return <RequireAuth notFound={<NotFoundPage />}>{children}</RequireAuth>;
+}
+
 function LayoutWrapper() {
 	const bootstrap = useBootstrap();
 	const { tenantSlug } = useParams();
@@ -84,11 +115,21 @@ export default function App() {
 		>
 			<Routes>
 				<Route path="/oauth/callback" element={<OAuthCallbackPage />} />
-				<Route path="/403" element={<LayoutWrapper />}>
-					<Route index element={<ForbiddenPage />} />
-				</Route>
 
-				<Route element={<LayoutWrapper />}>{appRoutes()}</Route>
+				{/* 裸根漏斗：有会话直达 /<slug>/，否则整页跳 brand 选品牌（user/security/authenticator 同口径） */}
+				<Route path="/" element={<TenantRootRedirect />} />
+
+				<Route
+					path="/:tenantSlug"
+					element={
+						/* 控制台为租户段挂载应用：slug 是 OAuth client 解析与鉴权上下文的唯一来源 */
+						<PlatformMountGate>
+							<LayoutWrapper />
+						</PlatformMountGate>
+					}
+				>
+					{appRoutes()}
+				</Route>
 
 				{/* 未知路径 → 404（此前无匹配路由 = 空白页 + 控制台路由告警；全舰队其余站均有 catch-all） */}
 				<Route path="*" element={<NotFoundPage />} />
@@ -97,23 +138,30 @@ export default function App() {
 	);
 }
 
+/**
+ * path 一律用**字面量**（如 "settings"），不要改写成 ROUTE.X.slice(1) 之类的表达式：
+ * ui 仓 check-non-tenant 守卫按字面量推导业务路由首段，表达式对它不可见 ⇒ 名单会被
+ * 判成「多出」（NT4）。改路由时同步 non-tenant-segments.ts。
+ */
 function appRoutes() {
 	return (
 		<>
 			<Route
 				index
 				element={
-					<PlatformGuard fallback={Forbidden}>
-						<DashboardPage />
-					</PlatformGuard>
+					<TenantIndexGuard notFound={<NotFoundPage />}>
+						<PlatformGuard fallback={<ForbiddenRedirect />}>
+							<DashboardPage />
+						</PlatformGuard>
+					</TenantIndexGuard>
 				}
 			/>
 
 			{/* 租户管理 — 从 API 风格路径改为短路径 */}
 			<Route
-				path={ROUTE.TENANTS.slice(1)}
+				path="tenants"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<TenantsPage />
 					</PlatformGuard>
 				}
@@ -121,7 +169,7 @@ function appRoutes() {
 			<Route
 				path="tenants/:id/invitation-config"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<InvitationConfigPage />
 					</PlatformGuard>
 				}
@@ -129,7 +177,7 @@ function appRoutes() {
 			<Route
 				path="tenants/:id/quota"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<QuotaPage />
 					</PlatformGuard>
 				}
@@ -137,9 +185,9 @@ function appRoutes() {
 
 			{/* 公告 */}
 			<Route
-				path={ROUTE.ANNOUNCEMENTS.slice(1)}
+				path="announcements"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<AnnouncementsPage />
 					</PlatformGuard>
 				}
@@ -149,7 +197,7 @@ function appRoutes() {
 			<Route
 				path="status/incidents"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<IncidentsPage />
 					</PlatformGuard>
 				}
@@ -157,7 +205,7 @@ function appRoutes() {
 			<Route
 				path="status/maintenances"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<MaintenancesPage />
 					</PlatformGuard>
 				}
@@ -167,7 +215,7 @@ function appRoutes() {
 			<Route
 				path="agents"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<AgentsPage />
 					</PlatformGuard>
 				}
@@ -175,7 +223,7 @@ function appRoutes() {
 			<Route
 				path="agents/:id"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<AgentDetailPage />
 					</PlatformGuard>
 				}
@@ -183,7 +231,7 @@ function appRoutes() {
 			<Route
 				path="robots"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<RobotsPage />
 					</PlatformGuard>
 				}
@@ -191,7 +239,7 @@ function appRoutes() {
 			<Route
 				path="robots/:id"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<RobotDetailPage />
 					</PlatformGuard>
 				}
@@ -199,7 +247,7 @@ function appRoutes() {
 			<Route
 				path="devices"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<DevicesPage />
 					</PlatformGuard>
 				}
@@ -207,7 +255,7 @@ function appRoutes() {
 			<Route
 				path="devices/:id"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<DeviceDetailPage />
 					</PlatformGuard>
 				}
@@ -215,7 +263,7 @@ function appRoutes() {
 			<Route
 				path="policies/nhi"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<NhiPolicyPage />
 					</PlatformGuard>
 				}
@@ -223,9 +271,9 @@ function appRoutes() {
 
 			{/* 平台通知 */}
 			<Route
-				path={ROUTE.PLATFORM_NOTIFICATIONS.slice(1)}
+				path="platform/notifications"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<PlatformNotificationsPage />
 					</PlatformGuard>
 				}
@@ -235,7 +283,7 @@ function appRoutes() {
 			<Route
 				path="feature-gates"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<FeatureGatesPage />
 					</PlatformGuard>
 				}
@@ -243,7 +291,7 @@ function appRoutes() {
 			<Route
 				path="feature-flags"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<FeatureFlagsPage />
 					</PlatformGuard>
 				}
@@ -251,7 +299,7 @@ function appRoutes() {
 			<Route
 				path="gdpr-erasure"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<GdprErasurePage />
 					</PlatformGuard>
 				}
@@ -259,7 +307,7 @@ function appRoutes() {
 			<Route
 				path="impersonate"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<ImpersonatePage />
 					</PlatformGuard>
 				}
@@ -267,9 +315,9 @@ function appRoutes() {
 
 			{/* 安全 */}
 			<Route
-				path={ROUTE.SECURITY_CAPTCHA.slice(1)}
+				path="security/captcha"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<CaptchaPage />
 					</PlatformGuard>
 				}
@@ -279,7 +327,7 @@ function appRoutes() {
 			<Route
 				path="compliance/policy"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<CompliancePolicyPage />
 					</PlatformGuard>
 				}
@@ -287,7 +335,7 @@ function appRoutes() {
 			<Route
 				path="compliance/minors"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<MinorsProtectionPage />
 					</PlatformGuard>
 				}
@@ -297,7 +345,7 @@ function appRoutes() {
 			<Route
 				path="ops"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<OpsPage />
 					</PlatformGuard>
 				}
@@ -305,7 +353,7 @@ function appRoutes() {
 			<Route
 				path="system/overview"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<SystemOverviewPage />
 					</PlatformGuard>
 				}
@@ -313,7 +361,7 @@ function appRoutes() {
 			<Route
 				path="system/config"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<SystemConfigPage />
 					</PlatformGuard>
 				}
@@ -321,7 +369,7 @@ function appRoutes() {
 			<Route
 				path="system/secrets-inventory"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<SystemSecretsInventoryPage />
 					</PlatformGuard>
 				}
@@ -329,7 +377,7 @@ function appRoutes() {
 			<Route
 				path="system/rate-limits"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<SystemRateLimitsPage />
 					</PlatformGuard>
 				}
@@ -337,7 +385,7 @@ function appRoutes() {
 			<Route
 				path="system/schedulers"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<SystemSchedulersPage />
 					</PlatformGuard>
 				}
@@ -345,7 +393,7 @@ function appRoutes() {
 			<Route
 				path="env-vars"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<EnvVarsPage />
 					</PlatformGuard>
 				}
@@ -353,7 +401,7 @@ function appRoutes() {
 			<Route
 				path="infra-credentials"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<InfraCredentialsPage />
 					</PlatformGuard>
 				}
@@ -361,13 +409,18 @@ function appRoutes() {
 
 			{/* 设置 */}
 			<Route
-				path={ROUTE.SETTINGS.slice(1)}
+				path="settings"
 				element={
-					<PlatformGuard fallback={Forbidden}>
+					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<SettingsPage />
 					</PlatformGuard>
 				}
 			/>
+
+			{/* 403 与站内 404 都在租户段内（/:tenantSlug/403）；裸 /403 由 PlatformMountGate 判为无 slug → 本地 404
+			    （字面量 "403" 同时供 check-non-tenant 守卫推导首段名单，勿改表达式） */}
+			<Route path="403" element={<ForbiddenPage />} />
+			<Route path="*" element={<NotFoundPage />} />
 		</>
 	);
 }

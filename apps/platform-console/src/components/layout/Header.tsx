@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Layout, Typography, theme } from 'antd';
 import { AppstoreOutlined } from '@ant-design/icons';
-import { useAuth, getADMIN_CONSOLE_URL } from '@autional-cn/shared';
+import { useAuth, getPortalUrl, useTenantSlug } from '@autional-cn/shared';
 
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
@@ -9,6 +9,7 @@ const { Text } = Typography;
 export function Header() {
 	const { t } = useTranslation();
 	const { user } = useAuth();
+	const tenantSlug = useTenantSlug();
 
 	return (
 		<AntHeader className="sticky top-0 z-10 flex items-center justify-between px-6 h-[var(--layout-header-height)] bg-[var(--color-bg-surface)] border-b border-[var(--color-border)]">
@@ -17,7 +18,7 @@ export function Header() {
 				<Button
 					icon={<AppstoreOutlined />}
 					onClick={() => {
-						window.location.href = getADMIN_CONSOLE_URL();
+						window.location.href = getPortalUrl('admin', tenantSlug ?? undefined);
 					}}
 					size="small"
 				>

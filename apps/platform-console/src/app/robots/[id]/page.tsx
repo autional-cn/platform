@@ -21,7 +21,7 @@ import {
 	PauseCircleOutlined,
 	KeyOutlined,
 } from '@ant-design/icons';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { PageHeader, StatusBadge, SectionCard, EmptyState, ErrorState } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
@@ -35,6 +35,7 @@ import {
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref } from '@/lib/nav';
 import type { RobotInfo } from '@autional-cn/shared/generated/types';
 
 const { Paragraph, Text } = Typography;
@@ -89,6 +90,7 @@ async function issueIntentToken(
 export default function RobotDetailPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const queryClient = useQueryClient();
 	const [editVisible, setEditVisible] = useState(false);
 	const [intentVisible, setIntentVisible] = useState(false);
@@ -212,7 +214,7 @@ export default function RobotDetailPage() {
 				<Button
 					type="text"
 					icon={<ArrowLeftOutlined />}
-					onClick={() => navigate(ROUTE.ROBOTS)}
+					onClick={() => navigate(buildNavHref(ROUTE.ROBOTS, tenantSlug))}
 					className="mb-4 pl-0"
 				>
 					返回 Robot 列表

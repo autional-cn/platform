@@ -4,13 +4,14 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Button, Tag, Modal, Form, Input, Select, Skeleton, Descriptions } from 'antd';
 import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { PageHeader, StatusBadge, SectionCard, EmptyState, ErrorState } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, extractItem } from '@autional-cn/shared';
 import { adminIotsByIots } from '@autional-cn/shared/generated/api';
 import { message } from '@/lib/antd-app';
 import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref } from '@/lib/nav';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import type { DeviceInfo } from '@autional-cn/shared/generated/types';
@@ -57,6 +58,7 @@ async function updateDevice(id: string, values: Record<string, unknown>): Promis
 export default function DeviceDetailPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const queryClient = useQueryClient();
 	const [editVisible, setEditVisible] = useState(false);
 	const [form] = Form.useForm();
@@ -120,7 +122,7 @@ export default function DeviceDetailPage() {
 				<Button
 					type="text"
 					icon={<ArrowLeftOutlined />}
-					onClick={() => navigate(ROUTE.DEVICES)}
+					onClick={() => navigate(buildNavHref(ROUTE.DEVICES, tenantSlug))}
 					className="mb-4 pl-0"
 				>
 					返回 Device 列表

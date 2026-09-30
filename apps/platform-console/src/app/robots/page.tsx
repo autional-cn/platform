@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Space, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { PageHeader, StatusBadge, EmptyState, ErrorState } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -16,6 +16,7 @@ import { message } from '@/lib/antd-app';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref } from '@/lib/nav';
 
 interface RobotRecord {
 	id: string;
@@ -63,6 +64,7 @@ async function deleteRobot(id: string): Promise<void> {
 export default function RobotsPage() {
 	usePageTitle('Robot 管理');
 	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const queryClient = useQueryClient();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [form] = Form.useForm();
@@ -115,7 +117,7 @@ export default function RobotsPage() {
 			key: 'name',
 			render: (v: string, record: RobotRecord) => (
 				<a
-					onClick={() => navigate(ROUTE.ROBOT_DETAIL.replace(':id', record.id))}
+					onClick={() => navigate(buildNavHref(ROUTE.ROBOT_DETAIL.replace(':id', record.id), tenantSlug))}
 					className="font-medium"
 				>
 					{v}
@@ -162,7 +164,7 @@ export default function RobotsPage() {
 						icon={<EditOutlined />}
 						onClick={(e) => {
 							e.stopPropagation();
-							navigate(ROUTE.ROBOT_DETAIL.replace(':id', record.id));
+							navigate(buildNavHref(ROUTE.ROBOT_DETAIL.replace(':id', record.id), tenantSlug));
 						}}
 					>
 						编辑
@@ -247,7 +249,7 @@ export default function RobotsPage() {
 					dataSource={robots}
 					pagination={{ pageSize: 10 }}
 					onRow={(record) => ({
-						onClick: () => navigate(ROUTE.ROBOT_DETAIL.replace(':id', record.id)),
+						onClick: () => navigate(buildNavHref(ROUTE.ROBOT_DETAIL.replace(':id', record.id), tenantSlug)),
 						style: { cursor: 'pointer' },
 					})}
 				/>

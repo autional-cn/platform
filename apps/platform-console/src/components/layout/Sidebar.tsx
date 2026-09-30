@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router';
+import { useTenantSlug } from '@autional-cn/shared';
 import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref, stripTenantPrefix } from '@/lib/nav';
 import {
 	DashboardOutlined,
 	TeamOutlined,
@@ -46,6 +48,7 @@ export function Sidebar() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [collapsed] = useState(false);
+	const tenantSlug = useTenantSlug();
 
 	const allMenuItems: MenuItem[] = useMemo(
 		() => [
@@ -129,14 +132,15 @@ export function Sidebar() {
 	);
 
 	const selectedKeys = useMemo(() => {
-		const path = location.pathname;
+		// 菜单 key 是站内相对路径（'/tenants'）；location.pathname 带租户段（'/demo/tenants'）
+		const path = stripTenantPrefix(location.pathname, tenantSlug);
 		if (path === '/') return ['/'];
 		const matched = findMenuKey(allMenuItems, path);
 		return matched ? [matched] : [];
-	}, [location.pathname, allMenuItems]);
+	}, [location.pathname, allMenuItems, tenantSlug]);
 
 	const defaultOpenKeys = useMemo(() => {
-		const path = location.pathname;
+		const path = stripTenantPrefix(location.pathname, tenantSlug);
 		const keys: string[] = [];
 		for (const item of allMenuItems) {
 			if (item.children?.some((c) => path.startsWith(c.key))) {
@@ -144,10 +148,10 @@ export function Sidebar() {
 			}
 		}
 		return keys;
-	}, [location.pathname, allMenuItems]);
+	}, [location.pathname, allMenuItems, tenantSlug]);
 
 	const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
-		navigate(key);
+		navigate(buildNavHref(key, tenantSlug));
 	};
 
 	const convertItems = (items: MenuItem[]): any[] =>

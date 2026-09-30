@@ -44,9 +44,11 @@ import {
 } from '@/hooks/use-compliance';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError } from '@/components/ui/page-status';
-import { useAuthStore } from '@autional-cn/shared';
+import { useAuthStore, useTenantSlug } from '@autional-cn/shared';
 import { useNavigate } from 'react-router';
 import { useTenants } from '@/hooks/use-tenants';
+import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref } from '@/lib/nav';
 
 interface DSARRecord {
 	id: string;
@@ -98,6 +100,7 @@ export default function CompliancePage() {
 	const [complianceScore, setComplianceScore] = useState<number | null>(null);
 	const [standardCount, setStandardCount] = useState(0);
 	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const [dsarDrawer, setDsarDrawer] = useState(false);
 	const [currentDsar, setCurrentDsar] = useState<DSARRecord | null>(null);
 
@@ -418,7 +421,9 @@ export default function CompliancePage() {
 											type="link"
 											size="small"
 											icon={<SettingOutlined />}
-											onClick={() => navigate('/compliance/api/v1/compliance/policy')}
+											onClick={() =>
+												navigate(buildNavHref(ROUTE.COMPLIANCE_POLICY, tenantSlug))
+											}
 										>
 											管理策略
 										</Button>

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Space, Tag, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { PageHeader, StatusBadge, EmptyState, ErrorState } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -16,6 +16,7 @@ import { message } from '@/lib/antd-app';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
+import { buildNavHref } from '@/lib/nav';
 
 interface AgentRecord {
 	id: string;
@@ -80,6 +81,7 @@ async function deleteAgent(id: string): Promise<void> {
 export default function AgentsPage() {
 	usePageTitle('AI 智能体');
 	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const queryClient = useQueryClient();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [form] = Form.useForm();
@@ -132,7 +134,7 @@ export default function AgentsPage() {
 			key: 'name',
 			render: (v: string, record: AgentRecord) => (
 				<a
-					onClick={() => navigate(ROUTE.AGENT_DETAIL.replace(':id', record.id))}
+					onClick={() => navigate(buildNavHref(ROUTE.AGENT_DETAIL.replace(':id', record.id), tenantSlug))}
 					className="font-medium"
 				>
 					{v}
@@ -176,7 +178,7 @@ export default function AgentsPage() {
 						icon={<EditOutlined />}
 						onClick={(e) => {
 							e.stopPropagation();
-							navigate(ROUTE.AGENT_DETAIL.replace(':id', record.id));
+							navigate(buildNavHref(ROUTE.AGENT_DETAIL.replace(':id', record.id), tenantSlug));
 						}}
 					>
 						编辑
@@ -261,7 +263,7 @@ export default function AgentsPage() {
 					dataSource={agents}
 					pagination={{ pageSize: 10 }}
 					onRow={(record) => ({
-						onClick: () => navigate(ROUTE.AGENT_DETAIL.replace(':id', record.id)),
+						onClick: () => navigate(buildNavHref(ROUTE.AGENT_DETAIL.replace(':id', record.id), tenantSlug)),
 						style: { cursor: 'pointer' },
 					})}
 				/>
