@@ -5,7 +5,7 @@ import { DataTable } from '@autional-cn/ui/antd';
 import { Button, Space, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
-import { PageHeader, StatusBadge, EmptyState, ErrorState } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState, ErrorState, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminIots, adminIotsPost, adminIotsByIotsDelete } from '@autional-cn/shared/generated/api';
 import { useNavigate } from 'react-router';
@@ -206,19 +206,22 @@ export default function DevicesPage() {
 
 	return (
 		<div className="p-6">
-			<div className="mb-6 flex items-center justify-between">
-				<PageHeader title="Device 管理" subtitle="管理 IoT 与边缘设备身份。" />
-				<Button
-					type="primary"
-					icon={<PlusOutlined />}
-					onClick={() => {
-						form.resetFields();
-						setModalVisible(true);
-					}}
-				>
-					新建 Device
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="Device 管理"
+				description="管理 IoT 与边缘设备身份。"
+				actions={
+					<Button
+						type="primary"
+						icon={<PlusOutlined />}
+						onClick={() => {
+							form.resetFields();
+							setModalVisible(true);
+						}}
+					>
+						新建 Device
+					</Button>
+				}
+			/>
 
 			{isLoading && (
 				<div className="space-y-3">

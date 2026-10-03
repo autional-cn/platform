@@ -13,7 +13,7 @@ import {
 import type { MaintenanceRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError, DataTable } from '@autional-cn/ui/antd';
-import { StatusBadge, type StatusVariant } from '@autional-cn/ui';
+import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional-cn/ui';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -155,20 +155,24 @@ export default function MaintenancesPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">计划维护</h1>
-				<Button
-					type="primary"
-					icon={<PlusOutlined />}
-					onClick={() => {
-						setEditing(null);
-						form.resetFields();
-						setModalVisible(true);
-					}}
-				>
-					创建维护
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="计划维护"
+				actions={
+					<>
+						<Button
+							type="primary"
+							icon={<PlusOutlined />}
+							onClick={() => {
+								setEditing(null);
+								form.resetFields();
+								setModalVisible(true);
+							}}
+						>
+							创建维护
+						</Button>
+					</>
+				}
+			/>
 
 			<div className="flex gap-4 mb-4">
 				<Select

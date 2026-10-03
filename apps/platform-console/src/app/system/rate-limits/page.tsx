@@ -8,7 +8,7 @@ import {
 	CloseCircleOutlined,
 	QuestionCircleOutlined,
 } from '@ant-design/icons';
-import { PageHeader } from '@autional-cn/ui';
+import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { ops } from '@/lib/api.generated';
@@ -44,9 +44,9 @@ export default function SystemRateLimitsPage() {
 
 	return (
 		<div>
-			<PageHeader
+			<ConsolePageHeader
 				title={t('rateLimits.title', '限流状态')}
-				subtitle={t('rateLimits.subtitle', '网关限流器提供方状态')}
+				description={t('rateLimits.subtitle', '网关限流器提供方状态')}
 			/>
 
 			<Spin spinning={false}>

@@ -14,7 +14,7 @@ import {
 	AppstoreOutlined,
 	CloudServerOutlined,
 } from '@ant-design/icons';
-import { PageHeader } from '@autional-cn/ui';
+import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { useSystemOverview, CATEGORY_LABELS } from '@/hooks/use-system-overview';
 import type { ServiceInfo } from '@/hooks/use-system-overview';
@@ -59,9 +59,9 @@ export default function SystemOverviewPage() {
 
 	return (
 		<div>
-			<PageHeader
+			<ConsolePageHeader
 				title={t('systemOverview.title', '系统总览')}
-				subtitle={t('systemOverview.subtitle', '全局服务健康、基础设施状态、租户概览与安全态势')}
+				description={t('systemOverview.subtitle', '全局服务健康、基础设施状态、租户概览与安全态势')}
 			/>
 
 			<Spin spinning={false}>

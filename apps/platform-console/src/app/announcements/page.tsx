@@ -20,6 +20,7 @@ import {
 } from '@/hooks/use-announcements';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -182,20 +183,24 @@ export default function AnnouncementsPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">平台公告</h1>
-				<Button
-					type="primary"
-					icon={<PlusOutlined />}
-					onClick={() => {
-						setEditing(null);
-						form.resetFields();
-						setModalVisible(true);
-					}}
-				>
-					发布公告
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="平台公告"
+				actions={
+					<>
+						<Button
+							type="primary"
+							icon={<PlusOutlined />}
+							onClick={() => {
+								setEditing(null);
+								form.resetFields();
+								setModalVisible(true);
+							}}
+						>
+							发布公告
+						</Button>
+					</>
+				}
+			/>
 
 			{error && <PageError message="加载公告列表失败" retry={refetch} className="mb-4" />}
 			<DataTable

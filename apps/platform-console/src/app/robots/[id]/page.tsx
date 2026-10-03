@@ -22,7 +22,7 @@ import {
 	KeyOutlined,
 } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
-import { PageHeader, StatusBadge, SectionCard, EmptyState, ErrorState } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
 import {
@@ -220,9 +220,9 @@ export default function RobotDetailPage() {
 					返回 Robot 列表
 				</Button>
 				<div className="flex items-center justify-between">
-					<PageHeader
+					<ConsolePageHeader
 						title={robot?.name || 'Robot 详情'}
-						subtitle={robot?.model ? `型号：${robot.model}` : '加载中…'}
+						description={robot?.model ? `型号：${robot.model}` : '加载中…'}
 					/>
 					{robot && (
 						<Space>

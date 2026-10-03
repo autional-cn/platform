@@ -22,6 +22,7 @@ import {
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 
@@ -208,20 +209,24 @@ export default function TenantsPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">租户管理</h1>
-				<Button
-					type="primary"
-					icon={<PlusOutlined />}
-					onClick={() => {
-						setEditing(null);
-						form.resetFields();
-						setModalVisible(true);
-					}}
-				>
-					创建租户
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="租户管理"
+				actions={
+					<>
+						<Button
+							type="primary"
+							icon={<PlusOutlined />}
+							onClick={() => {
+								setEditing(null);
+								form.resetFields();
+								setModalVisible(true);
+							}}
+						>
+							创建租户
+						</Button>
+					</>
+				}
+			/>
 
 			<Alert title="此页面仅平台管理员可见" type="warning" showIcon className="mb-4" />
 

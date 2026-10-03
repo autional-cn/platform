@@ -17,7 +17,7 @@ import {
 	adminTenantsMinorsProtectionByTenantsPut,
 	adminUsers,
 } from '@autional-cn/shared/generated/api';
-import { PageHeader, SectionCard } from '@autional-cn/ui';
+import { ConsolePageHeader, SectionCard } from '@autional-cn/ui';
 import dayjs from 'dayjs';
 
 const IDENTITY_API = '/admin';
@@ -213,7 +213,7 @@ export default function MinorsProtectionPage() {
 
 	return (
 		<div style={{ padding: 24 }}>
-			<PageHeader title="未成年人保护" subtitle="配置防沉迷策略、查看未成年用户、管理家长同意" />
+			<ConsolePageHeader title="未成年人保护" description="配置防沉迷策略、查看未成年用户、管理家长同意" />
 
 			<Row gutter={16} style={{ marginBottom: 24 }}>
 				<Col span={8}>

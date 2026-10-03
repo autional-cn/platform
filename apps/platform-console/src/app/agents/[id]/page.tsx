@@ -8,7 +8,7 @@ import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
-import { PageHeader, StatusBadge, SectionCard, EmptyState, ErrorState } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, extractItem } from '@autional-cn/shared';
 import { adminAgentsByAgents, adminAgentsByAgentsPut } from '@autional-cn/shared/generated/api';
@@ -257,9 +257,9 @@ export default function AgentDetailPage() {
 					返回 Agent 列表
 				</Button>
 				<div className="flex items-center justify-between">
-					<PageHeader
+					<ConsolePageHeader
 						title={agent?.name || 'Agent 详情'}
-						subtitle={agent?.description || '加载中…'}
+						description={agent?.description || '加载中…'}
 					/>
 					{agent && (
 						<Button icon={<EditOutlined />} onClick={openEdit}>

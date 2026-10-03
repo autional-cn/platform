@@ -26,6 +26,7 @@ import {
 import { handleApiError } from '@/lib/error-handler';
 import { PageError, DataTable } from '@autional-cn/ui/antd';
 import { useAuthStore, useTenantSlug } from '@autional-cn/shared';
+import { ConsolePageHeader } from '@autional-cn/ui';
 import { useNavigate } from 'react-router';
 import { useTenants } from '@/hooks/use-tenants';
 import { ROUTE } from '@/lib/route-paths';
@@ -360,16 +361,20 @@ export default function CompliancePage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">合规中心</h1>
-				<Select
-					style={{ width: 240 }}
-					placeholder="选择租户"
-					value={currentTenantId || undefined}
-					onChange={(tid: string) => switchTenant(tid)}
-					options={tenantOptions}
-				/>
-			</div>
+			<ConsolePageHeader
+				title="合规中心"
+				actions={
+					<>
+						<Select
+							style={{ width: 240 }}
+							placeholder="选择租户"
+							value={currentTenantId || undefined}
+							onChange={(tid: string) => switchTenant(tid)}
+							options={tenantOptions}
+						/>
+					</>
+				}
+			/>
 
 			<Tabs
 				activeKey={activeTab}

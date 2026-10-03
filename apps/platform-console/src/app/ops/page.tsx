@@ -12,6 +12,7 @@ import {
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops } from '@/lib/api.generated';
 import { PageError } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 
 interface ServiceHealth {
 	name: string;
@@ -66,9 +67,9 @@ export default function OpsPage() {
 		<div>
 			{error && <PageError message="加载运维状态失败" retry={refetch} className="mb-4" />}
 
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">运维视图</h1>
-			</div>
+			<ConsolePageHeader
+				title="运维视图"
+			/>
 
 			<Spin spinning={loading}>
 				{healthData && (

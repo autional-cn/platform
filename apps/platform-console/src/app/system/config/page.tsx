@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 import { Card, Tabs, Tag, Input, Descriptions, Badge, Alert, Tooltip, Spin } from 'antd';
 import {
 	CloudServerOutlined,
@@ -451,12 +452,16 @@ export default function SystemConfigPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">系统配置</h1>
-				<Tag color="red" className="text-xs">
-					仅超级管理员可访问
-				</Tag>
-			</div>
+			<ConsolePageHeader
+				title="系统配置"
+				actions={
+					<>
+						<Tag color="red" className="text-xs">
+							仅超级管理员可访问
+						</Tag>
+					</>
+				}
+			/>
 			<Card>
 				<Tabs defaultActiveKey="services" items={tabItems} />
 			</Card>

@@ -7,7 +7,7 @@ import { EyeOutlined, EyeInvisibleOutlined, SearchOutlined } from '@ant-design/i
 import { useQuery } from '@tanstack/react-query';
 import { usePageTitle } from '@autional-cn/shared';
 import { adminEnvVars } from '@autional-cn/shared/generated/api';
-import { PageHeader, EmptyState, ErrorState } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState, ErrorState } from '@autional-cn/ui';
 import { queryKeys } from '@/lib/query-keys';
 
 interface EnvVarRecord {
@@ -109,9 +109,9 @@ export default function EnvVarsPage() {
 
 	return (
 		<div className="p-6">
-			<PageHeader
+			<ConsolePageHeader
 				title="环境变量"
-				subtitle="查看各服务运行时加载的全部环境变量。"
+				description="查看各服务运行时加载的全部环境变量。"
 			/>
 
 			<div className="mt-6">

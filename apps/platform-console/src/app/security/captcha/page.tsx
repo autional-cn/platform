@@ -8,6 +8,7 @@ import {
 } from '@/hooks/use-captcha-config';
 import CaptchaConfigForm from '@/components/security/CaptchaConfigForm';
 import { PageLoading, PageError } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 
 export default function CaptchaConfigPage() {
 	usePageTitle('CAPTCHA 安全配置');
@@ -33,9 +34,9 @@ export default function CaptchaConfigPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">CAPTCHA 安全配置</h1>
-			</div>
+			<ConsolePageHeader
+				title="CAPTCHA 安全配置"
+			/>
 			<CaptchaConfigForm data={config} onSave={handleSave} />
 		</div>
 	);

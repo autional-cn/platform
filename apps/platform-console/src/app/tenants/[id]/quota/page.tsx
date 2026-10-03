@@ -9,6 +9,7 @@ import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { getTenantQuota, updateTenantQuota } from '@/lib/api.generated';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 
 interface QuotaData {
 	plan?: string;
@@ -68,12 +69,16 @@ export default function QuotaPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">资源配额</h1>
-				<Button icon={<ReloadOutlined />} onClick={fetchQuota}>
-					刷新
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="资源配额"
+				actions={
+					<>
+						<Button icon={<ReloadOutlined />} onClick={fetchQuota}>
+							刷新
+						</Button>
+					</>
+				}
+			/>
 
 			{error && <PageError message="加载资源配额失败" retry={fetchQuota} className="mb-4" />}
 

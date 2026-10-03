@@ -9,10 +9,10 @@ vi.mock('@autional-cn/shared', () => ({
 }));
 
 vi.mock('@autional-cn/ui', () => ({
-	PageHeader: ({ title, subtitle }: { title: string; subtitle?: string }) => (
+	ConsolePageHeader: ({ title, description }: { title: string; description?: string }) => (
 		<div data-testid="page-header">
 			<h3>{title}</h3>
-			{subtitle && <p>{subtitle}</p>}
+			{description && <p>{description}</p>}
 		</div>
 	),
 	SectionCard: ({

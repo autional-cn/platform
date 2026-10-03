@@ -12,7 +12,7 @@ import {
 	MinusCircleFilled,
 	ClockCircleOutlined,
 } from '@ant-design/icons';
-import { PageHeader, useToast } from '@autional-cn/ui';
+import { ConsolePageHeader, useToast } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { PageLoading, PageError, DataTable } from '@autional-cn/ui/antd';
 import { useSchedulers } from '@/hooks/use-schedulers';
@@ -171,9 +171,9 @@ export default function SystemSchedulersPage() {
 
 	return (
 		<div>
-			<PageHeader
+			<ConsolePageHeader
 				title={t('schedulers.title', '系统作业')}
-				subtitle={t('schedulers.subtitle', '所有后台调度器的运行状态、手动触发与历史记录')}
+				description={t('schedulers.subtitle', '所有后台调度器的运行状态、手动触发与历史记录')}
 			/>
 
 			<Row gutter={16} style={{ marginBottom: 24 }}>

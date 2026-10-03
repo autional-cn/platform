@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Checkbox, Form, Input, Result, Typography, Space } from 'antd';
 import { WarningOutlined, CopyOutlined } from '@ant-design/icons';
 import { usePageTitle } from '@autional-cn/shared';
-import { PageHeader, SectionCard } from '@autional-cn/ui';
+import { ConsolePageHeader, SectionCard } from '@autional-cn/ui';
 import { adminImpersonatePost } from '@autional-cn/shared/generated/api';
 import { useMutation } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
@@ -60,7 +60,7 @@ export default function ImpersonatePage() {
 		return (
 			<div className="p-6">
 				<div className="mb-6">
-					<PageHeader title="管理员模拟登录" subtitle="模拟其他用户登录系统" />
+					<ConsolePageHeader title="管理员模拟登录" description="模拟其他用户登录系统" />
 				</div>
 				<SectionCard padding="lg">
 					<Result
@@ -117,7 +117,7 @@ export default function ImpersonatePage() {
 	return (
 		<div className="p-6">
 			<div className="mb-6">
-				<PageHeader title="管理员模拟登录" subtitle="以其他用户身份登录系统进行操作" />
+				<ConsolePageHeader title="管理员模拟登录" description="以其他用户身份登录系统进行操作" />
 			</div>
 
 			<Alert

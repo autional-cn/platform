@@ -9,6 +9,7 @@ import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { getInvitationConfig, updateInvitationConfig } from '@/lib/api.generated';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 
 interface InvitationConfigData {
 	inviteExpiryDays?: number;
@@ -66,12 +67,16 @@ export default function InvitationConfigPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">邀请配置</h1>
-				<Button icon={<ReloadOutlined />} onClick={fetchConfig}>
-					刷新
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="邀请配置"
+				actions={
+					<>
+						<Button icon={<ReloadOutlined />} onClick={fetchConfig}>
+							刷新
+						</Button>
+					</>
+				}
+			/>
 
 			{error && <PageError message="加载邀请配置失败" retry={fetchConfig} className="mb-4" />}
 

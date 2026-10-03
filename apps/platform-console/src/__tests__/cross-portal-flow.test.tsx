@@ -77,16 +77,10 @@ vi.mock('@autional-cn/ui', () => ({
 			{onRetry && <button onClick={onRetry}>Retry</button>}
 		</div>
 	),
-	PageHeader: ({ title, subtitle }: { title: string; subtitle?: string }) => (
-		<div className="text-center">
-			<h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-4xl">
-				{title}
-			</h1>
-			{subtitle && (
-				<p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-600 dark:text-neutral-300">
-					{subtitle}
-				</p>
-			)}
+	ConsolePageHeader: ({ title, description }: { title: string; description?: string }) => (
+		<div>
+			<h1>{title}</h1>
+			{description && <p>{description}</p>}
 		</div>
 	),
 	LoadingScreen: () => null,

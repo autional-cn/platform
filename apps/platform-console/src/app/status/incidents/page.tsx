@@ -15,7 +15,7 @@ import {
 import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError, DataTable } from '@autional-cn/ui/antd';
-import { StatusBadge, type StatusVariant } from '@autional-cn/ui';
+import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional-cn/ui';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -195,20 +195,24 @@ export default function IncidentsPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">事件管理</h1>
-				<Button
-					type="primary"
-					icon={<PlusOutlined />}
-					onClick={() => {
-						setEditing(null);
-						form.resetFields();
-						setModalVisible(true);
-					}}
-				>
-					创建事件
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="事件管理"
+				actions={
+					<>
+						<Button
+							type="primary"
+							icon={<PlusOutlined />}
+							onClick={() => {
+								setEditing(null);
+								form.resetFields();
+								setModalVisible(true);
+							}}
+						>
+							创建事件
+						</Button>
+					</>
+				}
+			/>
 
 			<div className="flex gap-4 mb-4">
 				<Select

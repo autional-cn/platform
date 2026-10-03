@@ -9,6 +9,7 @@ import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { apiClient, API_PATHS } from '@autional-cn/shared';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
 
 interface SodConfigData {
 	sod_mode: 'single' | 'strict';
@@ -64,12 +65,16 @@ export default function SecuritySettingsPage() {
 
 	return (
 		<div className="p-6 max-w-2xl">
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-xl font-semibold">职责分离配置 (SoD)</h1>
-				<Button icon={<ReloadOutlined />} onClick={fetchConfig} loading={loading}>
-					刷新
-				</Button>
-			</div>
+			<ConsolePageHeader
+				title="职责分离配置 (SoD)"
+				actions={
+					<>
+						<Button icon={<ReloadOutlined />} onClick={fetchConfig} loading={loading}>
+							刷新
+						</Button>
+					</>
+				}
+			/>
 
 			{error && <PageError message="加载 SoD 配置失败" retry={fetchConfig} className="mb-4" />}
 

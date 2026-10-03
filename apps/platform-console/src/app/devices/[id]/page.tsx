@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router';
 import { Button, Tag, Modal, Form, Input, Select, Skeleton, Descriptions } from 'antd';
 import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
-import { PageHeader, StatusBadge, SectionCard, EmptyState, ErrorState } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, extractItem } from '@autional-cn/shared';
 import { adminIotsByIots } from '@autional-cn/shared/generated/api';
@@ -128,9 +128,9 @@ export default function DeviceDetailPage() {
 					返回 Device 列表
 				</Button>
 				<div className="flex items-center justify-between">
-					<PageHeader
+					<ConsolePageHeader
 						title={device?.name || 'Device 详情'}
-						subtitle={device?.manufacturer ? `制造商：${device.manufacturer}` : '加载中…'}
+						description={device?.manufacturer ? `制造商：${device.manufacturer}` : '加载中…'}
 					/>
 					{device && (
 						<Button icon={<EditOutlined />} onClick={openEdit}>

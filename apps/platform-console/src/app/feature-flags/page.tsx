@@ -11,7 +11,7 @@ import {
 	MinusOutlined,
 } from '@ant-design/icons';
 import { usePageTitle } from '@autional-cn/shared';
-import { PageHeader } from '@autional-cn/ui';
+import { ConsolePageHeader } from '@autional-cn/ui';
 import { adminFeatureFlags } from '@autional-cn/shared/generated/api';
 import { useQuery } from '@tanstack/react-query';
 
@@ -139,9 +139,9 @@ export default function FeatureFlagsPage() {
 	return (
 		<div className="p-6">
 			<div className="mb-6">
-				<PageHeader
+				<ConsolePageHeader
 					title="功能开关矩阵"
-					subtitle="跨服务功能开关配置矩阵 —— 全部 21 个服务总览"
+					description="跨服务功能开关配置矩阵 —— 全部 21 个服务总览"
 				/>
 			</div>
 
