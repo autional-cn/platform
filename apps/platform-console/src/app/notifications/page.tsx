@@ -122,7 +122,7 @@ export default function PlatformNotificationsPage() {
 							<Statistic
 								title="近 30 天已发送消息"
 								value={comm?.totalSent ?? 0}
-								prefix={<SendOutlined className="text-blue-500" />}
+								prefix={<SendOutlined className="text-info" />}
 							/>
 						)}
 					</Card>
@@ -165,7 +165,7 @@ export default function PlatformNotificationsPage() {
 								value={notif?.readRate ? Math.round(notif.readRate * 10000) / 100 : 0}
 								suffix="%"
 								precision={1}
-								prefix={<EyeOutlined className="text-green-500" />}
+								prefix={<EyeOutlined className="text-success" />}
 								valueStyle={{ color: (notif?.readRate ?? 0) > 0.4 ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}
 							/>
 						)}

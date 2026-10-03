@@ -158,21 +158,21 @@ export default function SystemOverviewPage() {
 									<Statistic
 										title={t('systemOverview.totalTenants', '总数')}
 										value={data.tenants.total}
-										prefix={<TeamOutlined className="text-blue-500" />}
+										prefix={<TeamOutlined className="text-info" />}
 									/>
 								</Col>
 								<Col span={8}>
 									<Statistic
 										title={t('systemOverview.activeTenants', '活跃')}
 										value={data.tenants.active}
-										prefix={<CheckCircleFilled className="text-green-500" />}
+										prefix={<CheckCircleFilled className="text-success" />}
 									/>
 								</Col>
 								<Col span={8}>
 									<Statistic
 										title={t('systemOverview.suspendedTenants', '已暂停')}
 										value={data.tenants.suspended}
-										prefix={<WarningOutlined className="text-orange-500" />}
+										prefix={<WarningOutlined className="text-warning" />}
 									/>
 								</Col>
 							</Row>
@@ -208,7 +208,7 @@ export default function SystemOverviewPage() {
 										<Statistic
 											title={t('systemOverview.passwordsExpired', '密码已过期')}
 											value={data.security.passwordsExpired}
-											prefix={<WarningOutlined className="text-orange-500" />}
+											prefix={<WarningOutlined className="text-warning" />}
 										/>
 									</Card>
 								</Col>
@@ -217,7 +217,7 @@ export default function SystemOverviewPage() {
 										<Statistic
 											title={t('systemOverview.weakPasswords', '弱密码')}
 											value={data.security.weakPasswords}
-											prefix={<WarningOutlined className="text-red-500" />}
+											prefix={<WarningOutlined className="text-danger" />}
 										/>
 									</Card>
 								</Col>
@@ -226,7 +226,7 @@ export default function SystemOverviewPage() {
 										<Statistic
 											title={t('systemOverview.expiringSecrets', '即将过期密钥')}
 											value={data.security.expiringSecrets}
-											prefix={<WarningOutlined className="text-orange-500" />}
+											prefix={<WarningOutlined className="text-warning" />}
 										/>
 									</Card>
 								</Col>

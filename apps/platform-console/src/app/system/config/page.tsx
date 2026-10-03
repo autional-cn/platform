@@ -156,11 +156,11 @@ function InfrastructureTab() {
 			width: 140,
 			render: (text: string, record: InfraComponent) => {
 				const icons: Record<string, React.ReactNode> = {
-					postgres: <DatabaseOutlined className="mr-2 text-blue-500" />,
-					redis: <DatabaseOutlined className="mr-2 text-red-500" />,
-					rabbitmq: <CloudServerOutlined className="mr-2 text-orange-500" />,
-					mongodb: <DatabaseOutlined className="mr-2 text-green-500" />,
-					minio: <CloudServerOutlined className="mr-2 text-cyan-500" />,
+					postgres: <DatabaseOutlined className="mr-2 text-info" />,
+					redis: <DatabaseOutlined className="mr-2 text-danger" />,
+					rabbitmq: <CloudServerOutlined className="mr-2 text-warning" />,
+					mongodb: <DatabaseOutlined className="mr-2 text-success" />,
+					minio: <CloudServerOutlined className="mr-2 text-info" />,
 				};
 				return (
 					<span>
