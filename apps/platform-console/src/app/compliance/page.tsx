@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Tabs, Card, Tag, Button, Statistic, Row, Col, Space, Modal, Form, Input, Select, Empty, Drawer, Progress, Badge } from 'antd';
+import { Tabs, Card, Tag, Button, Statistic, Row, Col, Space, Modal, Form, Input, Select, Empty, Progress, Badge } from 'antd';
 import { message, modal } from '@/lib/antd-app';
 import {
 	SafetyCertificateOutlined,
@@ -24,7 +24,7 @@ import {
 	useRevokeConsent,
 } from '@/hooks/use-compliance';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
 import { useAuthStore, useTenantSlug } from '@autional-cn/shared';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useNavigate } from 'react-router';
@@ -525,7 +525,7 @@ export default function CompliancePage() {
 				]}
 			/>
 
-			<Drawer title="DSAR 详情" size={500} open={dsarDrawer} onClose={() => setDsarDrawer(false)}>
+			<Drawer title="DSAR 详情" size="sm" open={dsarDrawer} onClose={() => setDsarDrawer(false)}>
 				{currentDsar && (
 					<div className="space-y-4">
 						<Row>

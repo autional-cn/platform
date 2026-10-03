@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Space, Modal, Form, Input, Select, Popconfirm, Drawer, Descriptions } from 'antd';
+import { Button, Space, Modal, Form, Input, Select, Popconfirm, Descriptions } from 'antd';
 import { message } from '@/lib/antd-app';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import {
@@ -14,7 +14,7 @@ import {
 } from '@/hooks/use-status';
 import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
 import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional-cn/ui';
 
 const { Option } = Select;
@@ -299,7 +299,7 @@ export default function IncidentsPage() {
 				onClose={() => {
 					setDrawerId(null);
 				}}
-				width={640}
+				size="md"
 				loading={drawerLoading}
 			>
 				{drawerIncident && (

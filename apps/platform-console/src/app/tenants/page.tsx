@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Space, Tag, Modal, Form, Input, Select, Drawer, Card, Descriptions, Tabs, Alert, Popconfirm, Row, Col } from 'antd';
+import { Button, Space, Tag, Modal, Form, Input, Select, Card, Descriptions, Tabs, Alert, Popconfirm, Row, Col } from 'antd';
 import { extractItem } from '@autional-cn/shared';
 import { message } from '@/lib/antd-app';
 import {
@@ -21,7 +21,7 @@ import {
 	useSuspendTenant,
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
@@ -280,7 +280,7 @@ export default function TenantsPage() {
 
 			<Drawer
 				title={`租户详情: ${selectedTenant?.name}`}
-				size={720}
+				size="lg"
 				open={detailDrawerVisible}
 				onClose={() => setDetailDrawerVisible(false)}
 			>
