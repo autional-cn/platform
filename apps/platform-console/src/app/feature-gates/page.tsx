@@ -1,5 +1,6 @@
 'use client';
 import { useMemo } from 'react';
+import { useCurrentTenantId } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Card, Switch, Space, App, Typography, Spin, Tag } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
@@ -9,14 +10,14 @@ import {
 	adminBillingFeatureGatesOverrides,
 	adminBillingFeatureGatesOverridesPut,
 } from '@autional-cn/shared/generated/api';
-import { useTenantId } from '@/hooks/use-tenant';
+
 
 const { Title } = Typography;
 
 export default function FeatureGatesPage() {
 	const { message } = App.useApp();
 	const queryClient = useQueryClient();
-	const tenantId = useTenantId();
+	const tenantId = useCurrentTenantId() ?? '';
 
 	const { data: planGates, isLoading: planLoading } = useQuery({
 		queryKey: ['feature-gates', tenantId],
