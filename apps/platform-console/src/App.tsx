@@ -106,13 +106,11 @@ function LayoutWrapper() {
 }
 
 export default function App() {
+	// 文案不再在这里写死：设计系统的 ErrorBoundary 自带中英字典（按 <html lang> 选语言）。
+	// 原先写死的三段与字典的中文只差一个词（「发生意外错误」vs「发生了未知错误」）——
+	// 同一个组件在四个门户显示不同措辞，正是 §2.1 记的那类漂移。这里只留 devMode。
 	return (
-		<ErrorBoundary
-			devMode={import.meta.env.DEV}
-			title="页面出错了"
-			message="发生意外错误，请刷新页面重试。"
-			retryLabel="刷新页面"
-		>
+		<ErrorBoundary devMode={import.meta.env.DEV}>
 			<Routes>
 				<Route path="/oauth/callback" element={<OAuthCallbackPage />} />
 
