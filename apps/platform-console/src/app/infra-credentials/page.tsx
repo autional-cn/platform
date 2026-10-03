@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Table, Tag, Skeleton } from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Tag, Skeleton } from 'antd';
 import {
 	DatabaseOutlined,
 	CloudServerOutlined,
@@ -165,7 +166,7 @@ export default function InfraCredentialsPage() {
 											</Tag>
 										</span>
 									</div>
-									<Table
+									<DataTable
 										rowKey="name"
 										columns={columns}
 										dataSource={items}

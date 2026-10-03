@@ -1,25 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import {
-	Card,
-	Statistic,
-	Table,
-	Tag,
-	Badge,
-	Alert,
-	Input,
-	Select,
-	Row,
-	Col,
-	Tabs,
-	Modal,
-	Typography,
-	Space,
-	Button,
-	Descriptions,
-	Tooltip,
-} from 'antd';
+import { Card, Statistic, Tag, Badge, Alert, Input, Select, Row, Col, Tabs, Modal, Typography, Space, Button, Descriptions, Tooltip } from 'antd';
 import { message, modal } from '@/lib/antd-app';
 import {
 	SearchOutlined,
@@ -40,7 +22,7 @@ import {
 	CloudServerOutlined,
 	LoadingOutlined,
 } from '@ant-design/icons';
-import { PageLoading, PageError } from '@autional-cn/ui/antd';
+import { PageLoading, PageError, DataTable } from '@autional-cn/ui/antd';
 import { PageHeader } from '@autional-cn/ui';
 import {
 	useSecretsInventoryOverview,
@@ -634,7 +616,7 @@ export default function SystemSecretsInventoryPage() {
 							]}
 						/>
 					</div>
-					<Table
+					<DataTable
 						rowKey="key"
 						columns={kvColumns}
 						dataSource={filteredKv}
@@ -671,7 +653,7 @@ export default function SystemSecretsInventoryPage() {
 						showIcon
 						className="mb-4"
 					/>
-					<Table
+					<DataTable
 						rowKey="keyId"
 						columns={encKeyColumns}
 						dataSource={encKeys}
@@ -699,7 +681,7 @@ export default function SystemSecretsInventoryPage() {
 						showIcon
 						className="mb-4"
 					/>
-					<Table
+					<DataTable
 						rowKey="keyId"
 						columns={jwtKeyColumns}
 						dataSource={jwtKeys}
@@ -731,7 +713,7 @@ export default function SystemSecretsInventoryPage() {
 						showIcon
 						className="mb-4"
 					/>
-					<Table
+					<DataTable
 						rowKey="credentialName"
 						columns={infraColumns}
 						dataSource={infra}
@@ -753,7 +735,7 @@ export default function SystemSecretsInventoryPage() {
 					{apiKeysError && (
 						<PageError message="加载 API 密钥失败" retry={refetchApiKeys} className="mb-4" />
 					)}
-					<Table
+					<DataTable
 						rowKey="prefix"
 						columns={apiKeyColumns}
 						dataSource={apiKeys}
@@ -790,7 +772,7 @@ export default function SystemSecretsInventoryPage() {
 						showIcon
 						className="mb-4"
 					/>
-					<Table
+					<DataTable
 						rowKey="clientId"
 						columns={oauthColumns}
 						dataSource={oauth}

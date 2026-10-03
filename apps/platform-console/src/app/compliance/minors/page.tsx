@@ -1,23 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-	Card,
-	Form,
-	InputNumber,
-	Switch,
-	Button,
-	message,
-	Spin,
-	TimePicker,
-	Space,
-	Statistic,
-	Row,
-	Col,
-	Tabs,
-	Table,
-	Tag,
-} from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Card, Form, InputNumber, Switch, Button, message, Spin, TimePicker, Space, Statistic, Row, Col, Tabs, Tag } from 'antd';
 import {
 	SafetyCertificateOutlined,
 	SaveOutlined,
@@ -367,7 +352,7 @@ export default function MinorsProtectionPage() {
 						key: 'users',
 						label: `未成年用户 (${userTotal})`,
 						children: (
-							<Table
+							<DataTable
 								columns={userColumns}
 								dataSource={users}
 								rowKey="id"
@@ -386,7 +371,7 @@ export default function MinorsProtectionPage() {
 						key: 'consents',
 						label: '家长同意管理',
 						children: (
-							<Table
+							<DataTable
 								columns={[
 									{
 										title: '用户ID',

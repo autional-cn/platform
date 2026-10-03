@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, Table, Tag, Badge, Statistic, Row, Col, Button, Space, Modal, Input } from 'antd';
+import { Card, Tag, Badge, Statistic, Row, Col, Button, Space, Modal, Input } from 'antd';
 import {
 	PlayCircleOutlined,
 	PauseCircleOutlined,
@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import { PageHeader, useToast } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
-import { PageLoading, PageError } from '@autional-cn/ui/antd';
+import { PageLoading, PageError, DataTable } from '@autional-cn/ui/antd';
 import { useSchedulers } from '@/hooks/use-schedulers';
 
 const statusConfig: Record<
@@ -227,7 +227,7 @@ export default function SystemSchedulersPage() {
 					</Button>
 				}
 			>
-				<Table
+				<DataTable
 					dataSource={data}
 					columns={columns}
 					rowKey="name"

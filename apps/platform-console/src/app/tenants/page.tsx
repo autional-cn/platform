@@ -1,24 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-	Table,
-	Button,
-	Space,
-	Tag,
-	Modal,
-	Form,
-	Input,
-	Select,
-	Drawer,
-	Card,
-	Descriptions,
-	Tabs,
-	Alert,
-	Popconfirm,
-	Row,
-	Col,
-} from 'antd';
+import { Button, Space, Tag, Modal, Form, Input, Select, Drawer, Card, Descriptions, Tabs, Alert, Popconfirm, Row, Col } from 'antd';
 import { extractItem } from '@autional-cn/shared';
 import { message } from '@/lib/antd-app';
 import {
@@ -38,7 +21,7 @@ import {
 	useSuspendTenant,
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError } from '@autional-cn/ui/antd';
+import { PageError, DataTable } from '@autional-cn/ui/antd';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 
@@ -244,7 +227,7 @@ export default function TenantsPage() {
 
 			{error && <PageError message="加载租户列表失败" retry={refetch} className="mb-4" />}
 
-			<Table
+			<DataTable
 				rowKey="id"
 				columns={columns}
 				dataSource={data || []}
@@ -341,7 +324,7 @@ export default function TenantsPage() {
 							key: 'members',
 							label: '成员列表',
 							children: (
-								<Table
+								<DataTable
 									rowKey="userId"
 									dataSource={detailMembers}
 									pagination={{ pageSize: 5 }}
@@ -363,7 +346,7 @@ export default function TenantsPage() {
 							key: 'applications',
 							label: '应用列表',
 							children: (
-								<Table
+								<DataTable
 									rowKey="id"
 									dataSource={detailApps}
 									pagination={{ pageSize: 5 }}

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Table, Button, Select, Alert, Popconfirm, Modal, Empty } from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Button, Select, Alert, Popconfirm, Modal, Empty } from 'antd';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, usePageTitle } from '@autional-cn/shared';
 import { PageHeader, StatusBadge, SectionCard, EmptyState } from '@autional-cn/ui';
@@ -181,7 +182,7 @@ export default function GdprErasurePage() {
 					/>
 				</div>
 
-				<Table
+				<DataTable
 					rowKey="id"
 					columns={columns}
 					dataSource={filteredItems}
@@ -206,7 +207,7 @@ export default function GdprErasurePage() {
 				width={600}
 			>
 				{executionResults.length > 0 ? (
-					<Table
+					<DataTable
 						dataSource={executionResults}
 						columns={resultColumns}
 						rowKey="service"

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Card, Statistic, Table, Tag, Row, Col, Spin } from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Card, Statistic, Tag, Row, Col, Spin } from 'antd';
 import {
 	CheckCircleOutlined,
 	CloseCircleOutlined,
@@ -176,7 +177,7 @@ export default function FeatureFlagsPage() {
 			</Row>
 
 			<Spin spinning={isLoading}>
-				<Table
+				<DataTable
 					columns={columns}
 					dataSource={tableData}
 					rowKey="service"

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { Table, Input, Button, Skeleton } from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Input, Button, Skeleton } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined, SearchOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { usePageTitle } from '@autional-cn/shared';
@@ -154,7 +155,7 @@ export default function EnvVarsPage() {
 								description="当前没有加载任何环境变量。"
 							/>
 						) : (
-							<Table
+							<DataTable
 								rowKey="key"
 								columns={columns}
 								dataSource={filtered}

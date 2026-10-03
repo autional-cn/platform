@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { DataTable } from '@autional-cn/ui/antd';
 import { useParams, useNavigate } from 'react-router';
-import { Button, Tag, Modal, Form, Input, Select, Skeleton, Table, Descriptions } from 'antd';
+import { Button, Tag, Modal, Form, Input, Select, Skeleton, Descriptions } from 'antd';
 import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { ROUTE } from '@/lib/route-paths';
@@ -316,7 +317,7 @@ export default function AgentDetailPage() {
 								description="该 Agent 尚未签发任何凭证。"
 							/>
 						) : (
-							<Table
+							<DataTable
 								rowKey="id"
 								columns={credentialColumns}
 								dataSource={credentials}
@@ -332,7 +333,7 @@ export default function AgentDetailPage() {
 						) : activity.length === 0 ? (
 							<EmptyState title="暂无活动" description="该 Agent 近期没有活动。" />
 						) : (
-							<Table
+							<DataTable
 								rowKey="id"
 								columns={activityColumns}
 								dataSource={activity}
@@ -351,7 +352,7 @@ export default function AgentDetailPage() {
 								description="该 Agent 未分配任何权限。"
 							/>
 						) : (
-							<Table
+							<DataTable
 								rowKey="id"
 								columns={permissionColumns}
 								dataSource={permissions}

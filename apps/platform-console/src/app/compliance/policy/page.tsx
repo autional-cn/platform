@@ -1,25 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-	Tabs,
-	Card,
-	Checkbox,
-	Button,
-	Table,
-	Tag,
-	Space,
-	Modal,
-	Form,
-	Input,
-	Select,
-	message,
-	Progress,
-	Row,
-	Col,
-	Statistic,
-	Descriptions,
-} from 'antd';
+import { Tabs, Card, Checkbox, Button, Tag, Space, Modal, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions } from 'antd';
 import {
 	SafetyCertificateOutlined,
 	CheckCircleOutlined,
@@ -31,7 +13,7 @@ import {
 } from '@ant-design/icons';
 import { handleApiError } from '@/lib/error-handler';
 import { useAuthStore, extractItem } from '@autional-cn/shared';
-import { PageError } from '@autional-cn/ui/antd';
+import { PageError, DataTable } from '@autional-cn/ui/antd';
 import { useTenants } from '@/hooks/use-tenants';
 
 const API_BASE = '/compliance/api/v1/admin/compliance';
@@ -357,7 +339,7 @@ export default function CompliancePolicyPage() {
 								))}
 							</Space>
 						)}
-						<Table
+						<DataTable
 							rowKey="parameter"
 							dataSource={Object.entries(resolvedPolicy).map(([k, v]) => ({
 								parameter: k,
@@ -417,7 +399,7 @@ export default function CompliancePolicyPage() {
 								</Space>
 							}
 						>
-							<Table
+							<DataTable
 								rowKey="parameter"
 								dataSource={gapItems}
 								columns={[
@@ -474,7 +456,7 @@ export default function CompliancePolicyPage() {
 							</Button>
 						}
 					>
-						<Table
+						<DataTable
 							rowKey="parameter"
 							dataSource={overrides}
 							columns={[

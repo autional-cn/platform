@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Table, Button, Space, Modal, Form, Input, Select, Popconfirm, DatePicker } from 'antd';
+import { Button, Space, Modal, Form, Input, Select, Popconfirm, DatePicker } from 'antd';
 import { message } from '@/lib/antd-app';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@/hooks/use-status';
 import type { MaintenanceRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError } from '@autional-cn/ui/antd';
+import { PageError, DataTable } from '@autional-cn/ui/antd';
 import { StatusBadge, type StatusVariant } from '@autional-cn/ui';
 
 const { Option } = Select;
@@ -186,7 +186,7 @@ export default function MaintenancesPage() {
 			</div>
 
 			{error && <PageError message="加载维护列表失败" retry={refetch} className="mb-4" />}
-			<Table
+			<DataTable
 				rowKey="id"
 				columns={columns}
 				dataSource={data}

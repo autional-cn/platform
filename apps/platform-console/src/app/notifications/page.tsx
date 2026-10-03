@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useMemo } from 'react';
-import { Card, Row, Col, Statistic, Skeleton, Table, Tag, Typography } from 'antd';
+import { Card, Row, Col, Statistic, Skeleton, Tag, Typography } from 'antd';
 import {
 	ArrowUpOutlined,
 	BellOutlined,
@@ -13,7 +13,7 @@ import {
 	usePlatformCommunicationStats,
 	usePlatformNotificationStats,
 } from '@/hooks/use-platform-stats';
-import { PageError } from '@autional-cn/ui/antd';
+import { PageError, DataTable } from '@autional-cn/ui/antd';
 import {
 	LineChart,
 	Line,
@@ -230,7 +230,7 @@ export default function PlatformNotificationsPage() {
 				{isLoading ? (
 					<Skeleton active paragraph={{ rows: 4 }} />
 				) : (
-					<Table
+					<DataTable
 						dataSource={statusTableData}
 						pagination={false}
 						size="small"

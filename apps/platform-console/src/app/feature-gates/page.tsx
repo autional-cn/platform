@@ -1,6 +1,7 @@
 'use client';
 import { useMemo } from 'react';
-import { Card, Switch, Space, App, Typography, Spin, Tag, Table } from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Card, Switch, Space, App, Typography, Spin, Tag } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -111,7 +112,7 @@ export default function FeatureGatesPage() {
 			<Title level={3}>功能开关</Title>
 			<Space direction="vertical" size="large" style={{ width: '100%' }}>
 				<Card title="套餐能力">
-					<Table
+					<DataTable
 						dataSource={planGates}
 						columns={planColumns}
 						rowKey="key"
@@ -120,7 +121,7 @@ export default function FeatureGatesPage() {
 					/>
 				</Card>
 				<Card title="租户覆盖">
-					<Table
+					<DataTable
 						dataSource={planGates}
 						columns={overrideColumns}
 						rowKey="key"

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Card, Tabs, Table, Tag, Input, Descriptions, Badge, Alert, Tooltip, Spin } from 'antd';
+import { DataTable } from '@autional-cn/ui/antd';
+import { Card, Tabs, Tag, Input, Descriptions, Badge, Alert, Tooltip, Spin } from 'antd';
 import {
 	CloudServerOutlined,
 	DatabaseOutlined,
@@ -129,7 +130,7 @@ function ServicesTab() {
 	];
 
 	return (
-		<Table
+		<DataTable
 			rowKey="key"
 			columns={columns}
 			dataSource={serviceList ?? []}
@@ -221,7 +222,7 @@ function InfrastructureTab() {
 	];
 
 	return (
-		<Table
+		<DataTable
 			rowKey="key"
 			columns={columns}
 			dataSource={infraComponents}
@@ -304,7 +305,7 @@ function EnvironmentVariablesTab() {
 					style={{ maxWidth: 480 }}
 				/>
 			</div>
-			<Table
+			<DataTable
 				rowKey="key"
 				columns={columns}
 				dataSource={filtered}
@@ -385,7 +386,7 @@ function FeatureFlagsTab() {
 				showIcon
 				className="mb-4"
 			/>
-			<Table
+			<DataTable
 				rowKey="key"
 				columns={columns}
 				dataSource={flags ?? []}
