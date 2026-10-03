@@ -23,7 +23,9 @@ const mockCatalog = vi.hoisted(() => ({
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
-		t: (key: string) => key,
+		// 忠实模拟 i18next：key 未命中时回落 defaultValue（@autional-cn/ui 组件内置文案走此路径）
+		t: (key: string, options?: { defaultValue?: string }) =>
+			typeof options?.defaultValue === 'string' ? options.defaultValue : key,
 		i18n: {
 			language: 'zh-CN',
 			changeLanguage: vi.fn(),
@@ -90,7 +92,7 @@ describe('Header', () => {
 
 		await user.click(screen.getByLabelText('切换门户'));
 
-		const adminLink = screen.getByRole('menuitem', { name: '管理控制台' });
+		const adminLink = screen.getByRole('menuitem', { name: '管理后台' });
 		expect(adminLink).toHaveAttribute('href', 'https://admin.example.com/demo');
 		expect(mockGetPortalUrl).toHaveBeenCalledWith('admin', 'demo');
 
@@ -112,11 +114,11 @@ describe('Header', () => {
 
 		await user.click(screen.getByLabelText('切换门户'));
 
-		expect(screen.getByRole('menuitem', { name: '管理控制台' })).toHaveAttribute(
+		expect(screen.getByRole('menuitem', { name: '管理后台' })).toHaveAttribute(
 			'href',
 			'https://admin.example.com/demo',
 		);
-		expect(screen.getByRole('menuitem', { name: '用户门户' })).toHaveAttribute(
+		expect(screen.getByRole('menuitem', { name: '用户中心' })).toHaveAttribute(
 			'href',
 			'https://user.example.com/demo',
 		);
