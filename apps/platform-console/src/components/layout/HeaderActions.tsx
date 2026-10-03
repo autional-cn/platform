@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { Layout, Typography } from 'antd';
 import {
 	useAuth,
 	useLogout,
@@ -15,10 +14,12 @@ import {
 	type PortalLink,
 } from '@autional-cn/ui';
 
-const { Header: AntHeader } = Layout;
-const { Text } = Typography;
-
-export function Header() {
+// HeaderActions —— 顶栏**右侧**那组控件。
+//
+// 它过去是 Header.tsx：一个 <AntHeader> 外壳 + 品牌 + 这几个控件。外壳（sticky、高度令牌、
+// 左右分布、移动端行为）2026-10-04 起归设计系统的 <AppShell>；品牌挪到侧栏顶部（与另外三个
+// 门户一致 —— 原来平台站在顶栏和侧栏各显示了一遍品牌）。这里只剩**内容**。
+export function HeaderActions() {
 	const { t } = useTranslation();
 	const { user, currentTenantId } = useAuth();
 	const tenantSlug = useTenantSlug();
@@ -39,17 +40,14 @@ export function Header() {
 	const portals = isError ? fallbackPortals : catalogPortals;
 
 	return (
-		<AntHeader className="sticky top-0 z-10 flex items-center justify-between px-6 h-[var(--layout-header-height)] bg-[var(--color-bg-surface)] border-b border-[var(--color-border)]">
-			<Text strong>{t('app.brand')}</Text>
-			<div className="flex items-center gap-4">
-				<PortalSwitcher portals={portals} currentPortal="platform" />
-				<LanguageSwitcher />
-				<ThemeToggle />
-				<UserMenu
-					user={user}
-					items={[{ key: 'logout', type: 'logout', onClick: handleLogout }]}
-				/>
-			</div>
-		</AntHeader>
+		<>
+			<PortalSwitcher portals={portals} currentPortal="platform" />
+			<LanguageSwitcher />
+			<ThemeToggle />
+			<UserMenu
+				user={user}
+				items={[{ key: 'logout', type: 'logout', onClick: handleLogout }]}
+			/>
+		</>
 	);
 }

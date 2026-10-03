@@ -1,10 +1,11 @@
 import { lazy } from 'react';
 import { Routes, Route, Outlet, Navigate, useParams } from 'react-router';
-import { Layout, Spin } from 'antd';
+import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import { ErrorBoundary } from '@autional-cn/ui';
-import { Sidebar } from './components/layout/Sidebar';
-import { Header } from './components/layout/Header';
+import { useTranslation } from 'react-i18next';
+import { AppShell, ErrorBoundary } from '@autional-cn/ui';
+import { NavMenu } from './components/layout/NavMenu';
+import { HeaderActions } from './components/layout/HeaderActions';
 import { Breadcrumb } from './components/layout/Breadcrumb';
 import {
 	PlatformGuard,
@@ -65,8 +66,6 @@ import FeatureFlagsPage from './app/feature-flags/page';
 import ImpersonatePage from './app/impersonate/page';
 import CaptchaPage from './app/security/captcha/page';
 
-const { Content } = Layout;
-
 /**
  * 挂载级闸门：/demo/... 交给共享 RequireAuth（含 F-W6 未知 slug 闸门与同域 PKCE）；
  * 首段解析不出 slug 的裸路径（/403、/agents —— 站内注册为业务段的单段路径）
@@ -82,25 +81,29 @@ function PlatformMountGate({ children }: { children: React.ReactNode }) {
 function LayoutWrapper() {
 	const bootstrap = useBootstrap();
 	const { tenantSlug } = useParams();
+	const { t } = useTranslation();
 
+	// 外壳（侧栏框架 + sticky 顶栏 + 移动端抽屉 + 内容滚动容器）来自设计系统，
+	// 本站只提供内容：品牌、菜单、面包屑、右上角控件。
 	return (
 		<TenantSlugProvider value={tenantSlug}>
-			<Layout className="min-h-screen">
-				<Sidebar />
-				<Layout>
-					<Header />
-					<Content className="m-6 p-6 bg-[var(--color-bg-surface)] rounded-lg min-h-[calc(100vh-112px)]">
-						<Breadcrumb />
-						{bootstrap === 'loading' ? (
-							<div className="flex items-center justify-center h-64">
-								<Spin indicator={<LoadingOutlined spin />} size="large" />
-							</div>
-						) : (
-							<Outlet />
-						)}
-					</Content>
-				</Layout>
-			</Layout>
+			<AppShell
+				brand={<span className="truncate text-lg font-bold">{t('app.brand')}</span>}
+				nav={<NavMenu />}
+				headerLeft={<Breadcrumb />}
+				headerRight={<HeaderActions />}
+				contentClassName="p-6"
+			>
+				<div className="min-h-[calc(100vh-112px)] rounded-lg bg-[var(--color-bg-surface)] p-6">
+					{bootstrap === 'loading' ? (
+						<div className="flex h-64 items-center justify-center">
+							<Spin indicator={<LoadingOutlined spin />} size="large" />
+						</div>
+					) : (
+						<Outlet />
+					)}
+				</div>
+			</AppShell>
 		</TenantSlugProvider>
 	);
 }

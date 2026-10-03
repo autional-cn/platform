@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Header } from '@/components/layout/Header';
+import { HeaderActions } from '@/components/layout/HeaderActions';
 
 const mockUser = vi.hoisted(() => ({
 	email: 'test@example.com' as string | null,
@@ -45,7 +45,7 @@ vi.mock('@autional-cn/shared', () => ({
 	usePortalCatalog: () => mockCatalog.value,
 }));
 
-describe('Header', () => {
+describe('HeaderActions', () => {
 	beforeEach(() => {
 		mockUser.email = 'test@example.com';
 		mockUser.username = 'test';
@@ -55,19 +55,15 @@ describe('Header', () => {
 		mockLogout.mockClear();
 	});
 
-	it('renders the brand text', () => {
-		render(<Header />);
-		expect(screen.getByText('app.brand')).toBeInTheDocument();
-	});
 
 	it('renders the user display name in the user menu trigger', () => {
-		render(<Header />);
+		render(<HeaderActions />);
 		expect(screen.getByText('test')).toBeInTheDocument();
 	});
 
 	it('opens the user menu with email and lets logout fire once', async () => {
 		const user = userEvent.setup();
-		render(<Header />);
+		render(<HeaderActions />);
 
 		await user.click(screen.getByLabelText('用户菜单'));
 		expect(screen.getByText('test@example.com')).toBeInTheDocument();
@@ -81,14 +77,14 @@ describe('Header', () => {
 		mockUser.email = null;
 		mockUser.username = null;
 
-		render(<Header />);
+		render(<HeaderActions />);
 		expect(screen.getByText('未登录')).toBeInTheDocument();
 	});
 
 	it('falls back to static [platform, admin] portals when catalog errors (U94)', async () => {
 		mockCatalog.value = { portals: [], isError: true, isLoading: false };
 		const user = userEvent.setup();
-		render(<Header />);
+		render(<HeaderActions />);
 
 		await user.click(screen.getByLabelText('切换门户'));
 
@@ -110,7 +106,7 @@ describe('Header', () => {
 			isLoading: false,
 		};
 		const user = userEvent.setup();
-		render(<Header />);
+		render(<HeaderActions />);
 
 		await user.click(screen.getByLabelText('切换门户'));
 
@@ -130,7 +126,7 @@ describe('Header', () => {
 			isError: false,
 			isLoading: false,
 		};
-		render(<Header />);
+		render(<HeaderActions />);
 
 		expect(screen.queryByLabelText('切换门户')).not.toBeInTheDocument();
 	});

@@ -107,7 +107,7 @@ vi.mock('@autional-cn/ui', () => ({
 	),
 }));
 
-import { Header } from '@/components/layout/Header';
+import { HeaderActions } from '@/components/layout/HeaderActions';
 import DashboardPage from '@/app/page';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -119,13 +119,10 @@ describe('Cross-Portal Navigation', () => {
 	});
 
 	describe('Platform Console Header', () => {
-		it('renders brand text', () => {
-			render(<Header />, { wrapper: BrowserRouter });
-			expect(screen.getByText('app.brand')).toBeInTheDocument();
-		});
-
+		// 品牌不再由顶栏渲染：2026-10-04 起外壳归设计系统的 <AppShell>，品牌挪到侧栏顶部
+		// （原来平台站在顶栏与侧栏各显示了一遍）。这里只断言顶栏右侧那组控件。
 		it('renders portal switcher with static [platform, admin] fallback and admin entry to admin-console', () => {
-			render(<Header />, { wrapper: BrowserRouter });
+			render(<HeaderActions />, { wrapper: BrowserRouter });
 
 			const switcher = screen.getByTestId('portal-switcher');
 			expect(switcher).toBeInTheDocument();
@@ -137,7 +134,7 @@ describe('Cross-Portal Navigation', () => {
 		});
 
 		it('renders user email when user is authenticated', () => {
-			render(<Header />, { wrapper: BrowserRouter });
+			render(<HeaderActions />, { wrapper: BrowserRouter });
 			expect(screen.getByTestId('user-menu')).toHaveTextContent('platform-admin@autional.dev');
 		});
 	});

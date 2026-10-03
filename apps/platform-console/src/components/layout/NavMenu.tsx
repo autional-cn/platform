@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router';
 import { useTenantSlug } from '@autional-cn/shared';
@@ -19,12 +19,14 @@ import {
 	ApiOutlined,
 	KeyOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Typography } from 'antd';
+import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
 
-const { Sider } = Layout;
-const { Text } = Typography;
-
+// NavMenu —— 本站的**导航内容**。
+//
+// 它过去是 Sidebar.tsx：一个 <Sider> 外壳 + 品牌 + <Menu>。外壳那部分（固定定位、宽度、
+// 折叠、移动端抽屉）2026-10-04 起归设计系统的 <AppShell>，这里只留**菜单本身** ——
+// 也就是四个门户里真正不同的那部分。
 type MenuItem = {
 	key: string;
 	icon?: React.ReactNode;
@@ -43,11 +45,10 @@ function findMenuKey(items: MenuItem[], path: string): string | null {
 	return null;
 }
 
-export function Sidebar() {
+export function NavMenu() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [collapsed] = useState(false);
 	const tenantSlug = useTenantSlug();
 
 	const allMenuItems: MenuItem[] = useMemo(
@@ -163,26 +164,13 @@ export function Sidebar() {
 		}));
 
 	return (
-		<Sider
-			trigger={null}
-			collapsible
-			collapsed={collapsed}
-			theme="light"
-			className="border-r border-[var(--color-border)]"
-		>
-			<div className="flex h-16 items-center justify-center border-b border-[var(--color-border)]">
-				<Text strong className="text-lg">
-					{collapsed ? 'P' : t('app.brand')}
-				</Text>
-			</div>
-			<Menu
-				mode="inline"
-				selectedKeys={selectedKeys}
-				defaultOpenKeys={defaultOpenKeys}
-				items={convertItems(allMenuItems)}
-				onClick={handleMenuClick}
-				className="border-r-0"
-			/>
-		</Sider>
+		<Menu
+			mode="inline"
+			selectedKeys={selectedKeys}
+			defaultOpenKeys={defaultOpenKeys}
+			items={convertItems(allMenuItems)}
+			onClick={handleMenuClick}
+			className="border-r-0"
+		/>
 	);
 }
