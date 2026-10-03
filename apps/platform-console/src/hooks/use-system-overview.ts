@@ -128,7 +128,9 @@ export function useSystemOverview() {
 		queryKey: queryKeys.systemOverview.all,
 		staleTime: 30000,
 		queryFn: async () => {
-			let runtimeServices: RuntimeService[] = [];
+			// 不写初值：try 与 catch 都必然赋值，初值从来没被读到过
+			// （ESLint 10 的 no-useless-assignment 抓到的就是这一处）
+			let runtimeServices: RuntimeService[];
 			try {
 				const runtimeData = await adminSystemRuntime();
 				const extracted = extractItem<RuntimeResponse>({ data: runtimeData });
