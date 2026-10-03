@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { useLocation } from 'react-router';
-import { Breadcrumb as AntBreadcrumb } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useTenantSlug } from '@autional-cn/shared';
+import { Breadcrumb as SharedBreadcrumb } from '@autional-cn/ui/antd';
 import { ROUTE } from '@/lib/route-paths';
 
 const routeLabels: Record<string, string> = {
@@ -32,23 +33,30 @@ const routeLabels: Record<string, string> = {
 	[ROUTE.SETTINGS]: 'nav.settings',
 };
 
+/**
+ * 面包屑。
+ *
+ * 这里只剩**业务**：路由 → 文案的映射表（27 条，与另外三个门户不重叠）。
+ * 机制在设计系统那一份里。此前本站是 54 行：按段累积但**中间段不可点**、未命中的段**直接丢掉**，
+ * 于是面包屑会与实际位置不符（`/demo/announcements/xxx` 只剩「公告」）。换成共同实现后这两点都改了。
+ */
 export function Breadcrumb() {
 	const { t } = useTranslation();
 	const location = useLocation();
 	const tenantSlug = useTenantSlug();
-	const pathParts = location.pathname.split('/').filter(Boolean);
-	// 剥租户段（'/demo/tenants' → ['tenants']），routeLabels 键均为站内相对路径
-	const segments = tenantSlug && pathParts[0] === tenantSlug ? pathParts.slice(1) : pathParts;
 
-	if (segments.length === 0) return null;
+	const labels = useMemo<Record<string, string>>(
+		() => Object.fromEntries(Object.entries(routeLabels).map(([path, key]) => [path, t(key)])),
+		[t],
+	);
 
-	const items = segments.map((part, index) => {
-		const path = '/' + segments.slice(0, index + 1).join('/');
-		const labelKey = routeLabels[path];
-		return {
-			title: labelKey ? t(labelKey) : part,
-		};
-	});
-
-	return <AntBreadcrumb items={[{ title: t('nav.dashboard') }, ...items]} className="mb-4" />;
+	return (
+		<SharedBreadcrumb
+			pathname={location.pathname}
+			tenantSlug={tenantSlug}
+			labels={labels}
+			home={{ label: t('nav.dashboard'), href: tenantSlug ? '/' + tenantSlug : '/' }}
+			buildHref={(path) => (tenantSlug ? '/' + tenantSlug + path : path)}
+		/>
+	);
 }
