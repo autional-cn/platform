@@ -36,14 +36,14 @@ function ServiceExpandableRow({ serviceKey }: { serviceKey: string }) {
 
 	if (isLoading || !detail) {
 		return (
-			<div className="p-4 bg-gray-50 rounded">
+			<div className="p-4 bg-neutral-50 rounded">
 				<Spin size="small" />
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-4 bg-gray-50 rounded">
+		<div className="p-4 bg-neutral-50 rounded">
 			<Descriptions title="运行时详情" column={3} size="small" bordered>
 				<Descriptions.Item label="版本">{detail.version}</Descriptions.Item>
 				<Descriptions.Item label="Go 版本">{detail.goVersion}</Descriptions.Item>
@@ -344,7 +344,7 @@ function FeatureFlagsTab() {
 				render: (text: string, record: FeatureFlagItem) => (
 					<div>
 						<div className="font-medium">{text}</div>
-						<div className="text-xs text-gray-400">{record.description}</div>
+						<div className="text-xs text-neutral-500">{record.description}</div>
 					</div>
 				),
 			},
@@ -397,7 +397,7 @@ function FeatureFlagsTab() {
 				scroll={{ x: 'max-content' }}
 				locale={{ emptyText: '暂无功能标志数据' }}
 			/>
-			<div className="mt-3 text-xs text-gray-400 flex gap-4">
+			<div className="mt-3 text-xs text-neutral-500 flex gap-4">
 				<span>✅ 已启用</span>
 				<span>❌ 未启用</span>
 				<span>— 不适用</span>

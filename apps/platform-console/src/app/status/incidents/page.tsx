@@ -334,19 +334,19 @@ export default function IncidentsPage() {
 						{drawerIncident.updates && drawerIncident.updates.length > 0 ? (
 							<div className="space-y-3 mb-6">
 								{drawerIncident.updates.map((u) => (
-									<div key={u.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded">
+									<div key={u.id} className="p-3 bg-neutral-50 dark:bg-neutral-900 rounded">
 										<div className="flex items-center gap-2 mb-1">
 											<StatusBadge variant={statusBadge[u.status]}>
 												{statusLabels[u.status] || u.status}
 											</StatusBadge>
-											<span className="text-xs text-gray-500">{u.createdAt || '-'}</span>
+											<span className="text-xs text-neutral-600">{u.createdAt || '-'}</span>
 										</div>
 										<p className="text-sm">{u.message}</p>
 									</div>
 								))}
 							</div>
 						) : (
-							<p className="text-gray-400 mb-6">暂无进展记录</p>
+							<p className="text-neutral-500 mb-6">暂无进展记录</p>
 						)}
 
 						<h3 className="text-lg font-semibold mb-3">添加进展</h3>

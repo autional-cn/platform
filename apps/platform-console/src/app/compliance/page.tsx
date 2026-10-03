@@ -529,19 +529,19 @@ export default function CompliancePage() {
 				{currentDsar && (
 					<div className="space-y-4">
 						<Row>
-							<Col span={8} className="text-gray-500">
+							<Col span={8} className="text-neutral-600">
 								ID
 							</Col>
 							<Col span={16}>{currentDsar.id}</Col>
 						</Row>
 						<Row>
-							<Col span={8} className="text-gray-500">
+							<Col span={8} className="text-neutral-600">
 								请求人
 							</Col>
 							<Col span={16}>{currentDsar.requesterEmail}</Col>
 						</Row>
 						<Row>
-							<Col span={8} className="text-gray-500">
+							<Col span={8} className="text-neutral-600">
 								类型
 							</Col>
 							<Col span={16}>
@@ -549,7 +549,7 @@ export default function CompliancePage() {
 							</Col>
 						</Row>
 						<Row>
-							<Col span={8} className="text-gray-500">
+							<Col span={8} className="text-neutral-600">
 								状态
 							</Col>
 							<Col span={16}>
@@ -557,13 +557,13 @@ export default function CompliancePage() {
 							</Col>
 						</Row>
 						<Row>
-							<Col span={8} className="text-gray-500">
+							<Col span={8} className="text-neutral-600">
 								创建时间
 							</Col>
 							<Col span={16}>{currentDsar.createdAt}</Col>
 						</Row>
 						<Row>
-							<Col span={8} className="text-gray-500">
+							<Col span={8} className="text-neutral-600">
 								描述
 							</Col>
 							<Col span={16}>{currentDsar.description || '-'}</Col>

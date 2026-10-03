@@ -99,7 +99,7 @@ export default function PlatformNotificationsPage() {
 				<Title level={4} className="!mb-0">
 					平台通信与通知
 				</Title>
-				<span className="text-gray-400 text-xs">每 30 秒自动刷新</span>
+				<span className="text-neutral-500 text-xs">每 30 秒自动刷新</span>
 			</div>
 
 			{(commError || notifError) && (

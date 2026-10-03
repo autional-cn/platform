@@ -70,7 +70,7 @@ const columns = [
 		dataIndex: 'name',
 		key: 'name',
 		render: (v: string) => (
-			<code className="text-xs font-mono bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+			<code className="text-xs font-mono bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded">
 				{v}
 			</code>
 		),
@@ -79,7 +79,7 @@ const columns = [
 		title: '位置',
 		key: 'location',
 		render: (_: unknown, r: CredentialRecord) => (
-			<code className="text-xs font-mono text-gray-500">
+			<code className="text-xs font-mono text-neutral-600">
 				{r.container || r.location || '—'}
 			</code>
 		),

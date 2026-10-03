@@ -72,7 +72,7 @@ export default function EnvVarsPage() {
 			key: 'key',
 			width: 320,
 			render: (v: string) => (
-				<code className="text-xs font-mono bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+				<code className="text-xs font-mono bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded">
 					{v}
 				</code>
 			),
@@ -101,7 +101,7 @@ export default function EnvVarsPage() {
 			title: '来源文件',
 			key: 'source',
 			render: (_: unknown, r: EnvVarRecord) => (
-				<code className="text-xs font-mono text-gray-500">{r.source || r.source_file || '—'}</code>
+				<code className="text-xs font-mono text-neutral-600">{r.source || r.source_file || '—'}</code>
 			),
 			width: 240,
 		},

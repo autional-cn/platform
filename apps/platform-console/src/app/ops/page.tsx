@@ -133,7 +133,7 @@ export default function OpsPage() {
 									</Tag>
 								</div>
 								{svc.latency && (
-									<div className="text-xs text-gray-400">
+									<div className="text-xs text-neutral-500">
 										延迟: {svc.latency}
 										{svc.port != null && ` | 端口: ${svc.port}`}
 									</div>

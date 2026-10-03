@@ -89,7 +89,7 @@ export default function SystemOverviewPage() {
 														<div className="flex items-center justify-between">
 															<div className="flex-1 min-w-0">
 																<div className="font-medium text-sm truncate">{svc.name}</div>
-																<div className="text-xs text-gray-400">:{svc.port}</div>
+																<div className="text-xs text-neutral-500">:{svc.port}</div>
 															</div>
 															<div className="ml-2 flex-shrink-0">
 																{statusConfig[svc.status].icon}
@@ -178,7 +178,7 @@ export default function SystemOverviewPage() {
 							</Row>
 
 							<div className="mt-4">
-								<div className="text-sm font-medium text-gray-500 mb-2">
+								<div className="text-sm font-medium text-neutral-600 mb-2">
 									{t('systemOverview.planDistribution', '套餐分布')}
 								</div>
 								<div className="space-y-2">
@@ -234,7 +234,7 @@ export default function SystemOverviewPage() {
 									<Card size="small">
 										<div className="space-y-3">
 											<div>
-												<div className="text-xs text-gray-400 mb-1">PASSWORD_PEPPER</div>
+												<div className="text-xs text-neutral-500 mb-1">PASSWORD_PEPPER</div>
 												<Badge
 													status={data.security.passwordPepperEnabled ? 'success' : 'error'}
 													text={
@@ -245,7 +245,7 @@ export default function SystemOverviewPage() {
 												/>
 											</div>
 											<div>
-												<div className="text-xs text-gray-400 mb-1">HIBP</div>
+												<div className="text-xs text-neutral-500 mb-1">HIBP</div>
 												<Badge
 													status={data.security.hibpEnabled ? 'success' : 'error'}
 													text={

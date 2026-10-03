@@ -249,7 +249,7 @@ export default function SystemSecretsInventoryPage() {
 			dataIndex: 'key',
 			key: 'key',
 			render: (v: string) => (
-				<code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">{v}</code>
+				<code className="text-xs bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded">{v}</code>
 			),
 		},
 		{
@@ -362,7 +362,7 @@ export default function SystemSecretsInventoryPage() {
 			dataIndex: 'keyId',
 			key: 'keyId',
 			render: (v: string) => (
-				<code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">{v}</code>
+				<code className="text-xs bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded">{v}</code>
 			),
 		},
 		{ title: '算法', dataIndex: 'algorithm', key: 'algorithm' },
@@ -432,7 +432,7 @@ export default function SystemSecretsInventoryPage() {
 			dataIndex: 'credentialName',
 			key: 'credentialName',
 			render: (v: string) => (
-				<code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">{v}</code>
+				<code className="text-xs bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded">{v}</code>
 			),
 		},
 		{
@@ -544,10 +544,10 @@ export default function SystemSecretsInventoryPage() {
 			key: 'clientId',
 			render: (v: string) => (
 				<Space>
-					<code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded max-w-[200px] truncate inline-block">
+					<code className="text-xs bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded max-w-[200px] truncate inline-block">
 						{v}
 					</code>
-					<LockOutlined className="text-gray-400" />
+					<LockOutlined className="text-neutral-500" />
 				</Space>
 			),
 		},

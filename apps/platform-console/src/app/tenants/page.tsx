@@ -384,7 +384,7 @@ export default function TenantsPage() {
 									<Row gutter={16}>
 										<Col span={8}>
 											<Card>
-												<div className="text-gray-500">成员数</div>
+												<div className="text-neutral-600">成员数</div>
 
 												{membersError && (
 													<PageError message="加载失败" retry={membersRefetch} className="mb-4" />
@@ -402,7 +402,7 @@ export default function TenantsPage() {
 										</Col>
 										<Col span={8}>
 											<Card>
-												<div className="text-gray-500">应用数</div>
+												<div className="text-neutral-600">应用数</div>
 												<div className="text-2xl font-bold">{detailApps.length}</div>
 											</Card>
 										</Col>
