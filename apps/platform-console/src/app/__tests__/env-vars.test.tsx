@@ -35,7 +35,7 @@ function createWrapper(client?: QueryClient) {
 
 const mockVariables = [
 	{ key: 'JWT_SECRET', value: 'super-secret-jwt-key-12345', source_file: '.env' },
-	{ key: 'DATABASE_URL', value: 'postgres://localhost:5432/authms', source_file: '.env.local' },
+	{ key: 'DATABASE_URL', value: 'postgres://localhost:5432/autional', source_file: '.env.local' },
 	{ key: 'REDIS_URL', value: 'redis://localhost:6379', source_file: '.env' },
 	{ key: 'SMTP_PASSWORD', value: 'mail-password-abcdef', source_file: '.env' },
 	{ key: 'API_GATEWAY_PORT', value: '11080', source_file: 'docker-compose.yml' },

@@ -19,13 +19,13 @@ vi.mock('react-i18next', () => ({
 vi.mock('@autional-cn/shared', () => ({
 	useAuthStore: (selector?: (s: unknown) => unknown) => {
 		const state = {
-			user: { email: 'platform-admin@authms.dev', username: 'root' },
+			user: { email: 'platform-admin@autional.dev', username: 'root' },
 			tenants: [],
 		};
 		return selector ? selector(state) : state;
 	},
 	useAuth: () => ({
-		user: { email: 'platform-admin@authms.dev', username: 'root' },
+		user: { email: 'platform-admin@autional.dev', username: 'root' },
 		isAuthenticated: true,
 	}),
 	getPortalUrl: () => 'http://localhost:13002/admin',
@@ -144,7 +144,7 @@ describe('Cross-Portal Navigation', () => {
 
 		it('renders user email when user is authenticated', () => {
 			render(<Header />, { wrapper: BrowserRouter });
-			expect(screen.getByTestId('user-menu')).toHaveTextContent('platform-admin@authms.dev');
+			expect(screen.getByTestId('user-menu')).toHaveTextContent('platform-admin@autional.dev');
 		});
 	});
 
