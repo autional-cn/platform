@@ -5,13 +5,21 @@ import { Header } from '@/components/layout/Header';
 
 const mockUser = vi.hoisted(() => ({
 	email: 'test@example.com' as string | null,
-	username: 'test',
+	username: 'test' as string | null,
 }));
 
 const mockSlug = vi.hoisted(() => ({ value: 'demo' as string | undefined }));
 const mockGetPortalUrl = vi.hoisted(() =>
 	vi.fn((portal: string, slug?: string) => `https://${portal}.example.com${slug ? `/${slug}` : ''}`),
 );
+const mockLogout = vi.hoisted(() => vi.fn());
+const mockCatalog = vi.hoisted(() => ({
+	value: {
+		portals: [] as Array<{ code: string; name?: string; url: string }>,
+		isError: false,
+		isLoading: false,
+	},
+}));
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
@@ -28,34 +36,21 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@autional-cn/shared', () => ({
-	useAuth: () => ({ user: mockUser, isAuthenticated: true }),
+	useAuth: () => ({ user: mockUser, currentTenantId: 'platform-tenant', isAuthenticated: true }),
 	useTenantSlug: () => mockSlug.value,
 	getPortalUrl: mockGetPortalUrl,
+	useLogout: () => mockLogout,
+	usePortalCatalog: () => mockCatalog.value,
 }));
-
-function stubLocationHref() {
-	const hrefSetter = vi.fn();
-	const originalLocation = window.location;
-	delete (window as any).location;
-	(window as any).location = {
-		href: '',
-		get host() {
-			return originalLocation.host;
-		},
-		set host(v) {},
-	};
-	Object.defineProperty(window.location, 'href', {
-		set: hrefSetter,
-		get: () => 'http://localhost:13110/',
-	});
-	return { hrefSetter, restore: () => (window.location = originalLocation) };
-}
 
 describe('Header', () => {
 	beforeEach(() => {
 		mockUser.email = 'test@example.com';
+		mockUser.username = 'test';
 		mockSlug.value = 'demo';
+		mockCatalog.value = { portals: [], isError: false, isLoading: false };
 		mockGetPortalUrl.mockClear();
+		mockLogout.mockClear();
 	});
 
 	it('renders the brand text', () => {
@@ -63,49 +58,78 @@ describe('Header', () => {
 		expect(screen.getByText('app.brand')).toBeInTheDocument();
 	});
 
-	it('renders the user email', () => {
+	it('renders the user display name in the user menu trigger', () => {
 		render(<Header />);
+		expect(screen.getByText('test')).toBeInTheDocument();
+	});
+
+	it('opens the user menu with email and lets logout fire once', async () => {
+		const user = userEvent.setup();
+		render(<Header />);
+
+		await user.click(screen.getByLabelText('用户菜单'));
 		expect(screen.getByText('test@example.com')).toBeInTheDocument();
+
+		await user.click(screen.getByRole('menuitem', { name: '退出登录' }));
+		expect(mockLogout).toHaveBeenCalledTimes(1);
+		expect(screen.queryByRole('menuitem', { name: '退出登录' })).not.toBeInTheDocument();
 	});
 
-	it('renders the switch to tenant management button', () => {
-		render(<Header />);
-		expect(screen.getByText('nav.switchToTenantMgmt')).toBeInTheDocument();
-	});
-
-	it('navigates to tenant management on button click with current slug', async () => {
-		const { hrefSetter, restore } = stubLocationHref();
-
-		const user = userEvent.setup();
-		render(<Header />);
-
-		await user.click(screen.getByText('nav.switchToTenantMgmt'));
-
-		expect(mockGetPortalUrl).toHaveBeenCalledWith('admin', 'demo');
-		expect(hrefSetter).toHaveBeenCalledWith('https://admin.example.com/demo');
-
-		restore();
-	});
-
-	it('falls back to slug-less admin URL when no tenant slug in context', async () => {
-		mockSlug.value = undefined;
-		const { hrefSetter, restore } = stubLocationHref();
-
-		const user = userEvent.setup();
-		render(<Header />);
-
-		await user.click(screen.getByText('nav.switchToTenantMgmt'));
-
-		expect(mockGetPortalUrl).toHaveBeenCalledWith('admin', undefined);
-		expect(hrefSetter).toHaveBeenCalledWith('https://admin.example.com');
-
-		restore();
-	});
-
-	it('does not render email when user has no email', async () => {
+	it('shows fallback label in the user menu when user is missing', () => {
 		mockUser.email = null;
+		mockUser.username = null;
 
 		render(<Header />);
-		expect(screen.queryByText('test@example.com')).not.toBeInTheDocument();
+		expect(screen.getByText('未登录')).toBeInTheDocument();
+	});
+
+	it('falls back to static [platform, admin] portals when catalog errors (U94)', async () => {
+		mockCatalog.value = { portals: [], isError: true, isLoading: false };
+		const user = userEvent.setup();
+		render(<Header />);
+
+		await user.click(screen.getByLabelText('切换门户'));
+
+		const adminLink = screen.getByRole('menuitem', { name: '管理控制台' });
+		expect(adminLink).toHaveAttribute('href', 'https://admin.example.com/demo');
+		expect(mockGetPortalUrl).toHaveBeenCalledWith('admin', 'demo');
+
+		const platformLink = screen.getByRole('menuitem', { name: '平台控制台' });
+		expect(platformLink).toHaveAttribute('aria-current', 'true');
+	});
+
+	it('uses the catalog portals when the catalog resolves', async () => {
+		mockCatalog.value = {
+			portals: [
+				{ code: 'admin', url: 'https://admin.example.com/demo' },
+				{ code: 'user', url: 'https://user.example.com/demo' },
+			],
+			isError: false,
+			isLoading: false,
+		};
+		const user = userEvent.setup();
+		render(<Header />);
+
+		await user.click(screen.getByLabelText('切换门户'));
+
+		expect(screen.getByRole('menuitem', { name: '管理控制台' })).toHaveAttribute(
+			'href',
+			'https://admin.example.com/demo',
+		);
+		expect(screen.getByRole('menuitem', { name: '用户门户' })).toHaveAttribute(
+			'href',
+			'https://user.example.com/demo',
+		);
+	});
+
+	it('hides the portal switcher when fewer than two portals resolve', () => {
+		mockCatalog.value = {
+			portals: [{ code: 'admin', url: 'https://admin.example.com/demo' }],
+			isError: false,
+			isLoading: false,
+		};
+		render(<Header />);
+
+		expect(screen.queryByLabelText('切换门户')).not.toBeInTheDocument();
 	});
 });

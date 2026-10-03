@@ -34,6 +34,7 @@ vi.mock('@autional-cn/shared', () => ({
 	usePageTitle: vi.fn(),
 	usePermission: () => ({ can: () => false }),
 	useLogout: () => vi.fn(),
+	usePortalCatalog: () => ({ portals: [], isError: true, isLoading: false }),
 	extractItem: (v: unknown) => v,
 }));
 
@@ -90,6 +91,26 @@ vi.mock('@autional-cn/ui', () => ({
 	),
 	LoadingScreen: () => null,
 	ToastProvider: ({ children }: { children: React.ReactNode }) => children,
+	LanguageSwitcher: () => <button type="button">lang</button>,
+	ThemeToggle: () => <button type="button">theme</button>,
+	PortalSwitcher: ({
+		portals,
+		currentPortal,
+	}: {
+		portals: Array<{ code: string; url: string }>;
+		currentPortal?: string;
+	}) => (
+		<div data-testid="portal-switcher" data-current={currentPortal}>
+			{portals.map((p) => (
+				<a key={p.code} href={p.url}>
+					{p.code}
+				</a>
+			))}
+		</div>
+	),
+	UserMenu: ({ user }: { user?: { email?: string | null } | null }) => (
+		<div data-testid="user-menu">{user?.email}</div>
+	),
 }));
 
 import { Header } from '@/components/layout/Header';
@@ -109,17 +130,21 @@ describe('Cross-Portal Navigation', () => {
 			expect(screen.getByText('app.brand')).toBeInTheDocument();
 		});
 
-		it('renders tenant management switch button linking to admin-console', () => {
+		it('renders portal switcher with static [platform, admin] fallback and admin entry to admin-console', () => {
 			render(<Header />, { wrapper: BrowserRouter });
 
-			const switchBtn = screen.getByText('nav.switchToTenantMgmt');
-			expect(switchBtn).toBeInTheDocument();
-			expect(switchBtn.closest('button')).toBeTruthy();
+			const switcher = screen.getByTestId('portal-switcher');
+			expect(switcher).toBeInTheDocument();
+			expect(switcher.getAttribute('data-current')).toBe('platform');
+
+			const adminLink = screen.getByText('admin');
+			expect(adminLink.closest('a')).toHaveAttribute('href', 'http://localhost:13002/admin');
+			expect(screen.getByText('platform')).toBeInTheDocument();
 		});
 
 		it('renders user email when user is authenticated', () => {
 			render(<Header />, { wrapper: BrowserRouter });
-			expect(screen.getByText('platform-admin@authms.dev')).toBeInTheDocument();
+			expect(screen.getByTestId('user-menu')).toHaveTextContent('platform-admin@authms.dev');
 		});
 	});
 
