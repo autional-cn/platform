@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import { PageHeader, useToast } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
-import { PageLoading, PageError } from '@/components/ui/page-status';
+import { PageLoading, PageError } from '@autional-cn/ui/antd';
 import { useSchedulers } from '@/hooks/use-schedulers';
 
 const statusConfig: Record<

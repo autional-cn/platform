@@ -25,7 +25,7 @@ import {
 } from '@/hooks/use-status';
 import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 import { StatusBadge, type StatusVariant } from '@autional-cn/ui';
 
 const { Option } = Select;

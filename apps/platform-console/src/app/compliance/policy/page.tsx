@@ -31,7 +31,7 @@ import {
 } from '@ant-design/icons';
 import { handleApiError } from '@/lib/error-handler';
 import { useAuthStore, extractItem } from '@autional-cn/shared';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 import { useTenants } from '@/hooks/use-tenants';
 
 const API_BASE = '/compliance/api/v1/admin/compliance';

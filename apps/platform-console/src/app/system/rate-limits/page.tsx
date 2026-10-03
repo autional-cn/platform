@@ -12,7 +12,7 @@ import { PageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { ops } from '@/lib/api.generated';
-import { PageLoading, PageError } from '@/components/ui/page-status';
+import { PageLoading, PageError } from '@autional-cn/ui/antd';
 
 interface RateLimitData {
 	available: boolean;

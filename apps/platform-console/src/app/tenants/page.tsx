@@ -38,7 +38,7 @@ import {
 	useSuspendTenant,
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 

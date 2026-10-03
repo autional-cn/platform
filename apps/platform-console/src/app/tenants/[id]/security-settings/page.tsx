@@ -8,7 +8,7 @@ import { SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { apiClient, API_PATHS } from '@autional-cn/shared';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 
 interface SodConfigData {
 	sod_mode: 'single' | 'strict';

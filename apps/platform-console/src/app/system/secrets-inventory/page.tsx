@@ -40,7 +40,7 @@ import {
 	CloudServerOutlined,
 	LoadingOutlined,
 } from '@ant-design/icons';
-import { PageLoading, PageError } from '@/components/ui/page-status';
+import { PageLoading, PageError } from '@autional-cn/ui/antd';
 import { PageHeader } from '@autional-cn/ui';
 import {
 	useSecretsInventoryOverview,

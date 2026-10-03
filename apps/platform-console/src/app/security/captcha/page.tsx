@@ -7,7 +7,7 @@ import {
 	type CaptchaConfig,
 } from '@/hooks/use-captcha-config';
 import CaptchaConfigForm from '@/components/security/CaptchaConfigForm';
-import { PageLoading, PageError } from '@/components/ui/page-status';
+import { PageLoading, PageError } from '@autional-cn/ui/antd';
 
 export default function CaptchaConfigPage() {
 	usePageTitle('CAPTCHA 安全配置');

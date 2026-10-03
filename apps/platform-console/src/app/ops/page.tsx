@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops } from '@/lib/api.generated';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 
 interface ServiceHealth {
 	name: string;

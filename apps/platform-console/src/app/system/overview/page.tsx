@@ -18,7 +18,7 @@ import { PageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { useSystemOverview, CATEGORY_LABELS } from '@/hooks/use-system-overview';
 import type { ServiceInfo } from '@/hooks/use-system-overview';
-import { PageLoading, PageError } from '@/components/ui/page-status';
+import { PageLoading, PageError } from '@autional-cn/ui/antd';
 
 const statusConfig: Record<string, { color: string; icon: React.ReactNode }> = {
 	healthy: { color: 'var(--color-success)', icon: <CheckCircleFilled style={{ color: 'var(--color-success)' }} /> },

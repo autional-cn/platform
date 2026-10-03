@@ -13,7 +13,7 @@ import {
 	usePlatformCommunicationStats,
 	usePlatformNotificationStats,
 } from '@/hooks/use-platform-stats';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 import {
 	LineChart,
 	Line,

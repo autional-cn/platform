@@ -42,7 +42,7 @@ import {
 	useRevokeConsent,
 } from '@/hooks/use-compliance';
 import { handleApiError } from '@/lib/error-handler';
-import { PageError } from '@/components/ui/page-status';
+import { PageError } from '@autional-cn/ui/antd';
 import { useAuthStore, useTenantSlug } from '@autional-cn/shared';
 import { useNavigate } from 'react-router';
 import { useTenants } from '@/hooks/use-tenants';
