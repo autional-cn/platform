@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Alert, Button, Checkbox, Form, Input, Result, Typography, Space } from 'antd';
+import { Alert, Button, Checkbox, Form, Input, Typography, Space } from 'antd';
 import { WarningOutlined, CopyOutlined } from '@ant-design/icons';
 import { usePageTitle } from '@autional-cn/shared';
-import { ConsolePageHeader, SectionCard } from '@autional-cn/ui';
+import { ConsolePageHeader, Result, SectionCard } from '@autional-cn/ui';
 import { adminImpersonatePost } from '@autional-cn/shared/generated/api';
 import { useMutation } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
@@ -20,7 +20,7 @@ interface ImpersonateRequest {
 }
 
 interface ImpersonatePayload {
-	access_token: string;
+	accessToken: string;
 	user: {
 		id: string;
 		email: string;
@@ -64,34 +64,35 @@ export default function ImpersonatePage() {
 				</div>
 				<SectionCard padding="lg">
 					<Result
-						status="success"
+						variant="success"
+						surface="tinted"
 						title="模拟登录成功"
-						subTitle={
+						description={
 							<Space direction="vertical" size="small">
 								<Text>
 									用户: {impersonateResult.user.email} ({impersonateResult.user.id})
 								</Text>
 								<Space size="small">
-									<Text code>{maskToken(impersonateResult.access_token)}</Text>
+									<Text code>{maskToken(impersonateResult.accessToken)}</Text>
 									<Button
 										type="text"
 										size="small"
 										icon={<CopyOutlined />}
 										onClick={() => {
-											navigator.clipboard.writeText(impersonateResult.access_token);
+											navigator.clipboard.writeText(impersonateResult.accessToken);
 											message.success('Token 已复制');
 										}}
 									/>
 								</Space>
 							</Space>
 						}
-						extra={[
+						action={[
 							<Button
 								type="primary"
 								key="navigate"
 								onClick={() => {
 									window.open(
-										`${window.location.origin}/admin?impersonate_token=${impersonateResult.access_token}`,
+										`${window.location.origin}/admin?impersonate_token=${impersonateResult.accessToken}`,
 										'_blank',
 									);
 								}}
