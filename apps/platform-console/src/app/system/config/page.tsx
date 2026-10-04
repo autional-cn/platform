@@ -344,7 +344,7 @@ function FeatureFlagsTab() {
 				render: (text: string, record: FeatureFlagItem) => (
 					<div>
 						<div className="font-medium">{text}</div>
-						<div className="text-xs text-neutral-500">{record.description}</div>
+						<div className="text-xs text-neutral-600">{record.description}</div>
 					</div>
 				),
 			},
@@ -397,7 +397,7 @@ function FeatureFlagsTab() {
 				scroll={{ x: 'max-content' }}
 				locale={{ emptyText: '暂无功能标志数据' }}
 			/>
-			<div className="mt-3 text-xs text-neutral-500 flex gap-4">
+			<div className="mt-3 text-xs text-neutral-600 flex gap-4">
 				<span>✅ 已启用</span>
 				<span>❌ 未启用</span>
 				<span>— 不适用</span>

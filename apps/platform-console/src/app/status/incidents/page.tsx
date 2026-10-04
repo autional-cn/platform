@@ -346,7 +346,7 @@ export default function IncidentsPage() {
 								))}
 							</div>
 						) : (
-							<p className="text-neutral-500 mb-6">暂无进展记录</p>
+							<p className="text-neutral-600 mb-6">暂无进展记录</p>
 						)}
 
 						<h3 className="text-lg font-semibold mb-3">添加进展</h3>
