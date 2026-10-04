@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, Statistic, Tag, Badge, Alert, Input, Select, Row, Col, Tabs, Modal, Typography, Space, Button, Descriptions, Tooltip } from 'antd';
+import { Card, Statistic, Tag, Badge, Input, Select, Row, Col, Tabs, Modal, Typography, Space, Button, Descriptions, Tooltip } from 'antd';
 import { message, modal } from '@/lib/antd-app';
 import {
 	SearchOutlined,
@@ -22,7 +22,7 @@ import {
 	LoadingOutlined,
 } from '@ant-design/icons';
 import { PageLoading, PageError, DataTable } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import {
 	useSecretsInventoryOverview,
 	useSecretsInventoryKV,
@@ -647,11 +647,10 @@ export default function SystemSecretsInventoryPage() {
 						/>
 					)}
 					<Alert
-						type="info"
-						message="密钥值仅通过环境变量管理"
-						showIcon
+						variant="info"
+						title="密钥值仅通过环境变量管理"
 						className="mb-4"
-					/>
+					 />
 					<DataTable
 						rowKey="keyId"
 						columns={encKeyColumns}
@@ -675,11 +674,10 @@ export default function SystemSecretsInventoryPage() {
 						<PageError message="加载 JWT 密钥失败" retry={refetchJwt} className="mb-4" />
 					)}
 					<Alert
-						type="info"
-						message="JWT 私钥仅保存在内存中，公钥通过 JWKS 端点分发。"
-						showIcon
+						variant="info"
+						title="JWT 私钥仅保存在内存中，公钥通过 JWKS 端点分发。"
 						className="mb-4"
-					/>
+					 />
 					<DataTable
 						rowKey="keyId"
 						columns={jwtKeyColumns}
@@ -707,11 +705,10 @@ export default function SystemSecretsInventoryPage() {
 						/>
 					)}
 					<Alert
-						type="warning"
-						message="这些凭证在密钥服务之外管理，建议迁移。"
-						showIcon
+						variant="warning"
+						title="这些凭证在密钥服务之外管理，建议迁移。"
 						className="mb-4"
-					/>
+					 />
 					<DataTable
 						rowKey="credentialName"
 						columns={infraColumns}
@@ -766,11 +763,10 @@ export default function SystemSecretsInventoryPage() {
 						/>
 					)}
 					<Alert
-						type="info"
-						message="出于安全考虑，密钥值已脱敏。请使用密钥服务管理 API 管理 OAuth 凭证。"
-						showIcon
+						variant="info"
+						title="出于安全考虑，密钥值已脱敏。请使用密钥服务管理 API 管理 OAuth 凭证。"
 						className="mb-4"
-					/>
+					 />
 					<DataTable
 						rowKey="clientId"
 						columns={oauthColumns}
@@ -829,11 +825,10 @@ export default function SystemSecretsInventoryPage() {
 				{!revealedValue ? (
 					<div>
 						<Alert
-							type="warning"
-							message="此操作将被审计，请填写原因。"
-							showIcon
+							variant="warning"
+							title="此操作将被审计，请填写原因。"
 							className="mb-4"
-						/>
+						 />
 						<Input.TextArea
 							placeholder="查看密钥值的原因…"
 							value={revealReason}
@@ -854,11 +849,10 @@ export default function SystemSecretsInventoryPage() {
 				) : (
 					<div>
 						<Alert
-							type="success"
-							message="值已显示，将在 30 秒后自动隐藏。"
-							showIcon
+							variant="success"
+							title="值已显示，将在 30 秒后自动隐藏。"
 							className="mb-4"
-						/>
+						 />
 						<Input.TextArea value={revealedValue} readOnly rows={4} className="font-mono" />
 						<div className="mt-2 text-right">
 							<Text type="secondary">
@@ -883,11 +877,10 @@ export default function SystemSecretsInventoryPage() {
 				width={560}
 			>
 				<Alert
-					type="info"
-					message="这将创建该密钥的新版本；现有引用仍可继续使用当前版本。"
-					showIcon
+					variant="info"
+					title="这将创建该密钥的新版本；现有引用仍可继续使用当前版本。"
 					className="mb-4"
-				/>
+				 />
 				<Input.TextArea
 					placeholder="请输入新的密钥值…"
 					value={rotateNewValue}
@@ -1018,12 +1011,12 @@ function OverviewTab({
 			</Card>
 
 			<Alert
-				type="info"
-				message="安全配置检测未接入"
-				description="PASSWORD_PEPPER 与 HIBP 的启用状态暂无平台侧数据源；接入后将在此展示。"
-				showIcon
+				variant="info"
+				title="安全配置检测未接入"
 				className="mb-4"
-			/>
+			>
+				"PASSWORD_PEPPER 与 HIBP 的启用状态暂无平台侧数据源；接入后将在此展示。"
+			</Alert>
 		</div>
 	);
 }

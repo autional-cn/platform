@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Card, Col, Row, Tag, Statistic, Alert } from 'antd';
+import { Card, Col, Row, Tag, Statistic } from 'antd';
 import {
 	CheckCircleFilled,
 	CloseCircleFilled,
@@ -12,7 +12,7 @@ import {
 	TeamOutlined,
 	CloudServerOutlined,
 } from '@ant-design/icons';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { useSystemServices, useSystemTenants, CATEGORY_LABELS } from '@/hooks/use-system-overview';
 import type { ServiceInfo } from '@/hooks/use-system-overview';
@@ -78,18 +78,18 @@ export default function SystemOverviewPage() {
 							<>
 								{servicesQuery.data && !servicesQuery.data.healthAvailable && (
 									<Alert
-										type="warning"
-										showIcon
-										className="mb-4"
-										message={t(
+										variant="warning"
+										title={t(
 											'systemOverview.healthUnavailable',
 											'健康数据不可用',
 										)}
-										description={t(
+										className="mb-4"
+									>
+										{t(
 											'systemOverview.healthUnavailableDetail',
 											'服务状态已按「未知」呈现；健康检查数据源暂不可用。',
 										)}
-									/>
+									</Alert>
 								)}
 								{Object.entries(servicesByCategory).map(([category, services]) => (
 									<div key={category} className="mb-4 last:mb-0">
@@ -139,14 +139,14 @@ export default function SystemOverviewPage() {
 						className="h-full"
 					>
 						<Alert
-							type="warning"
-							showIcon
-							message={t('systemOverview.notConnected', '未接入')}
-							description={t(
+							variant="warning"
+							title={t('systemOverview.notConnected', '未接入')}
+						>
+							{t(
 								'systemOverview.notConnectedDetail',
 								'暂无数据源；接入后展示真实数据。',
 							)}
-						/>
+						</Alert>
 					</Card>
 				</Col>
 			</Row>
@@ -221,14 +221,14 @@ export default function SystemOverviewPage() {
 						}
 					>
 						<Alert
-							type="warning"
-							showIcon
-							message={t('systemOverview.notConnected', '未接入')}
-							description={t(
+							variant="warning"
+							title={t('systemOverview.notConnected', '未接入')}
+						>
+							{t(
 								'systemOverview.notConnectedDetail',
 								'暂无数据源；接入后展示真实数据。',
 							)}
-						/>
+						</Alert>
 					</Card>
 				</Col>
 			</Row>

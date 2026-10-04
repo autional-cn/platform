@@ -2,10 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
-import { Button, Select, Alert, Popconfirm, Modal, Empty } from 'antd';
+import { Button, Select, Popconfirm, Modal, Empty } from 'antd';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, usePageTitle } from '@autional-cn/shared';
-import { ConsolePageHeader, EmptyState, SectionCard, StatusBadge } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader, EmptyState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import {
 	adminComplianceGdprRightToErasure,
 	adminComplianceGdprRightToErasurePost,
@@ -159,12 +159,12 @@ export default function GdprErasurePage() {
 
 			<SectionCard className="mt-6">
 				<Alert
-					message="擦除不可撤销"
-					description="擦除操作不可撤销。执行前请确认已通知用户，且等待期已结束。"
-					type="warning"
-					showIcon
+					variant="warning"
+					title="擦除不可撤销"
 					className="mb-4"
-				/>
+				>
+					"擦除操作不可撤销。执行前请确认已通知用户，且等待期已结束。"
+				</Alert>
 
 				<div className="flex items-center justify-between mb-4">
 					<Select

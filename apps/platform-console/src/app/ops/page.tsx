@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Alert, Card, Tag, Row, Col, Spin, Statistic } from 'antd';
+import { Card, Tag, Row, Col, Spin, Statistic } from 'antd';
 import { message } from '@/lib/antd-app';
 import {
 	CheckCircleOutlined,
@@ -12,7 +12,7 @@ import {
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { PageError } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 
 interface ServiceHealth {
 	name: string;
@@ -165,11 +165,11 @@ export default function OpsPage() {
 						/>
 					) : (
 						<Alert
-							type="info"
-							showIcon
-							message="Grafana 未接入"
-							description="当前环境未配置 Grafana 面板地址；接入后在此展示服务总览面板。"
-						/>
+							variant="info"
+							title="Grafana 未接入"
+						>
+							"当前环境未配置 Grafana 面板地址；接入后在此展示服务总览面板。"
+						</Alert>
 					)}
 				</Card>
 
@@ -202,11 +202,11 @@ export default function OpsPage() {
 							/>
 						) : (
 							<Alert
-								type="info"
-								showIcon
-								message="Grafana 未接入"
-								description="当前环境未配置 Grafana 面板地址；接入后在此展示该服务面板。"
-							/>
+								variant="info"
+								title="Grafana 未接入"
+							>
+								"当前环境未配置 Grafana 面板地址；接入后在此展示该服务面板。"
+							</Alert>
 						)}
 					</Card>
 				)}

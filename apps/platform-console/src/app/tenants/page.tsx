@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Space, Tag, Modal, Form, Input, Select, Card, Descriptions, Tabs, Alert, Popconfirm, Row, Col } from 'antd';
+import { Button, Space, Tag, Modal, Form, Input, Select, Card, Descriptions, Tabs, Popconfirm, Row, Col } from 'antd';
 import { message } from '@/lib/antd-app';
 import {
 	PlusOutlined,
@@ -22,7 +22,7 @@ import {
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
 import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 
@@ -224,7 +224,11 @@ export default function TenantsPage() {
 				}
 			/>
 
-			<Alert title="此页面仅平台管理员可见" type="warning" showIcon className="mb-4" />
+			<Alert
+				variant="warning"
+				title="此页面仅平台管理员可见"
+				className="mb-4"
+			 />
 
 			{error && <PageError message="加载租户列表失败" retry={refetch} className="mb-4" />}
 

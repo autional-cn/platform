@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import { Form, InputNumber, Select, Button, Card, Spin, Alert } from 'antd';
+import { Form, InputNumber, Select, Button, Card, Spin } from 'antd';
 import { message } from '@/lib/antd-app';
 import { SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { getInvitationConfig, updateInvitationConfig } from '@/lib/api.generated';
 import { handleApiError } from '@/lib/error-handler';
 import { PageError } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 
 interface InvitationConfigData {
 	inviteExpiryDays?: number;
@@ -105,12 +105,12 @@ export default function InvitationConfigPage() {
 						</Button>
 
 						<Alert
-							type="info"
-							showIcon
+							variant="info"
+							title="每日邀请上限 — 未接入"
 							className="mt-4"
-							message="每日邀请上限 — 未接入"
-							description="后端邀请配置接口暂未提供每日邀请上限字段；接入后在此展示并支持配置。"
-						/>
+						>
+							"后端邀请配置接口暂未提供每日邀请上限字段；接入后在此展示并支持配置。"
+						</Alert>
 					</Form>
 				</Card>
 			</Spin>

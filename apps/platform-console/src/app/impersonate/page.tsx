@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Alert, Button, Checkbox, Form, Input, Typography, Space } from 'antd';
+import { Button, Checkbox, Form, Input, Typography, Space } from 'antd';
 import { WarningOutlined, CopyOutlined } from '@ant-design/icons';
 import { usePageTitle } from '@autional-cn/shared';
-import { ConsolePageHeader, Result, SectionCard } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader, Result, SectionCard } from '@autional-cn/ui';
 import { adminImpersonatePost } from '@autional-cn/shared/generated/api';
 import { useMutation } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
@@ -122,12 +122,11 @@ export default function ImpersonatePage() {
 			</div>
 
 			<Alert
-				type="warning"
-				showIcon
-				icon={<WarningOutlined />}
-				message="模拟用户操作将被完整审计。请谨慎使用。"
+				variant="warning"
+				title="模拟用户操作将被完整审计。请谨慎使用。"
 				className="mb-6"
-			/>
+				icon={<WarningOutlined />}
+			 />
 
 			<SectionCard title="模拟登录表单" padding="lg">
 				<Form form={form} layout="vertical" onFinish={handleSubmit}>

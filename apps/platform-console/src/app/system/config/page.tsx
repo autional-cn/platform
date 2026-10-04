@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
-import { Card, Tabs, Tag, Input, Alert, Tooltip, Badge } from 'antd';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { Card, Tabs, Tag, Input, Tooltip, Badge } from 'antd';
 import {
 	CloudServerOutlined,
 	DatabaseOutlined,
@@ -154,12 +154,12 @@ function InfrastructureTab() {
 	return (
 		<div>
 			<Alert
-				message="未接入"
-				description="中间件健康数据源尚未接入；下表为静态配置参考，非实时状态。"
-				type="warning"
-				showIcon
+				variant="warning"
+				title="未接入"
 				className="mb-4"
-			/>
+			>
+				"中间件健康数据源尚未接入；下表为静态配置参考，非实时状态。"
+			</Alert>
 			<DataTable
 				rowKey="key"
 				columns={columns}
@@ -337,11 +337,10 @@ function FeatureFlagsTab() {
 	return (
 		<div>
 			<Alert
-				message="功能标志矩阵列出了各服务中功能的启用状态。此数据仅供查看，不在本页面提供启停操作。"
-				type="info"
-				showIcon
+				variant="info"
+				title="功能标志矩阵列出了各服务中功能的启用状态。此数据仅供查看，不在本页面提供启停操作。"
 				className="mb-4"
-			/>
+			 />
 			<DataTable
 				rowKey="key"
 				columns={columns}
