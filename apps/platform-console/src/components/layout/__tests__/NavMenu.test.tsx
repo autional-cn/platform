@@ -1,6 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+
+/** PL-77：导航按平台成员状态显隐 —— 判定逻辑本体在 usePlatformMember 测试（经门组件），此处只锁显隐接线。 */
+const membershipMock = vi.hoisted(() => ({ state: 'member' as string }));
+vi.mock('@/components/auth/usePlatformMember', () => ({
+	usePlatformMember: () => membershipMock.state,
+}));
+
 import { NavMenu } from '@/components/layout/NavMenu';
 
 vi.mock('react-i18next', () => ({
@@ -26,6 +33,10 @@ const renderNav = (path = '/') => {
 };
 
 describe('NavMenu', () => {
+	beforeEach(() => {
+		membershipMock.state = 'member';
+	});
+
 	it('renders the Dashboard menu item', () => {
 		renderNav();
 		expect(screen.getByText('nav.dashboard')).toBeInTheDocument();
@@ -74,6 +85,21 @@ describe('NavMenu', () => {
 	it('renders the Settings menu item', () => {
 		renderNav();
 		expect(screen.getByText('nav.settings')).toBeInTheDocument();
+	});
+
+	it('non-member：全量菜单隐藏（PL-77 —— 非平台成员不得见 11 项菜单）', () => {
+		membershipMock.state = 'non-member';
+		const { container } = renderNav();
+		expect(screen.queryByText('nav.dashboard')).not.toBeInTheDocument();
+		expect(screen.queryByText('nav.settings')).not.toBeInTheDocument();
+		expect(container).toBeEmptyDOMElement();
+	});
+
+	it('unknown（未可判）：同样不渲染 —— 防未裁决时闪出菜单', () => {
+		membershipMock.state = 'unknown';
+		const { container } = renderNav();
+		expect(screen.queryByText('nav.dashboard')).not.toBeInTheDocument();
+		expect(container).toBeEmptyDOMElement();
 	});
 
 });

@@ -7,8 +7,8 @@ import { AppShell, ErrorBoundary } from '@autional-cn/ui';
 import { NavMenu } from './components/layout/NavMenu';
 import { HeaderActions } from './components/layout/HeaderActions';
 import { Breadcrumb } from './components/layout/Breadcrumb';
+import { PlatformMemberGuard } from './components/auth/PlatformMemberGuard';
 import {
-	PlatformGuard,
 	RequireAuth,
 	TenantIndexGuard,
 	TenantRootRedirect,
@@ -21,7 +21,7 @@ import {
 import { ROUTE } from './lib/route-paths';
 
 /**
- * 角色不满足时的落点：/403 在本站是租户段内路由（/:tenantSlug/403），
+ * 角色/平台成员不满足时的落点：/403 在本站是租户段内路由（/:tenantSlug/403），
  * 必须带上当前 slug —— 裸 /403 会被当成租户 slug '403'。
  */
 function ForbiddenRedirect() {
@@ -153,9 +153,9 @@ function appRoutes() {
 				index
 				element={
 					<TenantIndexGuard notFound={<NotFoundPage />}>
-						<PlatformGuard fallback={<ForbiddenRedirect />}>
+						<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 							<DashboardPage />
-						</PlatformGuard>
+						</PlatformMemberGuard>
 					</TenantIndexGuard>
 				}
 			/>
@@ -164,25 +164,25 @@ function appRoutes() {
 			<Route
 				path="tenants"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<TenantsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="tenants/:id/invitation-config"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<InvitationConfigPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="tenants/:id/quota"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<QuotaPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -190,9 +190,9 @@ function appRoutes() {
 			<Route
 				path="announcements"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<AnnouncementsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -200,17 +200,17 @@ function appRoutes() {
 			<Route
 				path="status/incidents"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<IncidentsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="status/maintenances"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<MaintenancesPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -218,57 +218,57 @@ function appRoutes() {
 			<Route
 				path="agents"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<AgentsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="agents/:id"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<AgentDetailPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="robots"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<RobotsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="robots/:id"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<RobotDetailPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="devices"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<DevicesPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="devices/:id"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<DeviceDetailPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="policies/nhi"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<NhiPolicyPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -276,9 +276,9 @@ function appRoutes() {
 			<Route
 				path="notifications"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<PlatformNotificationsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -286,33 +286,33 @@ function appRoutes() {
 			<Route
 				path="feature-gates"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<FeatureGatesPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="feature-flags"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<FeatureFlagsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="gdpr-erasure"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<GdprErasurePage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="impersonate"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<ImpersonatePage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -320,17 +320,17 @@ function appRoutes() {
 			<Route
 				path="compliance/policy"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<CompliancePolicyPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="compliance/minors"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<MinorsProtectionPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -338,65 +338,65 @@ function appRoutes() {
 			<Route
 				path="ops"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<OpsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="system/overview"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<SystemOverviewPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="system/config"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<SystemConfigPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="system/secrets-inventory"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<SystemSecretsInventoryPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="system/rate-limits"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<SystemRateLimitsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="system/schedulers"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<SystemSchedulersPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="env-vars"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<EnvVarsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 			<Route
 				path="infra-credentials"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<InfraCredentialsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 
@@ -404,9 +404,9 @@ function appRoutes() {
 			<Route
 				path="settings"
 				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
+					<PlatformMemberGuard fallback={<ForbiddenRedirect />}>
 						<SettingsPage />
-					</PlatformGuard>
+					</PlatformMemberGuard>
 				}
 			/>
 

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router';
 import { useTenantSlug } from '@autional-cn/shared';
+import { usePlatformMember } from '@/components/auth/usePlatformMember';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref, stripTenantPrefix } from '@/lib/nav';
 import {
@@ -49,6 +50,7 @@ export function NavMenu() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const tenantSlug = useTenantSlug();
+	const membership = usePlatformMember();
 
 	const allMenuItems: MenuItem[] = useMemo(
 		() => [
@@ -155,6 +157,10 @@ export function NavMenu() {
 			label: item.label,
 			children: item.children ? convertItems(item.children) : undefined,
 		}));
+
+	// PL-77：非平台成员（或未可判）不渲染全量菜单 —— 此前任一租户的
+	// super_admin/admin 可经跨租户 slug/平台 OAuth client 见到 11 项菜单。
+	if (membership !== 'member') return null;
 
 	return (
 		<Menu
