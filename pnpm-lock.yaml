@@ -49,8 +49,8 @@ importers:
         specifier: 6.2.2
         version: 6.2.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@autional-cn/shared':
-        specifier: 0.1.0-rc.20
-        version: 0.1.0-rc.20(immer@11.1.18)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))
+        specifier: 0.1.0-rc.22
+        version: 0.1.0-rc.22(immer@11.1.18)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))
       '@autional-cn/tailwind-preset':
         specifier: 0.1.0-rc.2
         version: 0.1.0-rc.2(tailwindcss@3.4.19)
@@ -58,8 +58,8 @@ importers:
         specifier: 0.1.0-rc.5
         version: 0.1.0-rc.5
       '@autional-cn/ui':
-        specifier: 0.1.0-rc.32
-        version: 0.1.0-rc.32(@autional-cn/tokens@0.1.0-rc.5)(antd@6.5.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(dayjs@1.11.20)(i18next@26.0.10(typescript@5.8.3))(lucide-react@0.509.0(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-i18next@17.0.7(i18next@26.0.10(typescript@5.8.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.8.3))(react-router@7.15.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
+        specifier: 0.1.0-rc.33
+        version: 0.1.0-rc.33(@autional-cn/tokens@0.1.0-rc.5)(antd@6.5.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(dayjs@1.11.20)(i18next@26.0.10(typescript@5.8.3))(lucide-react@0.509.0(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-i18next@17.0.7(i18next@26.0.10(typescript@5.8.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.8.3))(react-router@7.15.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
       '@tanstack/react-query':
         specifier: 5.100.9
         version: 5.100.9(react@19.2.5)
@@ -206,8 +206,8 @@ packages:
       eslint: '>=9.0.0'
       typescript-eslint: '>=8.0.0'
 
-  '@autional-cn/shared@0.1.0-rc.20':
-    resolution: {integrity: sha512-6HXCIEDrz1hNuNWqkZoI7BoMeFh1yLO836NxGeIkQyaS6eHPROtk7N8Wp4yAeF6vFkQdkAo7FlzBtWDFOwJ4ag==}
+  '@autional-cn/shared@0.1.0-rc.22':
+    resolution: {integrity: sha512-GvGQ26looDCy2pBZJtD1fJWdOD0UPont+CHaugoIfC3oTValTrOY3Wz61aOzUWTs2VqFYx0F6e17c9JaHD6+UQ==}
     peerDependencies:
       react: 19.2.5
       react-dom: 19.2.5
@@ -226,8 +226,8 @@ packages:
   '@autional-cn/tsconfig@0.1.0-rc':
     resolution: {integrity: sha512-XY7N2lbMlR1D+OlkxDAw9Pz9CleV4UZ14RfWkkhGTZbbHvxT/d69H8GXWhyc9/634RoEUyVajYmjT75cZbKF4A==}
 
-  '@autional-cn/ui@0.1.0-rc.32':
-    resolution: {integrity: sha512-HDBDPwPJeFy+CEUfhfNNsBiOrnnZHfozGWCDVjcwNyI8a35uZIYKOiV+SIbD10ZjJJSvb3JM2VejQhSMIMGUDA==}
+  '@autional-cn/ui@0.1.0-rc.33':
+    resolution: {integrity: sha512-nDtxQq2i+oGpka4hWSy5NZux4lxIr1zxC4WaTeJdh8XjawjwHq1hXb4oT2wziUo8ZJHdst/n2+U66zezxJujiA==}
     peerDependencies:
       '@autional-cn/tokens': '>=0.1.0-rc'
       antd: '>=6.0.0'
@@ -2777,7 +2777,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@autional-cn/shared@0.1.0-rc.20(immer@11.1.18)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))':
+  '@autional-cn/shared@0.1.0-rc.22(immer@11.1.18)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@tanstack/react-query': 5.100.9(react@19.2.5)
@@ -2806,7 +2806,7 @@ snapshots:
 
   '@autional-cn/tsconfig@0.1.0-rc': {}
 
-  '@autional-cn/ui@0.1.0-rc.32(@autional-cn/tokens@0.1.0-rc.5)(antd@6.5.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(dayjs@1.11.20)(i18next@26.0.10(typescript@5.8.3))(lucide-react@0.509.0(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-i18next@17.0.7(i18next@26.0.10(typescript@5.8.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.8.3))(react-router@7.15.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)':
+  '@autional-cn/ui@0.1.0-rc.33(@autional-cn/tokens@0.1.0-rc.5)(antd@6.5.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(dayjs@1.11.20)(i18next@26.0.10(typescript@5.8.3))(lucide-react@0.509.0(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-i18next@17.0.7(i18next@26.0.10(typescript@5.8.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.8.3))(react-router@7.15.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@autional-cn/tokens': 0.1.0-rc.5
       i18next: 26.0.10(typescript@5.8.3)
