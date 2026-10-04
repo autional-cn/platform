@@ -39,8 +39,8 @@ vi.mock('@autional-cn/shared', () => ({
 }));
 
 vi.mock('@/hooks/use-system-overview', () => ({
-	useSystemOverview: () => ({
-		data: { tenants: { total: 1 }, services: { total: 1 } },
+	useSystemTenants: () => ({
+		data: { total: 1, active: 1, suspended: 0, planDistribution: [] },
 		isLoading: false,
 		error: null,
 	}),

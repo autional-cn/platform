@@ -14,6 +14,7 @@ import { usePageTitle } from '@autional-cn/shared';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { adminFeatureFlags } from '@autional-cn/shared/generated/api';
 import { useQuery } from '@tanstack/react-query';
+import { ApiErrorState } from '@/components/ApiErrorState';
 
 interface FeatureFlagsResponse {
 	services: {
@@ -27,7 +28,7 @@ interface FeatureFlagsResponse {
 export default function FeatureFlagsPage() {
 	usePageTitle('功能开关');
 
-	const { data, isLoading } = useQuery<FeatureFlagsResponse>({
+	const { data, isLoading, error, refetch } = useQuery<FeatureFlagsResponse>({
 		queryKey: ['feature-flags'],
 		queryFn: async () => {
 			const res = await adminFeatureFlags();
@@ -145,49 +146,55 @@ export default function FeatureFlagsPage() {
 				/>
 			</div>
 
-			<Row gutter={[16, 16]} className="mb-6">
-				<Col xs={24} sm={8}>
-					<Card>
-						<Statistic
-							title="服务总数"
-							value={isLoading ? '-' : totalServices}
-							prefix={<AppstoreOutlined />}
-						/>
-					</Card>
-				</Col>
-				<Col xs={24} sm={8}>
-					<Card>
-						<Statistic
-							title="功能键"
-							value={isLoading ? '-' : flagKeys.length}
-							prefix={<SettingOutlined />}
-						/>
-					</Card>
-				</Col>
-				<Col xs={24} sm={8}>
-					<Card>
-						<Statistic
-							title="已启用功能"
-							value={isLoading ? '-' : totalFeaturesEnabled}
-							prefix={<CheckCircleOutlined />}
-							valueStyle={{ color: 'var(--color-success-text)' }}
-						/>
-					</Card>
-				</Col>
-			</Row>
+			{error && !isLoading ? (
+				<ApiErrorState error={error} title="加载功能开关失败" onRetry={() => refetch()} />
+			) : (
+				<>
+					<Row gutter={[16, 16]} className="mb-6">
+						<Col xs={24} sm={8}>
+							<Card>
+								<Statistic
+									title="服务总数"
+									value={isLoading ? '-' : totalServices}
+									prefix={<AppstoreOutlined />}
+								/>
+							</Card>
+						</Col>
+						<Col xs={24} sm={8}>
+							<Card>
+								<Statistic
+									title="功能键"
+									value={isLoading ? '-' : flagKeys.length}
+									prefix={<SettingOutlined />}
+								/>
+							</Card>
+						</Col>
+						<Col xs={24} sm={8}>
+							<Card>
+								<Statistic
+									title="已启用功能"
+									value={isLoading ? '-' : totalFeaturesEnabled}
+									prefix={<CheckCircleOutlined />}
+									valueStyle={{ color: 'var(--color-success-text)' }}
+								/>
+							</Card>
+						</Col>
+					</Row>
 
-			<Spin spinning={isLoading}>
-				<DataTable
-					columns={columns}
-					dataSource={tableData}
-					rowKey="service"
-					pagination={false}
-					scroll={{ x: 'max-content' }}
-					bordered
-					size="small"
-					locale={{ emptyText: '暂无功能开关数据' }}
-				/>
-			</Spin>
+					<Spin spinning={isLoading}>
+						<DataTable
+							columns={columns}
+							dataSource={tableData}
+							rowKey="service"
+							pagination={false}
+							scroll={{ x: 'max-content' }}
+							bordered
+							size="small"
+							locale={{ emptyText: '暂无功能开关数据' }}
+						/>
+					</Spin>
+				</>
+			)}
 		</div>
 	);
 }

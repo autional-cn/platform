@@ -79,11 +79,6 @@ export interface SecretsInventoryOverview {
 		apiKeys: number;
 		oauth: number;
 	};
-	warnings: {
-		expiringSoon: number;
-		passwordPepperNotEnabled: boolean;
-		hibpNotEnabled: boolean;
-	};
 }
 
 interface SecretApiItem {
@@ -308,11 +303,6 @@ export function useSecretsInventoryOverview() {
 				infrastructure: infraData.length,
 				apiKeys: apiData.length,
 				oauth: oauthData.length,
-			},
-			warnings: {
-				expiringSoon: 0,
-				passwordPepperNotEnabled: true,
-				hibpNotEnabled: true,
 			},
 		};
 	}, [kv.data, encKeys.data, jwtKeys.data, infra.data, apiKeys.data, oauth.data]);

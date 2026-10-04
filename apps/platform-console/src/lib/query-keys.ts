@@ -162,7 +162,6 @@ export const queryKeys = {
 		authConfig: ['security', 'auth-config'] as const,
 		dataClassification: (tenantId: string) =>
 			['security', 'data-classification', tenantId] as const,
-		captchaConfig: ['security', 'captcha-config'] as const,
 	},
 	pay: {
 		all: ['pay'] as const,
@@ -247,7 +246,8 @@ export const queryKeys = {
 			['reverse-lookup', 'permissions', permissionId, 'roles'] as const,
 	},
 	systemOverview: {
-		all: ['system-overview'] as const,
+		services: ['system-overview', 'services'] as const,
+		tenants: ['system-overview', 'tenants'] as const,
 	},
 	secretsInventory: {
 		kv: ['secrets-inventory', 'kv'] as const,
@@ -263,6 +263,9 @@ export const queryKeys = {
 		envVars: ['system-config', 'env-vars'] as const,
 		featureFlags: ['system-config', 'feature-flags'] as const,
 		infraCredentials: ['system-config', 'infra-credentials'] as const,
+	},
+	schedulers: {
+		all: ['schedulers'] as const,
 	},
 	gdprErasure: {
 		all: ['gdpr-erasure'] as const,

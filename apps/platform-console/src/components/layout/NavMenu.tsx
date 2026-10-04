@@ -12,7 +12,6 @@ import {
 	RobotOutlined,
 	ControlOutlined,
 	SafetyOutlined,
-	SafetyCertificateOutlined,
 	CloudServerOutlined,
 	SettingOutlined,
 	DesktopOutlined,
@@ -104,12 +103,6 @@ export function NavMenu() {
 					{ key: ROUTE.MINORS_PROTECTION, label: t('nav.minorsProtection') },
 					{ key: ROUTE.GDPR_ERASURE, label: t('nav.gdprErasure') },
 				],
-			},
-			{
-				key: 'security-section',
-				icon: <SafetyCertificateOutlined />,
-				label: t('nav.securitySection'),
-				children: [{ key: ROUTE.SECURITY_CAPTCHA, label: t('nav.captchaConfig') }],
 			},
 			{
 				key: 'system-section',

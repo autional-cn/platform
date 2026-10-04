@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import { Form, InputNumber, Select, Button, Card, Spin } from 'antd';
+import { Form, InputNumber, Select, Button, Card, Spin, Alert } from 'antd';
 import { message } from '@/lib/antd-app';
 import { SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { extractItem, usePageTitle } from '@autional-cn/shared';
@@ -14,7 +14,6 @@ import { ConsolePageHeader } from '@autional-cn/ui';
 interface InvitationConfigData {
 	inviteExpiryDays?: number;
 	defaultInviteRole?: string;
-	dailyInviteLimit?: number;
 }
 
 export default function InvitationConfigPage() {
@@ -26,7 +25,6 @@ export default function InvitationConfigPage() {
 	const [data, setData] = useState<InvitationConfigData>({
 		inviteExpiryDays: 7,
 		defaultInviteRole: 'member',
-		dailyInviteLimit: 50,
 	});
 
 	const fetchConfig = async () => {
@@ -102,17 +100,17 @@ export default function InvitationConfigPage() {
 							</Select>
 						</Form.Item>
 
-						<Form.Item
-							name="dailyInviteLimit"
-							label="每日邀请上限"
-							rules={[{ required: true, message: '请输入每日邀请上限' }]}
-						>
-							<InputNumber min={1} max={10000} style={{ width: '100%' }} placeholder="50" />
-						</Form.Item>
-
 						<Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
 							保存配置
 						</Button>
+
+						<Alert
+							type="info"
+							showIcon
+							className="mt-4"
+							message="每日邀请上限 — 未接入"
+							description="后端邀请配置接口暂未提供每日邀请上限字段；接入后在此展示并支持配置。"
+						/>
 					</Form>
 				</Card>
 			</Spin>

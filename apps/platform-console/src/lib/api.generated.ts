@@ -360,10 +360,13 @@ export const getPasswordStatus = Generated.adminUsersPasswordStatusByUsers;
 export { statusOverview } from '@autional-cn/shared/generated/api';
 
 // Ops — Grafana URLs and topology
-const GRAFANA_BASE =
-	(typeof window !== 'undefined' && (window as any).__GRAFANA_URL__) ||
-	(typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GRAFANA_URL) ||
-	'http://localhost:20300';
+// 基址 = 构建期注入的 VITE_GRAFANA_URL；dev 回落本机端口，生产构建未注入时由
+// vite.config.ts 直接 fail-build —— 此处不做 localhost 静默回落（PL-56）。
+const GRAFANA_BASE: string = String(
+	(import.meta as any).env.VITE_GRAFANA_URL ||
+		((import.meta as any).env.DEV ? 'http://localhost:20300' : ''),
+).replace(/\/+$/, '');
+export const isGrafanaConfigured = GRAFANA_BASE !== '';
 export const ops = {
 	topology: Generated.adminTopology,
 	rateLimits: Generated.adminRateLimits,

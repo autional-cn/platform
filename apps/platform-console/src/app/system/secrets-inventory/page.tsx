@@ -9,7 +9,6 @@ import {
 	SyncOutlined,
 	StopOutlined,
 	DeleteOutlined,
-	WarningOutlined,
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	ExclamationCircleOutlined,
@@ -1018,47 +1017,13 @@ function OverviewTab({
 				</Row>
 			</Card>
 
-			{overview.warnings.expiringSoon > 0 && (
-				<Alert
-					type="warning"
-					message={`${overview.warnings.expiringSoon} 个密钥将在 30 天内过期`}
-					description="请检查并轮换即将过期的密钥，避免服务中断。"
-					showIcon
-					icon={<WarningOutlined />}
-					className="mb-4"
-					action={<Button size="small">查看即将过期</Button>}
-				/>
-			)}
-			{overview.warnings.passwordPepperNotEnabled && (
-				<Alert
-					type="error"
-					message="PASSWORD_PEPPER 未启用"
-					description="密码加盐可增加一层安全防护，请在密钥服务中配置 PASSWORD_PEPPER。"
-					showIcon
-					icon={<ExclamationCircleOutlined />}
-					className="mb-4"
-					action={
-						<Button size="small" type="primary" danger>
-							立即启用
-						</Button>
-					}
-				/>
-			)}
-			{overview.warnings.hibpNotEnabled && (
-				<Alert
-					type="error"
-					message="HIBP 集成未启用"
-					description="Have I Been Pwned 检查可防止用户使用已泄露的密码，请在密钥服务中配置 HIBP_API_KEY。"
-					showIcon
-					icon={<ExclamationCircleOutlined />}
-					className="mb-4"
-					action={
-						<Button size="small" type="primary" danger>
-							配置 HIBP
-						</Button>
-					}
-				/>
-			)}
+			<Alert
+				type="info"
+				message="安全配置检测未接入"
+				description="PASSWORD_PEPPER 与 HIBP 的启用状态暂无平台侧数据源；接入后将在此展示。"
+				showIcon
+				className="mb-4"
+			/>
 		</div>
 	);
 }

@@ -64,7 +64,6 @@ import EnvVarsPage from './app/env-vars/page';
 import InfraCredentialsPage from './app/infra-credentials/page';
 import FeatureFlagsPage from './app/feature-flags/page';
 import ImpersonatePage from './app/impersonate/page';
-import CaptchaPage from './app/security/captcha/page';
 
 /**
  * 挂载级闸门：/demo/... 交给共享 RequireAuth（含 F-W6 未知 slug 闸门与同域 PKCE）；
@@ -307,16 +306,6 @@ function appRoutes() {
 				element={
 					<PlatformGuard fallback={<ForbiddenRedirect />}>
 						<ImpersonatePage />
-					</PlatformGuard>
-				}
-			/>
-
-			{/* 安全 */}
-			<Route
-				path="security/captcha"
-				element={
-					<PlatformGuard fallback={<ForbiddenRedirect />}>
-						<CaptchaPage />
 					</PlatformGuard>
 				}
 			/>

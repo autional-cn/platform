@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Tag, Row, Col, Spin, Statistic } from 'antd';
+import { Alert, Card, Tag, Row, Col, Spin, Statistic } from 'antd';
 import { message } from '@/lib/antd-app';
 import {
 	CheckCircleOutlined,
@@ -10,7 +10,7 @@ import {
 	WarningOutlined,
 } from '@ant-design/icons';
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
-import { ops } from '@/lib/api.generated';
+import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { PageError } from '@autional-cn/ui/antd';
 import { ConsolePageHeader } from '@autional-cn/ui';
 
@@ -144,13 +144,22 @@ export default function OpsPage() {
 				</Row>
 
 				<Card title="服务总览 (Grafana)" className="mb-6">
-					<iframe
-						src={ops.grafanaOverviewUrl}
-						width="100%"
-						height="500"
-						style={{ border: 'none' }}
-						title="Grafana 总览面板"
-					/>
+					{isGrafanaConfigured ? (
+						<iframe
+							src={ops.grafanaOverviewUrl}
+							width="100%"
+							height="500"
+							style={{ border: 'none' }}
+							title="Grafana 总览面板"
+						/>
+					) : (
+						<Alert
+							type="info"
+							showIcon
+							message="Grafana 未接入"
+							description="当前环境未配置 Grafana 面板地址；接入后在此展示服务总览面板。"
+						/>
+					)}
 				</Card>
 
 				{selectedService && (
@@ -159,13 +168,22 @@ export default function OpsPage() {
 						className="mb-6"
 						extra={<Tag color="blue">Grafana</Tag>}
 					>
-						<iframe
-							src={ops.grafanaServicesUrl(selectedService)}
-							width="100%"
-							height="400"
-							style={{ border: 'none' }}
-							title={`Grafana ${selectedService} 面板`}
-						/>
+						{isGrafanaConfigured ? (
+							<iframe
+								src={ops.grafanaServicesUrl(selectedService)}
+								width="100%"
+								height="400"
+								style={{ border: 'none' }}
+								title={`Grafana ${selectedService} 面板`}
+							/>
+						) : (
+							<Alert
+								type="info"
+								showIcon
+								message="Grafana 未接入"
+								description="当前环境未配置 Grafana 面板地址；接入后在此展示该服务面板。"
+							/>
+						)}
 					</Card>
 				)}
 			</Spin>

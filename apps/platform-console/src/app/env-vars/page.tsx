@@ -7,7 +7,8 @@ import { EyeOutlined, EyeInvisibleOutlined, SearchOutlined } from '@ant-design/i
 import { useQuery } from '@tanstack/react-query';
 import { usePageTitle } from '@autional-cn/shared';
 import { adminEnvVars } from '@autional-cn/shared/generated/api';
-import { ConsolePageHeader, EmptyState, ErrorState } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState } from '@autional-cn/ui';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { queryKeys } from '@/lib/query-keys';
 
 interface EnvVarRecord {
@@ -124,11 +125,7 @@ export default function EnvVarsPage() {
 				)}
 
 				{!isLoading && error && (
-					<ErrorState
-						title="加载环境变量失败"
-						message="请检查网络连接后重试。"
-						onRetry={() => refetch()}
-					/>
+					<ApiErrorState error={error} title="加载环境变量失败" onRetry={() => refetch()} />
 				)}
 
 				{!isLoading && !error && (

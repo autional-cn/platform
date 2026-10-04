@@ -2,37 +2,67 @@
 
 import React, { useState, useEffect } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
-import { Card, Form, InputNumber, Switch, Button, message, Spin, TimePicker, Space, Statistic, Row, Col, Tabs, Tag } from 'antd';
+import {
+	Card,
+	Form,
+	InputNumber,
+	Switch,
+	Button,
+	message,
+	Spin,
+	TimePicker,
+	Space,
+	Statistic,
+	Row,
+	Col,
+	Tabs,
+	Tag,
+} from 'antd';
 import {
 	SafetyCertificateOutlined,
 	SaveOutlined,
 	ReloadOutlined,
 	UserOutlined,
-	AuditOutlined,
 } from '@ant-design/icons';
 import { handleApiError } from '@/lib/error-handler';
-import { apiClient, extractList, extractItem } from '@autional-cn/shared';
+import { AuthService, extractList, extractItem } from '@autional-cn/shared';
 import {
 	adminTenantsMinorsProtectionByTenants,
 	adminTenantsMinorsProtectionByTenantsPut,
 	adminUsers,
+	adminConsents,
 } from '@autional-cn/shared/generated/api';
+import type { UpdateMinorsProtectionConfigRequest } from '@autional-cn/shared/generated/types';
 import { ConsolePageHeader, SectionCard } from '@autional-cn/ui';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-const IDENTITY_API = '/admin';
+dayjs.extend(customParseFormat);
 
+// 响应经 shared client interceptor 统一 camelCase 化（api/client.ts），字段一律读 camelCase
 interface MinorsProtectionConfig {
-	tenant_id: string;
-	daily_usage_limit_min: number;
-	night_mode_start: string;
-	night_mode_end: string;
-	night_mode_enabled: boolean;
-	monthly_spend_limit: number;
-	live_stream_blocked_under_16: boolean;
-	content_filter_enabled: boolean;
-	child_default_max_privacy: boolean;
-	minor_data_retention_days: number;
+	dailyUsageLimitMin: number;
+	monthlySpendLimit: number;
+	nightModeEnabled: boolean;
+	nightModeStart: string;
+	nightModeEnd: string;
+	liveStreamBlockedUnder16: boolean;
+	contentFilterEnabled: boolean;
+	childDefaultMaxPrivacy: boolean;
+	minorDataRetentionDays: number;
+}
+
+interface MinorsFormValues {
+	daily_usage_limit_min?: number;
+	monthly_spend_limit?: number;
+	night_mode_enabled?: boolean;
+	night_mode_start?: dayjs.Dayjs;
+	night_mode_end?: dayjs.Dayjs;
+	live_stream_blocked_under16?: boolean;
+	content_filter_enabled?: boolean;
+	child_default_max_privacy?: boolean;
+	minor_data_retention_days?: number;
 }
 
 interface MinorUser {
@@ -77,43 +107,56 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function MinorsProtectionPage() {
 	const [config, setConfig] = useState<MinorsProtectionConfig | null>(null);
+	const [configError, setConfigError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [users, setUsers] = useState<MinorUser[]>([]);
 	const [usersLoading, setUsersLoading] = useState(false);
-	const [userTotal, setUserTotal] = useState(0);
+	const [usersError, setUsersError] = useState<Error | null>(null);
+	const [userTotal, setUserTotal] = useState<number | null>(null);
 	const [consents, setConsents] = useState<ConsentRecord[]>([]);
 	const [consentsLoading, setConsentsLoading] = useState(false);
+	const [consentsError, setConsentsError] = useState<Error | null>(null);
 	const [activeTab, setActiveTab] = useState('config');
 	const [form] = Form.useForm();
-	const tenantId = 'self';
 
 	useEffect(() => {
 		loadConfig();
+		loadUsers();
 	}, []);
 
 	const loadConfig = async () => {
+		const tenantId = AuthService.getCurrentTenantId();
+		if (!tenantId) {
+			setConfigError(new Error('当前会话缺少租户上下文，无法加载配置'));
+			setLoading(false);
+			return;
+		}
+		setLoading(true);
 		try {
-			const res = await adminTenantsMinorsProtectionByTenants(tenantId);
-			setConfig(res as MinorsProtectionConfig);
-			const d = res as MinorsProtectionConfig;
+			const res = (await adminTenantsMinorsProtectionByTenants(
+				tenantId,
+			)) as MinorsProtectionConfig;
+			setConfigError(null);
+			setConfig(res);
 			form.setFieldsValue({
-				daily_usage_limit_min: d.daily_usage_limit_min,
-				monthly_spend_limit: d.monthly_spend_limit,
-				night_mode_enabled: d.night_mode_enabled,
-				night_mode_start: d.night_mode_start
-					? dayjs(d.night_mode_start, 'HH:mm')
+				daily_usage_limit_min: res.dailyUsageLimitMin,
+				monthly_spend_limit: res.monthlySpendLimit,
+				night_mode_enabled: res.nightModeEnabled,
+				night_mode_start: res.nightModeStart
+					? dayjs(res.nightModeStart, 'HH:mm')
 					: dayjs('22:00', 'HH:mm'),
-				night_mode_end: d.night_mode_end
-					? dayjs(d.night_mode_end, 'HH:mm')
+				night_mode_end: res.nightModeEnd
+					? dayjs(res.nightModeEnd, 'HH:mm')
 					: dayjs('06:00', 'HH:mm'),
-				live_stream_blocked_under_16: d.live_stream_blocked_under_16,
-				content_filter_enabled: d.content_filter_enabled,
-				child_default_max_privacy: d.child_default_max_privacy,
-				minor_data_retention_days: d.minor_data_retention_days,
+				live_stream_blocked_under16: res.liveStreamBlockedUnder16,
+				content_filter_enabled: res.contentFilterEnabled,
+				child_default_max_privacy: res.childDefaultMaxPrivacy,
+				minor_data_retention_days: res.minorDataRetentionDays,
 			});
-		} catch {
-			// config may not exist yet, will be auto-created on first write
+		} catch (err) {
+			setConfig(null);
+			setConfigError(err instanceof Error ? err : new Error('加载未成年人保护配置失败'));
 		} finally {
 			setLoading(false);
 		}
@@ -122,11 +165,14 @@ export default function MinorsProtectionPage() {
 	const loadUsers = async () => {
 		setUsersLoading(true);
 		try {
-			const data = await adminUsers({ is_minor: 'true', page_size: 100 } as any);
-			setUsers(extractList(data));
-			setUserTotal(extractItem<{ total?: number }>(data)?.total || 0);
+			// generated adminUsers 签名缺 is_minor/page_size（后端 UserListRequest 实收，契约漂移待 W2 对齐）
+			const data = await adminUsers({ page_size: 100, is_minor: true } as any);
+			setUsersError(null);
+			const list = extractList<MinorUser>(data);
+			setUsers(list);
+			setUserTotal(extractItem<{ total?: number }>(data)?.total ?? list.length);
 		} catch (err) {
-			handleApiError(err, '加载未成年用户列表失败');
+			setUsersError(err instanceof Error ? err : new Error('加载未成年用户列表失败'));
 		} finally {
 			setUsersLoading(false);
 		}
@@ -135,10 +181,11 @@ export default function MinorsProtectionPage() {
 	const loadConsents = async () => {
 		setConsentsLoading(true);
 		try {
-			const res = await apiClient.get(`${IDENTITY_API}/consents`, { params: { page_size: 100 } }); // @generated-api-exempt — no generated endpoint
-			setConsents(extractList(res.data));
-		} catch {
-			// consent API may be separate
+			const data = await adminConsents({ page_size: 100 });
+			setConsentsError(null);
+			setConsents(extractList<ConsentRecord>(data));
+		} catch (err) {
+			setConsentsError(err instanceof Error ? err : new Error('加载家长同意记录失败'));
 		} finally {
 			setConsentsLoading(false);
 		}
@@ -146,26 +193,36 @@ export default function MinorsProtectionPage() {
 
 	const handleTabChange = (key: string) => {
 		setActiveTab(key);
-		if (key === 'users' && users.length === 0) loadUsers();
-		if (key === 'consents' && consents.length === 0) loadConsents();
+		if (key === 'users' && users.length === 0 && !usersError) loadUsers();
+		if (key === 'consents' && consents.length === 0 && !consentsError) loadConsents();
 	};
 
 	const handleSave = async () => {
+		const tenantId = AuthService.getCurrentTenantId();
+		if (!tenantId) {
+			message.error('当前会话缺少租户上下文，无法保存配置');
+			return;
+		}
+		let values: MinorsFormValues;
 		try {
-			const values = await form.validateFields();
-			setSaving(true);
-			const payload: Record<string, unknown> = {};
-			payload.daily_usage_limit_min = values.daily_usage_limit_min;
-			payload.monthly_spend_limit = values.monthly_spend_limit;
-			payload.night_mode_enabled = values.night_mode_enabled;
-			payload.live_stream_blocked_under_16 = values.live_stream_blocked_under_16;
-			payload.content_filter_enabled = values.content_filter_enabled;
-			payload.child_default_max_privacy = values.child_default_max_privacy;
-			payload.minor_data_retention_days = values.minor_data_retention_days;
-			if (values.night_mode_start)
-				payload.night_mode_start = values.night_mode_start.format('HH:mm');
-			if (values.night_mode_end) payload.night_mode_end = values.night_mode_end.format('HH:mm');
-			await adminTenantsMinorsProtectionByTenantsPut(tenantId, payload as any);
+			values = (await form.validateFields()) as MinorsFormValues;
+		} catch {
+			return;
+		}
+		setSaving(true);
+		try {
+			const payload: UpdateMinorsProtectionConfigRequest = {
+				dailyUsageLimitMin: values.daily_usage_limit_min,
+				monthlySpendLimit: values.monthly_spend_limit,
+				nightModeEnabled: values.night_mode_enabled,
+				liveStreamBlockedUnder16: values.live_stream_blocked_under16,
+				contentFilterEnabled: values.content_filter_enabled,
+				childDefaultMaxPrivacy: values.child_default_max_privacy,
+				minorDataRetentionDays: values.minor_data_retention_days,
+			};
+			if (values.night_mode_start) payload.nightModeStart = values.night_mode_start.format('HH:mm');
+			if (values.night_mode_end) payload.nightModeEnd = values.night_mode_end.format('HH:mm');
+			await adminTenantsMinorsProtectionByTenantsPut(tenantId, payload);
 			message.success('未成年人保护配置已更新');
 			loadConfig();
 		} catch (err) {
@@ -218,15 +275,19 @@ export default function MinorsProtectionPage() {
 			<Row gutter={16} style={{ marginBottom: 24 }}>
 				<Col span={8}>
 					<Card>
-						<Statistic title="未成年用户数" value={userTotal} prefix={<UserOutlined />} />
+						<Statistic
+							title="未成年用户数"
+							value={userTotal ?? '—'}
+							prefix={<UserOutlined />}
+						/>
 					</Card>
 				</Col>
 				<Col span={8}>
 					<Card>
 						<Statistic
 							title="每日时长限制"
-							value={config?.daily_usage_limit_min || 0}
-							suffix="分钟"
+							value={config ? config.dailyUsageLimitMin : '—'}
+							suffix={config ? '分钟' : undefined}
 						/>
 					</Card>
 				</Col>
@@ -235,9 +296,11 @@ export default function MinorsProtectionPage() {
 						<Statistic
 							title="宵禁"
 							value={
-								config?.night_mode_enabled
-									? `${config.night_mode_start}-${config.night_mode_end}`
-									: '关闭'
+								config
+									? config.nightModeEnabled
+										? `${config.nightModeStart}-${config.nightModeEnd}`
+										: '关闭'
+									: '—'
 							}
 							prefix={<SafetyCertificateOutlined />}
 						/>
@@ -252,7 +315,13 @@ export default function MinorsProtectionPage() {
 					{
 						key: 'config',
 						label: '策略配置',
-						children: (
+						children: configError ? (
+							<ApiErrorState
+								error={configError}
+								title="加载未成年人保护配置失败"
+								onRetry={loadConfig}
+							/>
+						) : (
 							<>
 								<SectionCard title="防沉迷与宵禁">
 									<Form form={form} layout="vertical" style={{ maxWidth: 600 }}>
@@ -263,7 +332,11 @@ export default function MinorsProtectionPage() {
 										>
 											<InputNumber min={0} max={1440} style={{ width: '100%' }} />
 										</Form.Item>
-										<Form.Item name="night_mode_enabled" label="启用宵禁" valuePropName="checked">
+										<Form.Item
+											name="night_mode_enabled"
+											label="启用宵禁"
+											valuePropName="checked"
+										>
 											<Switch />
 										</Form.Item>
 										<Form.Item
@@ -325,7 +398,10 @@ export default function MinorsProtectionPage() {
 											>
 												<Switch />
 											</Form.Item>
-											<Form.Item name="minor_data_retention_days" label="未成年人数据保留天数">
+											<Form.Item
+												name="minor_data_retention_days"
+												label="未成年人数据保留天数"
+											>
 												<InputNumber min={30} max={3650} style={{ width: '100%' }} />
 											</Form.Item>
 										</Form>
@@ -333,7 +409,11 @@ export default function MinorsProtectionPage() {
 								</div>
 
 								<div style={{ marginTop: 24, textAlign: 'right' }}>
-									<Button onClick={loadConfig} icon={<ReloadOutlined />} style={{ marginRight: 8 }}>
+									<Button
+										onClick={loadConfig}
+										icon={<ReloadOutlined />}
+										style={{ marginRight: 8 }}
+									>
 										重置
 									</Button>
 									<Button
@@ -350,8 +430,14 @@ export default function MinorsProtectionPage() {
 					},
 					{
 						key: 'users',
-						label: `未成年用户 (${userTotal})`,
-						children: (
+						label: `未成年用户 (${userTotal ?? '—'})`,
+						children: usersError ? (
+							<ApiErrorState
+								error={usersError}
+								title="加载未成年用户列表失败"
+								onRetry={loadUsers}
+							/>
+						) : (
 							<DataTable
 								columns={userColumns}
 								dataSource={users}
@@ -359,7 +445,7 @@ export default function MinorsProtectionPage() {
 								loading={usersLoading}
 								pagination={{
 									pageSize: 20,
-									total: userTotal,
+									total: userTotal ?? users.length,
 									showSizeChanger: true,
 									showTotal: (t) => `共 ${t} 人`,
 								}}
@@ -370,7 +456,13 @@ export default function MinorsProtectionPage() {
 					{
 						key: 'consents',
 						label: '家长同意管理',
-						children: (
+						children: consentsError ? (
+							<ApiErrorState
+								error={consentsError}
+								title="加载家长同意记录失败"
+								onRetry={loadConsents}
+							/>
+						) : (
 							<DataTable
 								columns={[
 									{
@@ -400,7 +492,12 @@ export default function MinorsProtectionPage() {
 										key: 'verified',
 										render: (v: boolean) => (v ? <Tag color="green">是</Tag> : <Tag>否</Tag>),
 									},
-									{ title: '记录时间', dataIndex: 'recorded_at', key: 'recorded_at', width: 180 },
+									{
+										title: '记录时间',
+										dataIndex: 'recordedAt',
+										key: 'recorded_at',
+										width: 180,
+									},
 								]}
 								dataSource={consents}
 								rowKey="id"

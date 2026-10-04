@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, Statistic, Tag, Descriptions, Spin } from 'antd';
+import { Card, Tag, Descriptions } from 'antd';
 import {
 	CloudServerOutlined,
 	CheckCircleOutlined,
@@ -12,7 +12,8 @@ import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { ops } from '@/lib/api.generated';
-import { PageLoading, PageError } from '@autional-cn/ui/antd';
+import { PageLoading } from '@autional-cn/ui/antd';
+import { ApiErrorState } from '@/components/ApiErrorState';
 
 interface RateLimitData {
 	available: boolean;
@@ -36,20 +37,26 @@ export default function SystemRateLimitsPage() {
 	});
 
 	if (isLoading) return <PageLoading />;
-	if (error)
-		return (
-			<PageError message={t('rateLimits.loadError', '加载限流状态失败')} retry={() => refetch()} />
-		);
-	if (!data) return null;
 
 	return (
 		<div>
 			<ConsolePageHeader
 				title={t('rateLimits.title', '限流状态')}
-				description={t('rateLimits.subtitle', '网关限流器提供方状态')}
+				description={t(
+					'rateLimits.subtitle',
+					'网关限流器提供方（provider）可用性状态；限流策略与命中统计暂未接入。',
+				)}
 			/>
 
-			<Spin spinning={false}>
+			{error ? (
+				<div className="mt-6">
+					<ApiErrorState
+						error={error}
+						title={t('rateLimits.loadError', '加载限流状态失败')}
+						onRetry={() => refetch()}
+					/>
+				</div>
+			) : !data ? null : (
 				<Card
 					className="mt-6 max-w-lg"
 					title={
@@ -78,7 +85,7 @@ export default function SystemRateLimitsPage() {
 						</Descriptions.Item>
 					</Descriptions>
 				</Card>
-			</Spin>
+			)}
 		</div>
 	);
 }

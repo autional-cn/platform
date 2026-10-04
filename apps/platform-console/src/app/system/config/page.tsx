@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { ConsolePageHeader } from '@autional-cn/ui';
-import { Card, Tabs, Tag, Input, Descriptions, Badge, Alert, Tooltip, Spin } from 'antd';
+import { Card, Tabs, Tag, Input, Alert, Tooltip, Badge } from 'antd';
 import {
 	CloudServerOutlined,
 	DatabaseOutlined,
@@ -11,66 +11,29 @@ import {
 	ExperimentOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import {
 	useServiceList,
 	useEnvVars,
 	useFeatureFlags,
-	useServiceDetail,
 	infraComponents,
-	getStatusColor,
 	getStatusLabel,
 	getFeatureLabel,
-	type ServiceInfo,
 	type InfraComponent,
 	type EnvVarItem,
 	type FeatureFlagItem,
-	type ServiceDetail,
 	type ServiceStatus,
 	type FeatureStatus,
 } from '@/hooks/use-system-config';
 
 const { Search } = Input;
 
-function ServiceExpandableRow({ serviceKey }: { serviceKey: string }) {
-	const { data: detail, isLoading } = useServiceDetail(serviceKey);
-
-	if (isLoading || !detail) {
-		return (
-			<div className="p-4 bg-neutral-50 rounded">
-				<Spin size="small" />
-			</div>
-		);
-	}
-
-	return (
-		<div className="p-4 bg-neutral-50 rounded">
-			<Descriptions title="运行时详情" column={3} size="small" bordered>
-				<Descriptions.Item label="版本">{detail.version}</Descriptions.Item>
-				<Descriptions.Item label="Go 版本">{detail.goVersion}</Descriptions.Item>
-				<Descriptions.Item label="运行时长">{detail.uptime}</Descriptions.Item>
-				<Descriptions.Item label="数据库状态">
-					<Tag color={getStatusColor(detail.dbStatus)}>{getStatusLabel(detail.dbStatus)}</Tag>
-				</Descriptions.Item>
-				<Descriptions.Item label="缓存状态">
-					<Tag color={getStatusColor(detail.cacheStatus)}>{getStatusLabel(detail.cacheStatus)}</Tag>
-				</Descriptions.Item>
-				<Descriptions.Item label="消息队列状态">
-					<Tag color={getStatusColor(detail.mqStatus)}>{getStatusLabel(detail.mqStatus)}</Tag>
-				</Descriptions.Item>
-				<Descriptions.Item label="最近部署">{detail.lastDeploy}</Descriptions.Item>
-				<Descriptions.Item label="HTTP 端口">
-					<code>{serviceKey.split('-')[0]}</code>
-				</Descriptions.Item>
-				<Descriptions.Item label="gRPC 端口">
-					<code>—</code>
-				</Descriptions.Item>
-			</Descriptions>
-		</div>
-	);
-}
-
 function ServicesTab() {
-	const { data: serviceList, isLoading } = useServiceList();
+	const { data: serviceList, isLoading, error, refetch } = useServiceList();
+
+	if (error) {
+		return <ApiErrorState error={error} title="加载服务列表失败" onRetry={() => refetch()} />;
+	}
 
 	const columns = [
 		{
@@ -78,9 +41,7 @@ function ServicesTab() {
 			dataIndex: 'name',
 			key: 'name',
 			width: 200,
-			render: (text: string, record: ServiceInfo) => (
-				<span className="font-mono text-sm">{text}</span>
-			),
+			render: (text: string) => <span className="font-mono text-sm">{text}</span>,
 		},
 		{
 			title: 'HTTP 端口',
@@ -94,7 +55,7 @@ function ServicesTab() {
 			dataIndex: 'grpcPort',
 			key: 'grpcPort',
 			width: 100,
-			render: (v: number) => <code>{v}</code>,
+			render: (v: number) => <code>{v || '—'}</code>,
 		},
 		{
 			title: '分类',
@@ -110,15 +71,7 @@ function ServicesTab() {
 			width: 100,
 			render: (status: ServiceStatus) => (
 				<Badge
-					status={
-						status === 'running'
-							? 'success'
-							: status === 'degraded'
-								? 'warning'
-								: status === 'stopped'
-									? 'error'
-									: 'default'
-					}
+					status={status === 'healthy' ? 'success' : status === 'unhealthy' ? 'error' : 'default'}
 					text={getStatusLabel(status)}
 				/>
 			),
@@ -136,10 +89,6 @@ function ServicesTab() {
 			columns={columns}
 			dataSource={serviceList ?? []}
 			loading={isLoading}
-			expandable={{
-				expandedRowRender: (record) => <ServiceExpandableRow serviceKey={record.key} />,
-				rowExpandable: () => true,
-			}}
 			pagination={false}
 			size="middle"
 			locale={{ emptyText: '暂无服务数据' }}
@@ -196,26 +145,6 @@ function InfrastructureTab() {
 			),
 		},
 		{
-			title: '状态',
-			dataIndex: 'status',
-			key: 'status',
-			width: 100,
-			render: (status: ServiceStatus) => (
-				<Badge
-					status={
-						status === 'running'
-							? 'success'
-							: status === 'degraded'
-								? 'warning'
-								: status === 'stopped'
-									? 'error'
-									: 'default'
-					}
-					text={getStatusLabel(status)}
-				/>
-			),
-		},
-		{
 			title: '说明',
 			dataIndex: 'description',
 			key: 'description',
@@ -223,20 +152,28 @@ function InfrastructureTab() {
 	];
 
 	return (
-		<DataTable
-			rowKey="key"
-			columns={columns}
-			dataSource={infraComponents}
-			pagination={false}
-			size="middle"
-			locale={{ emptyText: '暂无基础设施数据' }}
-		/>
+		<div>
+			<Alert
+				message="未接入"
+				description="中间件健康数据源尚未接入；下表为静态配置参考，非实时状态。"
+				type="warning"
+				showIcon
+				className="mb-4"
+			/>
+			<DataTable
+				rowKey="key"
+				columns={columns}
+				dataSource={infraComponents}
+				pagination={false}
+				size="middle"
+			/>
+		</div>
 	);
 }
 
 function EnvironmentVariablesTab() {
 	const [searchText, setSearchText] = useState('');
-	const { data: envVarList, isLoading } = useEnvVars();
+	const { data: envVarList, isLoading, error, refetch } = useEnvVars();
 
 	const filtered = useMemo(() => {
 		if (!envVarList) return [];
@@ -245,10 +182,14 @@ function EnvironmentVariablesTab() {
 		return envVarList.filter(
 			(item) =>
 				item.name.toLowerCase().includes(lower) ||
-				item.description.toLowerCase().includes(lower) ||
+				item.source.toLowerCase().includes(lower) ||
 				item.category.toLowerCase().includes(lower),
 		);
 	}, [searchText, envVarList]);
+
+	if (error) {
+		return <ApiErrorState error={error} title="加载环境变量失败" onRetry={() => refetch()} />;
+	}
 
 	const columns = [
 		{
@@ -280,9 +221,9 @@ function EnvironmentVariablesTab() {
 			render: (text: string) => <Tag>{text}</Tag>,
 		},
 		{
-			title: '描述',
-			dataIndex: 'description',
-			key: 'description',
+			title: '来源',
+			dataIndex: 'source',
+			key: 'source',
 		},
 		{
 			title: '敏感',
@@ -298,7 +239,7 @@ function EnvironmentVariablesTab() {
 		<div>
 			<div className="mb-4">
 				<Search
-					placeholder="搜索环境变量名称、描述或分类..."
+					placeholder="搜索环境变量名称、来源或分类..."
 					allowClear
 					onChange={(e) => setSearchText(e.target.value)}
 					value={searchText}
@@ -324,8 +265,8 @@ function EnvironmentVariablesTab() {
 }
 
 function FeatureFlagsTab() {
-	const { data: flags, isLoading: flagsLoading } = useFeatureFlags();
-	const { data: serviceList, isLoading: svcLoading } = useServiceList();
+	const { data: flags, isLoading: flagsLoading, error: flagsError, refetch: refetchFlags } = useFeatureFlags();
+	const { data: serviceList, isLoading: svcLoading, error: svcError, refetch: refetchServices } = useServiceList();
 
 	const isLoading = flagsLoading || svcLoading;
 
@@ -378,6 +319,20 @@ function FeatureFlagsTab() {
 			})),
 		];
 	}, [serviceList]);
+
+	const error = flagsError ?? svcError;
+	if (error) {
+		return (
+			<ApiErrorState
+				error={error}
+				title="加载功能标志失败"
+				onRetry={() => {
+					refetchFlags();
+					refetchServices();
+				}}
+			/>
+		);
+	}
 
 	return (
 		<div>

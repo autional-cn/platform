@@ -50,9 +50,6 @@ export const ROUTE = {
 	INFRA_CREDENTIALS: '/infra-credentials',
 	IMPERSONATE: '/impersonate',
 
-	// ===== 安全 =====
-	SECURITY_CAPTCHA: '/security/captcha',
-
 	// ===== 设置 =====
 	SETTINGS: '/settings',
 

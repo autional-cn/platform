@@ -13,7 +13,8 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { usePageTitle } from '@autional-cn/shared';
 import { adminInfraCredentials } from '@autional-cn/shared/generated/api';
-import { ConsolePageHeader, EmptyState, ErrorState, SectionCard } from '@autional-cn/ui';
+import { ConsolePageHeader, EmptyState, SectionCard } from '@autional-cn/ui';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { queryKeys } from '@/lib/query-keys';
 
 interface CredentialRecord {
@@ -133,11 +134,7 @@ export default function InfraCredentialsPage() {
 				)}
 
 				{!isLoading && error && (
-					<ErrorState
-						title="加载基础设施凭据失败"
-						message="请检查网络连接后重试。"
-						onRetry={() => refetch()}
-					/>
+					<ApiErrorState error={error} title="加载基础设施凭据失败" onRetry={() => refetch()} />
 				)}
 
 				{!isLoading && !error && data.length === 0 && (

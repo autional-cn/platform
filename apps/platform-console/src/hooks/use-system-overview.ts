@@ -11,28 +11,25 @@ export type ServiceCategory =
 	| 'user-data'
 	| 'business-platform'
 	| 'operations'
+	| 'access-control'
 	| 'infrastructure';
 export type ServiceStatus = 'healthy' | 'unhealthy' | 'unknown';
-export type InfraStatus = ServiceStatus;
 
 export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
 	authentication: '认证',
 	'user-data': '用户数据',
 	'business-platform': '业务平台',
 	operations: '运营',
+	'access-control': '访问控制',
 	infrastructure: '基础设施',
 };
 
 export interface ServiceInfo {
 	name: string;
 	port: number;
+	grpcPort: number;
 	status: ServiceStatus;
 	category: ServiceCategory;
-}
-
-export interface InfraComponent {
-	name: string;
-	status: InfraStatus;
 }
 
 export interface TenantOverview {
@@ -42,24 +39,15 @@ export interface TenantOverview {
 	planDistribution: { plan: string; count: number }[];
 }
 
-export interface SecurityPosture {
-	passwordsExpired: number;
-	weakPasswords: number;
-	expiringSecrets: number;
-	passwordPepperEnabled: boolean;
-	hibpEnabled: boolean;
-}
-
-export interface SystemOverview {
+export interface ServicesOverview {
 	services: ServiceInfo[];
-	infrastructure: InfraComponent[];
-	tenants: TenantOverview;
-	security: SecurityPosture;
+	healthAvailable: boolean;
 }
 
 interface RuntimeService {
 	name: string;
 	port: number;
+	grpcPort?: number;
 	category: string;
 }
 
@@ -73,39 +61,12 @@ interface HealthItem {
 	port: number;
 }
 
-const PLACEHOLDER_INFRA: InfraComponent[] = [
-	{ name: 'PostgreSQL', status: 'unknown' },
-	{ name: 'Redis', status: 'unknown' },
-	{ name: 'RabbitMQ', status: 'unknown' },
-	{ name: 'MongoDB', status: 'unknown' },
-	{ name: 'MinIO', status: 'unknown' },
-];
-
-const PLACEHOLDER_TENANTS: TenantOverview = {
-	total: 0,
-	active: 0,
-	suspended: 0,
-	planDistribution: [
-		{ plan: 'Free', count: 0 },
-		{ plan: 'Starter', count: 0 },
-		{ plan: 'Professional', count: 0 },
-		{ plan: 'Enterprise', count: 0 },
-	],
-};
-
-const PLACEHOLDER_SECURITY: SecurityPosture = {
-	passwordsExpired: 0,
-	weakPasswords: 0,
-	expiringSecrets: 0,
-	passwordPepperEnabled: false,
-	hibpEnabled: false,
-};
-
 const VALID_CATEGORIES: Set<string> = new Set([
 	'authentication',
 	'user-data',
 	'business-platform',
 	'operations',
+	'access-control',
 	'infrastructure',
 ]);
 
@@ -123,73 +84,74 @@ function normalizeCategory(raw: string | undefined): ServiceCategory {
 	return 'infrastructure';
 }
 
-export function useSystemOverview() {
-	return useQuery<SystemOverview>({
-		queryKey: queryKeys.systemOverview.all,
+export function useSystemServices() {
+	return useQuery<ServicesOverview>({
+		queryKey: queryKeys.systemOverview.services,
 		staleTime: 30000,
 		queryFn: async () => {
-			// 不写初值：try 与 catch 都必然赋值，初值从来没被读到过
-			// （ESLint 10 的 no-useless-assignment 抓到的就是这一处）
-			let runtimeServices: RuntimeService[];
-			try {
-				const runtimeData = await adminSystemRuntime();
-				const extracted = extractItem<RuntimeResponse>({ data: runtimeData });
-				runtimeServices = extracted?.services ?? [];
-			} catch {
-				runtimeServices = [];
+			const runtimeData = await adminSystemRuntime();
+			const extracted = extractItem<RuntimeResponse>(runtimeData);
+			if (!extracted || !Array.isArray(extracted.services)) {
+				throw new Error('系统运行时数据缺失');
 			}
 
-			let healthMap: Record<string, string> = {};
+			const healthMap: Record<string, string> = {};
+			let healthAvailable = true;
 			try {
 				const healthRes = await developerStatus();
-				const healthData = extractItem<any>(healthRes);
+				const healthData = extractItem<{ services?: HealthItem[] }>(healthRes);
 				if (healthData?.services && Array.isArray(healthData.services)) {
-					for (const svc of healthData.services as HealthItem[]) {
+					for (const svc of healthData.services) {
 						healthMap[svc.name] = svc.status;
 					}
+				} else {
+					healthAvailable = false;
 				}
 			} catch {
-				healthMap = {};
-			}
-
-			const services: ServiceInfo[] = runtimeServices.map((svc) => ({
-				name: svc.name,
-				port: svc.port,
-				status: healthMap[svc.name] ? mapHealthStatus(healthMap[svc.name]) : 'unknown',
-				category: normalizeCategory(svc.category),
-			}));
-
-			// 从真实 API 获取租户统计数据
-			let tenants = PLACEHOLDER_TENANTS;
-			try {
-				const statsRes = await getTenantStats();
-				const data = extractItem<{ stats: TenantOverview }>(statsRes);
-				if (data?.stats) {
-					tenants = { ...data.stats };
-					// API 返回 by_plan 对象 {free:12, platform:1}，页面期望 planDistribution 数组
-					// （2026-08-16 修复：原直接赋 data.stats 导致 planDistribution undefined → .map 崩溃）
-					const statsObj = data.stats as unknown as Record<string, unknown>;
-					// interceptor 已 camelCase（by_plan→byPlan），两种都兼容
-					const byPlan =
-						(statsObj.byPlan as Record<string, number> | undefined) ??
-						(statsObj.by_plan as Record<string, number> | undefined);
-					if (byPlan && typeof byPlan === 'object') {
-						tenants.planDistribution = Object.entries(byPlan).map(([plan, count]) => ({
-							plan,
-							count,
-						}));
-					}
-				}
-			} catch {
-				// API 不可用时使用占位符
+				healthAvailable = false;
 			}
 
 			return {
-				services,
-				infrastructure: PLACEHOLDER_INFRA,
-				tenants,
-				security: PLACEHOLDER_SECURITY,
+				services: extracted.services.map((svc) => ({
+					name: svc.name,
+					port: svc.port,
+					grpcPort: svc.grpcPort ?? 0,
+					status: healthMap[svc.name] ? mapHealthStatus(healthMap[svc.name]) : 'unknown',
+					category: normalizeCategory(svc.category),
+				})),
+				healthAvailable,
 			};
+		},
+	});
+}
+
+export function useSystemTenants() {
+	return useQuery<TenantOverview>({
+		queryKey: queryKeys.systemOverview.tenants,
+		staleTime: 30000,
+		queryFn: async () => {
+			const statsRes = await getTenantStats();
+			const data = extractItem<{ stats: TenantOverview }>(statsRes);
+			if (!data?.stats) {
+				throw new Error('租户统计数据缺失');
+			}
+
+			const tenants: TenantOverview = {
+				...data.stats,
+				planDistribution: [],
+			};
+			// API 返回 by_plan 对象 {free:12, platform:1}，页面期望 planDistribution 数组
+			const statsObj = data.stats as unknown as Record<string, unknown>;
+			const byPlan =
+				(statsObj.byPlan as Record<string, number> | undefined) ??
+				(statsObj.by_plan as Record<string, number> | undefined);
+			if (byPlan && typeof byPlan === 'object') {
+				tenants.planDistribution = Object.entries(byPlan).map(([plan, count]) => ({
+					plan,
+					count,
+				}));
+			}
+			return tenants;
 		},
 	});
 }
