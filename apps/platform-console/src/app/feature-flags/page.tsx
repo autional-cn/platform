@@ -11,7 +11,7 @@ import {
 	MinusOutlined,
 } from '@ant-design/icons';
 import { usePageTitle } from '@autional-cn/shared';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { adminFeatureFlags } from '@autional-cn/shared/generated/api';
 import { useQuery } from '@tanstack/react-query';
 import { ApiErrorState } from '@/components/ApiErrorState';
@@ -145,6 +145,15 @@ export default function FeatureFlagsPage() {
 					description="跨服务功能开关配置矩阵 —— 全部 21 个服务总览"
 				/>
 			</div>
+
+			{/* PL-55：标明生效范围，避免误读为租户级开关（实为网关内置清单） */}
+			<Alert
+				variant="info"
+				title="生效范围：当前部署（全部服务，非租户级）"
+				className="mb-4"
+			>
+				本矩阵为网关内置的服务能力清单，随部署版本生效、所有租户共用，仅供总览、不在此页变更。
+			</Alert>
 
 			{error && !isLoading ? (
 				<ApiErrorState error={error} title="加载功能开关失败" onRetry={() => refetch()} />

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Space, Modal, Form, Input, Select, Popconfirm, Descriptions } from 'antd';
 import { message } from '@/lib/antd-app';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
@@ -37,6 +37,17 @@ export default function IncidentsPage() {
 		refetch,
 	} = useIncidents(Object.keys(filters).length > 0 ? filters : undefined);
 	const { data: drawerIncident, isLoading: drawerLoading } = useIncident(drawerId || '');
+
+	// PL-22：详情记录切换时重置「添加进展」表单（清掉上一条记录的草稿 / 状态默认值）。
+	// 仅靠 Form key 重建不够：新表单子树先渲染、旧字段卸载清理后，无 initialValue 的
+	// 字段（进展描述）不会再重渲染，DOM 会残留上一条的草稿。resetFields 会广播 reset
+	// 事件，令所有字段强制刷新并回落到各自 initialValue。
+	useEffect(() => {
+		if (drawerIncident?.id) {
+			updateForm.resetFields();
+		}
+	}, [drawerIncident?.id, updateForm]);
+
 	const createMut = useCreateIncident();
 	const updateMut = useUpdateIncident();
 	const deleteMut = useDeleteIncident();
@@ -324,7 +335,13 @@ export default function IncidentsPage() {
 						)}
 
 						<h3 className="text-lg font-semibold mb-3">添加进展</h3>
-						<Form form={updateForm} layout="vertical" onFinish={handleAddUpdate}>
+						{/* PL-22：preserve=false —— 抽屉关闭卸载时清空字段值，避免草稿在重开时复活 */}
+						<Form
+							form={updateForm}
+							layout="vertical"
+							onFinish={handleAddUpdate}
+							preserve={false}
+						>
 							<Form.Item name="message" label="进展描述" rules={[{ required: true }]}>
 								<TextArea rows={3} placeholder="输入事件进展信息" />
 							</Form.Item>

@@ -2,6 +2,7 @@
 import { useMemo } from 'react';
 import { useCurrentTenantId } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
+import { Alert } from '@autional-cn/ui';
 import { Card, Switch, Space, App, Typography, Spin, Tag } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -111,6 +112,14 @@ export default function FeatureGatesPage() {
 	return (
 		<div style={{ padding: 24 }}>
 			<Title level={3}>功能开关</Title>
+			{/* PL-55：标明生效范围，避免误以为改的是平台全局（判定为「当前租户」） */}
+			<Alert
+				variant="info"
+				title={`生效范围：当前租户${tenantId ? `（${tenantId}）` : ''}`}
+				className="mb-4"
+			>
+				开关判定按当前租户生效：先取套餐默认权益，存在租户覆盖时以覆盖为准。
+			</Alert>
 			<Space direction="vertical" size="large" style={{ width: '100%' }}>
 				<Card title="套餐能力">
 					<DataTable

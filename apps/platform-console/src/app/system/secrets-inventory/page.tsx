@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, Statistic, Tag, Badge, Input, Select, Row, Col, Tabs, Modal, Typography, Space, Button, Descriptions, Tooltip } from 'antd';
+import { Card, Statistic, Tag, Badge, Input, Select, Row, Col, Tabs, Modal, Typography, Space, Button, Descriptions, Tooltip, Popconfirm } from 'antd';
 import { message, modal } from '@/lib/antd-app';
 import {
 	SearchOutlined,
@@ -20,6 +20,7 @@ import {
 	SafetyOutlined,
 	CloudServerOutlined,
 	LoadingOutlined,
+	CopyOutlined,
 } from '@ant-design/icons';
 import { PageLoading, PageError, DataTable } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
@@ -31,6 +32,7 @@ import {
 	useSecretsInventoryInfrastructure,
 	useSecretsInventoryApiKeys,
 	useSecretsInventoryOAuth,
+	useRotateOAuthClientSecret,
 	type SecretKVRecord,
 	type EncryptionKeyRecord,
 	type JwtKeyRecord,
@@ -38,6 +40,7 @@ import {
 	type ApiKeySummaryRecord,
 	type OAuthSecretRecord,
 } from '@/hooks/use-secrets-inventory';
+import { handleApiError } from '@/lib/error-handler';
 import {
 	useRotateSecret,
 	useRevokeSecret,
@@ -70,6 +73,8 @@ export default function SystemSecretsInventoryPage() {
 	const [rotateModalVisible, setRotateModalVisible] = useState(false);
 	const [rotateTarget, setRotateTarget] = useState<SecretKVRecord | null>(null);
 	const [rotateNewValue, setRotateNewValue] = useState('');
+	const [oauthRotateTarget, setOauthRotateTarget] = useState<OAuthSecretRecord | null>(null);
+	const [oauthNewSecret, setOauthNewSecret] = useState<string | null>(null);
 
 	const {
 		data: overview,
@@ -118,6 +123,7 @@ export default function SystemSecretsInventoryPage() {
 	const revokeMutation = useRevokeSecret();
 	const deleteMutation = useDeleteSecret();
 	const revealValueMutation = useSecretVersionValue();
+	const rotateOAuthMutation = useRotateOAuthClientSecret();
 
 	const filteredKv = useMemo(() => {
 		let result = kvData;
@@ -241,6 +247,32 @@ export default function SystemSecretsInventoryPage() {
 			);
 		}
 	}, [rotateTarget, rotateNewValue, rotateMutation, refetchKv]);
+
+	// PL-63：OAuth 客户端密钥轮换（新密钥仅此一次返回；失败走统一错误处理）
+	const handleRotateOAuth = useCallback(
+		async (record: OAuthSecretRecord) => {
+			setOauthRotateTarget(record);
+			setOauthNewSecret(null);
+			try {
+				const result = await rotateOAuthMutation.mutateAsync(record.clientId);
+				setOauthNewSecret(result?.newSecret ?? '');
+				message.success('OAuth 客户端密钥已轮换，请立即保存新密钥');
+			} catch (err) {
+				handleApiError(err, `轮换 ${record.clientId} 密钥失败`);
+			}
+		},
+		[rotateOAuthMutation],
+	);
+
+	const handleCopyOAuthSecret = useCallback(async () => {
+		if (!oauthNewSecret) return;
+		try {
+			await navigator.clipboard.writeText(oauthNewSecret);
+			message.success('已复制到剪贴板');
+		} catch {
+			message.error('复制失败，请手动选择并复制');
+		}
+	}, [oauthNewSecret]);
 
 	const kvColumns = [
 		{
@@ -563,6 +595,29 @@ export default function SystemSecretsInventoryPage() {
 			key: 'lastUsed',
 			render: (v: string) => (v ? new Date(v).toLocaleDateString() : '—'),
 		},
+		{
+			title: '操作',
+			key: 'actions',
+			width: 140,
+			render: (_: unknown, record: OAuthSecretRecord) => (
+				<Popconfirm
+					title={`确认轮换「${record.clientId}」的密钥？`}
+					description="旧密钥立即失效（历史密钥 4 小时内仍可用于校验）；新密钥仅显示一次，请立即保存。"
+					okText="确认轮换"
+					okButtonProps={{ danger: true }}
+					onConfirm={() => handleRotateOAuth(record)}
+				>
+					<Button
+						type="link"
+						size="small"
+						icon={<SyncOutlined />}
+						loading={rotateOAuthMutation.isPending}
+					>
+						轮换密钥
+					</Button>
+				</Popconfirm>
+			),
+		},
 	];
 
 	const tabItems = [
@@ -764,7 +819,7 @@ export default function SystemSecretsInventoryPage() {
 					)}
 					<Alert
 						variant="info"
-						title="出于安全考虑，密钥值已脱敏。请使用密钥服务管理 API 管理 OAuth 凭证。"
+						title="密钥值已脱敏、不在列表展示；如需更换密钥，可在下方「轮换密钥」直接操作（新密钥仅显示一次）。"
 						className="mb-4"
 					 />
 					<DataTable
@@ -907,6 +962,39 @@ export default function SystemSecretsInventoryPage() {
 						取消
 					</Button>
 				</Space>
+			</Modal>
+
+			<Modal
+				title={`OAuth 密钥已轮换 — ${oauthRotateTarget?.clientId ?? ''}`}
+				open={oauthNewSecret !== null}
+				onCancel={() => {
+					setOauthNewSecret(null);
+					setOauthRotateTarget(null);
+				}}
+				footer={
+					<Button
+						onClick={() => {
+							setOauthNewSecret(null);
+							setOauthRotateTarget(null);
+						}}
+					>
+						关闭
+					</Button>
+				}
+				destroyOnHidden
+				width={560}
+			>
+				<Alert
+					variant="warning"
+					title="旧密钥已立即失效（历史密钥 4 小时内仍可用于校验）；新密钥仅显示一次，请立即复制并妥善保存。"
+					className="mb-4"
+				 />
+				<Input.TextArea value={oauthNewSecret ?? ''} readOnly rows={3} className="font-mono" />
+				<div className="mt-3 text-right">
+					<Button type="primary" icon={<CopyOutlined />} onClick={handleCopyOAuthSecret}>
+						复制新密钥
+					</Button>
+				</div>
 			</Modal>
 		</div>
 	);

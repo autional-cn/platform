@@ -13,6 +13,7 @@ import {
 	Skeleton,
 	Descriptions,
 	Typography,
+	Popconfirm,
 } from 'antd';
 import {
 	EditOutlined,
@@ -237,14 +238,21 @@ export default function RobotDetailPage() {
 								</Button>
 							)}
 							{canDecommission && (
-								<Button
-									icon={<PauseCircleOutlined />}
-									danger
-									onClick={handleDecommission}
-									loading={decommissionMut.isPending}
+								<Popconfirm
+									title="确认停用该 Robot？"
+									description="停用后该机器人将不可用，此操作将产生审计记录。"
+									okText="确认停用"
+									okButtonProps={{ danger: true }}
+									onConfirm={handleDecommission}
 								>
-									停用
-								</Button>
+									<Button
+										icon={<PauseCircleOutlined />}
+										danger
+										loading={decommissionMut.isPending}
+									>
+										停用
+									</Button>
+								</Popconfirm>
 							)}
 							{canIssueIntent && (
 								<Button

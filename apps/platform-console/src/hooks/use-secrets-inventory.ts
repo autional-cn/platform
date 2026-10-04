@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { extractList, extractItem } from '@autional-cn/shared';
 import {
 	adminSecrets,
@@ -10,6 +10,7 @@ import {
 	adminInfraCredentials,
 	adminAuthApiKeys,
 	adminOauthClients,
+	adminOauthClientsRotateSecretByClientsPost,
 } from '@autional-cn/shared/generated/api';
 import { queryKeys } from '@/lib/query-keys';
 
@@ -434,6 +435,27 @@ export function useSecretsInventoryOAuth() {
 			const data = await adminOauthClients();
 			const items = extractList<OAuthClientApiItem>({ data });
 			return items.map(mapOAuthRecord);
+		},
+	});
+}
+
+/** 轮换密钥的响应（新密钥仅此一次返回，绝不落列表）。 */
+export interface OAuthClientSecretRotationResult {
+	clientId?: string;
+	newSecret?: string;
+	rotatedAt?: string;
+}
+
+/** PL-63：轮换 OAuth 客户端密钥（旧密钥立即失效，新密钥仅显示一次）。 */
+export function useRotateOAuthClientSecret() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async (clientId: string) => {
+			const res = await adminOauthClientsRotateSecretByClientsPost(clientId);
+			return extractItem<OAuthClientSecretRotationResult>(res);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.secretsInventory.oauth });
 		},
 	});
 }

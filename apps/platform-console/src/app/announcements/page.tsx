@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button, Space, Tag, Modal, Form, Input, Select, Popconfirm, Checkbox } from 'antd';
-import { message } from '@/lib/antd-app';
+import { message, modal } from '@/lib/antd-app';
 import {
 	PlusOutlined,
 	EditOutlined,
@@ -49,7 +49,7 @@ export default function AnnouncementsPage() {
 
 	// PL-76：payload 只发真实契约字段（title/content/targetRoles）；
 	// 「立即发布」走真实 publish 端点（创建恒为草稿，发布需显式调用）
-	const handleSave = async (values: AnnouncementFormValues) => {
+	const doSave = async (values: AnnouncementFormValues) => {
 		const payload = {
 			title: values.title,
 			content: values.content,
@@ -81,6 +81,20 @@ export default function AnnouncementsPage() {
 		} catch (err) {
 			handleApiError(err, '保存失败');
 		}
+	};
+
+	// PL-20：勾选「立即发布」时提交前二次确认（发布后对用户可见，非草稿可回退）
+	const handleSave = async (values: AnnouncementFormValues) => {
+		if (!editing && values.publishNow) {
+			modal.confirm({
+				title: '确认立即发布？',
+				content: '公告将直接发布，对用户可见；如需先审阅请取消并改用「保存为草稿」。',
+				okText: '确认发布',
+				onOk: () => doSave(values),
+			});
+			return;
+		}
+		await doSave(values);
 	};
 
 	const handleDelete = async (id: string) => {
@@ -171,15 +185,21 @@ export default function AnnouncementsPage() {
 						编辑
 					</Button>
 					{(record.status === 'draft' || record.status === 'scheduled') && (
-						<Button
-							type="text"
-							size="small"
-							icon={<SendOutlined />}
-							onClick={() => handlePublish(record.id)}
-							loading={publishMut.isPending}
+						<Popconfirm
+							title="确认发布该公告？"
+							description="发布后公告将立即对所有用户可见。"
+							okText="确认发布"
+							onConfirm={() => handlePublish(record.id)}
 						>
-							发布
-						</Button>
+							<Button
+								type="text"
+								size="small"
+								icon={<SendOutlined />}
+								loading={publishMut.isPending}
+							>
+								发布
+							</Button>
+						</Popconfirm>
 					)}
 					{record.status === 'published' && (
 						<Button

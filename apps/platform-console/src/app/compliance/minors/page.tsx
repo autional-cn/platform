@@ -17,6 +17,7 @@ import {
 	Col,
 	Tabs,
 	Tag,
+	Popconfirm,
 } from 'antd';
 import {
 	SafetyCertificateOutlined,
@@ -424,14 +425,20 @@ export default function MinorsProtectionPage() {
 									>
 										重置
 									</Button>
-									<Button
-										type="primary"
-										onClick={handleSave}
-										loading={saving}
-										icon={<SaveOutlined />}
+									<Popconfirm
+										title="确认保存配置？"
+										description="保存后将对当前租户立即生效。"
+										okText="确认保存"
+										onConfirm={handleSave}
 									>
-										保存配置
-									</Button>
+										<Button
+											type="primary"
+											loading={saving}
+											icon={<SaveOutlined />}
+										>
+											保存配置
+										</Button>
+									</Popconfirm>
 								</div>
 							</>
 						),
