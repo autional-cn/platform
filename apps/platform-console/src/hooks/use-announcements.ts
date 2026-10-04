@@ -13,14 +13,17 @@ import {
 	unpublishAnnouncement,
 } from '@/lib/api.generated';
 
+// PL-18/PL-76：此前 type/targets/publishedAt 均为后端不存在的幻影字段
+// （AnnouncementResponse 无 type/targets，状态枚举为 draft/scheduled/published/expired）。
+// 定向语义由真实字段 targetRoles 推导：空 = 全员广播。
 export interface AnnouncementRecord {
 	id: string;
 	title: string;
-	type: 'global' | 'targeted';
-	status: 'draft' | 'published' | 'archived';
-	publishedAt?: string;
+	status: 'draft' | 'scheduled' | 'published' | 'expired';
 	content?: string;
-	targets?: string[];
+	targetRoles?: string[];
+	publishAt?: string;
+	createdAt?: string;
 }
 
 export function useAnnouncements() {

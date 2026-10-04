@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Routes, Route, Outlet, Navigate, useParams } from 'react-router';
+import { Routes, Route, Outlet, Navigate, useParams, useLocation } from 'react-router';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -81,6 +81,7 @@ function LayoutWrapper() {
 	const bootstrap = useBootstrap();
 	const { tenantSlug } = useParams();
 	const { t } = useTranslation();
+	const { pathname } = useLocation();
 
 	// 外壳（侧栏框架 + sticky 顶栏 + 移动端抽屉 + 内容滚动容器）来自设计系统，
 	// 本站只提供内容：品牌、菜单、面包屑、右上角控件。
@@ -97,7 +98,12 @@ function LayoutWrapper() {
 						<Spin indicator={<LoadingOutlined spin />} size="large" />
 					</div>
 				) : (
-					<Outlet />
+					// 页面级边界：单页渲染崩溃时保留导航壳（PL-26 伴修——此前由外层
+					// 整页边界兜底，崩溃即侧栏顶栏全消失，无路可走）。key=pathname 让
+					// 路由切换复位错误态，否则边界持续渲染错误页、切路由也出不来。
+					<ErrorBoundary key={pathname} devMode={import.meta.env.DEV}>
+						<Outlet />
+					</ErrorBoundary>
 				)}
 			</AppShell>
 		</TenantSlugProvider>

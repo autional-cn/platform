@@ -72,6 +72,11 @@ export default function OpsPage() {
 			/>
 
 			<Spin spinning={loading}>
+				{/* PL-57：本页两个数字来源不同（此带=公开状态页聚合，下方服务卡=网关直连探测子集），不注明会被当矛盾 */}
+				{healthData && (
+					<div className="text-sm font-medium mb-2">全站服务概览（公开状态页聚合口径）</div>
+				)}
+
 				{healthData && (
 					<Row gutter={[16, 16]} className="mb-6">
 						<Col xs={24} sm={8}>
@@ -107,6 +112,11 @@ export default function OpsPage() {
 					</Row>
 				)}
 
+				{services.length > 0 && (
+					<div className="text-sm font-medium mb-2">
+						服务直连探测（网关 developer/status 口径 · 仅含网关已注册服务，少于全站总数属正常）
+					</div>
+				)}
 				<Row gutter={[16, 16]} className="mb-6">
 					{services.map((svc) => (
 						<Col xs={24} sm={12} md={8} lg={6} key={svc.name}>
@@ -134,7 +144,7 @@ export default function OpsPage() {
 								</div>
 								{svc.latency && (
 									<div className="text-xs text-neutral-600">
-										延迟: {svc.latency}
+										延迟: {svc.latency === '0s' ? '—' : svc.latency}
 										{svc.port != null && ` | 端口: ${svc.port}`}
 									</div>
 								)}

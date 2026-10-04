@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Space, Tag, Modal, Form, Input, Select, Popconfirm } from 'antd';
+import { Button, Space, Tag, Modal, Form, Input, Select, Popconfirm, Checkbox } from 'antd';
 import { message } from '@/lib/antd-app';
 import {
 	PlusOutlined,
@@ -17,28 +17,28 @@ import {
 	useDeleteAnnouncement,
 	usePublishAnnouncement,
 	useUnpublishAnnouncement,
+	type AnnouncementRecord,
 } from '@/hooks/use-announcements';
 import { handleApiError } from '@/lib/error-handler';
+import { extractItem } from '@autional-cn/shared';
 import { PageError, DataTable } from '@autional-cn/ui/antd';
 import { ConsolePageHeader } from '@autional-cn/ui';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-interface AnnouncementRecord {
-	id: string;
+interface AnnouncementFormValues {
 	title: string;
+	content: string;
 	type: 'global' | 'targeted';
-	status: 'draft' | 'published' | 'archived' | 'scheduled';
-	publishedAt?: string;
-	content?: string;
-	targets?: string[];
+	targetRoles?: string[];
+	publishNow?: boolean;
 }
 
 export default function AnnouncementsPage() {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [editing, setEditing] = useState<AnnouncementRecord | null>(null);
-	const [form] = Form.useForm();
+	const [form] = Form.useForm<AnnouncementFormValues>();
 
 	const { data = [], isLoading, error, refetch } = useAnnouncements();
 	const createMut = useCreateAnnouncement();
@@ -47,21 +47,33 @@ export default function AnnouncementsPage() {
 	const publishMut = usePublishAnnouncement();
 	const unpublishMut = useUnpublishAnnouncement();
 
-	const handleSave = async (values: any) => {
+	// PL-76：payload 只发真实契约字段（title/content/targetRoles）；
+	// 「立即发布」走真实 publish 端点（创建恒为草稿，发布需显式调用）
+	const handleSave = async (values: AnnouncementFormValues) => {
+		const payload = {
+			title: values.title,
+			content: values.content,
+			targetRoles: values.type === 'targeted' ? (values.targetRoles ?? []) : [],
+		};
 		try {
-			const payload = {
-				title: values.title,
-				content: values.content,
-				type: values.type,
-				targets: values.type === 'targeted' ? values.targets : undefined,
-				status: values.status || 'published',
-			};
 			if (editing) {
 				await updateMut.mutateAsync({ id: editing.id, data: payload });
 				message.success('公告更新成功');
 			} else {
-				await createMut.mutateAsync(payload);
-				message.success('公告创建成功');
+				const res = await createMut.mutateAsync(payload);
+				const created = values.publishNow
+					? extractItem<AnnouncementRecord>(res)
+					: undefined;
+				if (created?.id) {
+					try {
+						await publishMut.mutateAsync(created.id);
+						message.success('公告已创建并发布');
+					} catch (err) {
+						handleApiError(err, '公告已保存为草稿，但立即发布失败');
+					}
+				} else {
+					message.success('公告已保存为草稿，可在列表中发布');
+				}
 			}
 			setModalVisible(false);
 			setEditing(null);
@@ -104,26 +116,36 @@ export default function AnnouncementsPage() {
 		{ title: '标题', dataIndex: 'title', key: 'title' },
 		{
 			title: '类型',
-			dataIndex: 'type',
 			key: 'type',
-			render: (v: string) => (
-				<Tag color={v === 'global' ? 'blue' : 'orange'}>{v === 'global' ? '全局' : '定向'}</Tag>
-			),
+			// 由真实字段 targetRoles 推导（空 = 全员广播）；此前读幻影 record.type 恒显示「定向」（PL-18）
+			render: (_: unknown, record: AnnouncementRecord) =>
+				record.targetRoles?.length ? (
+					<Tag color="orange">定向</Tag>
+				) : (
+					<Tag color="blue">全局</Tag>
+				),
 		},
 		{
 			title: '发布状态',
 			dataIndex: 'status',
 			key: 'status',
-			render: (v: string) => (
-				<Tag color={v === 'published' ? 'success' : v === 'draft' ? 'default' : 'gray'}>
-					{v === 'published' ? '已发布' : v === 'draft' ? '草稿' : '已归档'}
-				</Tag>
-			),
+			render: (v: string) => {
+				const meta: Record<string, { color: string; label: string }> = {
+					draft: { color: 'default', label: '草稿' },
+					scheduled: { color: 'processing', label: '定时待发' },
+					published: { color: 'success', label: '已发布' },
+					expired: { color: 'gray', label: '已过期' },
+				};
+				const m = meta[v];
+				return <Tag color={m?.color ?? 'default'}>{m?.label ?? v}</Tag>;
+			},
 		},
 		{
+			// 此前读幻影 publishedAt 恒「-」；改读真实字段 publishAt（计划发布时间）。
+			// 实际发布时刻后端无独立字段，W5（PL-17）复核口径。
 			title: '发布时间',
-			dataIndex: 'publishedAt',
-			key: 'publishedAt',
+			dataIndex: 'publishAt',
+			key: 'publishAt',
 			render: (v?: string) => v || '-',
 		},
 		{
@@ -140,9 +162,8 @@ export default function AnnouncementsPage() {
 							form.setFieldsValue({
 								title: record.title,
 								content: record.content,
-								type: record.type,
-								status: record.status,
-								targets: record.targets,
+								type: record.targetRoles?.length ? 'targeted' : 'global',
+								targetRoles: record.targetRoles,
 							});
 							setModalVisible(true);
 						}}
@@ -232,21 +253,28 @@ export default function AnnouncementsPage() {
 					</Form.Item>
 					<Form.Item name="type" label="类型" rules={[{ required: true }]} initialValue="global">
 						<Select placeholder="选择类型">
-							<Option value="global">全局</Option>
-							<Option value="targeted">定向</Option>
+							<Option value="global">全局（所有用户）</Option>
+							<Option value="targeted">定向（按角色）</Option>
 						</Select>
 					</Form.Item>
 					{type === 'targeted' && (
-						<Form.Item name="targets" label="目标租户 / 用户组">
-							<Select mode="tags" placeholder="输入租户ID或用户组，按回车确认" />
+						<Form.Item
+							name="targetRoles"
+							label="目标角色"
+							rules={[{ required: true, type: 'array', message: '请选择至少一个目标角色' }]}
+						>
+							<Select mode="multiple" allowClear placeholder="选择目标角色，仅这些角色的用户会收到公告">
+								<Option value="owner">所有者 (Owner)</Option>
+								<Option value="admin">管理员 (Admin)</Option>
+								<Option value="member">成员 (Member)</Option>
+							</Select>
 						</Form.Item>
 					)}
-					<Form.Item name="status" label="发布状态" initialValue="published">
-						<Select>
-							<Option value="published">立即发布</Option>
-							<Option value="draft">保存草稿</Option>
-						</Select>
-					</Form.Item>
+					{!editing && (
+						<Form.Item name="publishNow" valuePropName="checked" initialValue={false} className="mb-0">
+							<Checkbox>创建后立即发布（默认保存为草稿，可在列表中再发布）</Checkbox>
+						</Form.Item>
+					)}
 				</Form>
 			</Modal>
 		</div>

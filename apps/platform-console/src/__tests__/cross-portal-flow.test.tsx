@@ -14,6 +14,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string) => key }),
+	// i18n/index.ts 经 @/lib/format 被间接加载，模块级 .use(initReactI18next) 需要此导出
+	initReactI18next: { type: '3rdParty', init: () => {} },
 }));
 
 vi.mock('@autional-cn/shared', () => ({
@@ -49,6 +51,11 @@ vi.mock('@/hooks/use-system-overview', () => ({
 vi.mock('@/hooks/use-status', () => ({
 	useOverview: () => ({
 		data: { activeIncidents: 0, servicesHealthy: 1 },
+		isLoading: false,
+		error: null,
+	}),
+	useIncidents: () => ({
+		data: [],
 		isLoading: false,
 		error: null,
 	}),
@@ -105,6 +112,7 @@ vi.mock('@autional-cn/ui', () => ({
 	UserMenu: ({ user }: { user?: { email?: string | null } | null }) => (
 		<div data-testid="user-menu">{user?.email}</div>
 	),
+	StatusBadge: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
 }));
 
 import { HeaderActions } from '@/components/layout/HeaderActions';
@@ -185,7 +193,8 @@ describe('Cross-Portal Navigation', () => {
 			expect(screen.getByText('租户总数')).toBeInTheDocument();
 			expect(screen.getByText('活跃事故')).toBeInTheDocument();
 			expect(screen.getByText('健康服务')).toBeInTheDocument();
-			expect(screen.getByText('平台通知')).toBeInTheDocument();
+			// 「平台通知」同时出现在 KPI 卡与快捷入口，故用 getAllByText
+			expect(screen.getAllByText('平台通知').length).toBeGreaterThan(0);
 		});
 	});
 });

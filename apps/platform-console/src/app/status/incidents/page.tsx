@@ -14,41 +14,13 @@ import {
 } from '@/hooks/use-status';
 import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
+import { formatDateTime } from '@/lib/format';
 import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
-import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional-cn/ui';
+import { ConsolePageHeader, StatusBadge } from '@autional-cn/ui';
+import { severityBadge, severityLabels, statusBadge, statusLabels } from '@/lib/incident-meta';
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-const severityBadge: Record<string, StatusVariant> = {
-	critical: 'danger',
-	major: 'warning',
-	minor: 'info',
-	maintenance: 'info',
-};
-
-const severityLabels: Record<string, string> = {
-	critical: '严重',
-	major: '重大',
-	minor: '轻微',
-	maintenance: '维护',
-};
-
-const statusBadge: Record<string, StatusVariant> = {
-	investigating: 'warning',
-	identified: 'info',
-	monitoring: 'info',
-	resolved: 'success',
-	draft: 'neutral',
-};
-
-const statusLabels: Record<string, string> = {
-	investigating: '调查中',
-	identified: '已定位',
-	monitoring: '监控中',
-	resolved: '已解决',
-	draft: '草稿',
-};
 
 export default function IncidentsPage() {
 	const [modalVisible, setModalVisible] = useState(false);
@@ -150,7 +122,7 @@ export default function IncidentsPage() {
 			title: '创建时间',
 			dataIndex: 'createdAt',
 			key: 'createdAt',
-			render: (v?: string) => v || '-',
+			render: (v?: string) => (v ? formatDateTime(v) : '-'),
 		},
 		{
 			title: '操作',
@@ -323,10 +295,10 @@ export default function IncidentsPage() {
 								{drawerIncident.description || '-'}
 							</Descriptions.Item>
 							<Descriptions.Item label="创建时间">
-								{drawerIncident.createdAt || '-'}
+								{drawerIncident.createdAt ? formatDateTime(drawerIncident.createdAt) : '-'}
 							</Descriptions.Item>
 							<Descriptions.Item label="解决时间">
-								{drawerIncident.resolvedAt || '-'}
+								{drawerIncident.resolvedAt ? formatDateTime(drawerIncident.resolvedAt) : '-'}
 							</Descriptions.Item>
 						</Descriptions>
 
@@ -339,7 +311,9 @@ export default function IncidentsPage() {
 											<StatusBadge variant={statusBadge[u.status]}>
 												{statusLabels[u.status] || u.status}
 											</StatusBadge>
-											<span className="text-xs text-neutral-600">{u.createdAt || '-'}</span>
+											<span className="text-xs text-neutral-600">
+												{u.createdAt ? formatDateTime(u.createdAt) : '-'}
+											</span>
 										</div>
 										<p className="text-sm">{u.message}</p>
 									</div>

@@ -10,6 +10,7 @@ import { getInvitationConfig, updateInvitationConfig } from '@/lib/api.generated
 import { handleApiError } from '@/lib/error-handler';
 import { PageError } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { useTenant } from '@/hooks/use-tenants';
 
 interface InvitationConfigData {
 	inviteExpiryDays?: number;
@@ -19,6 +20,9 @@ interface InvitationConfigData {
 export default function InvitationConfigPage() {
 	usePageTitle('邀请配置');
 	const { id: tenantId } = useParams<{ id: string }>();
+	// PL-13：页面此前只暴露路由里的原始 ULID，取租户名做上下文（失败时回落显示 ID）
+	const { data: tenant } = useTenant(tenantId || '');
+	const tenantName = typeof tenant?.name === 'string' ? tenant.name : undefined;
 	const [form] = Form.useForm<InvitationConfigData>();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
@@ -67,6 +71,7 @@ export default function InvitationConfigPage() {
 		<div>
 			<ConsolePageHeader
 				title="邀请配置"
+				description={tenantName ? `租户：${tenantName}` : tenantId ? `租户 ID：${tenantId}` : undefined}
 				actions={
 					<>
 						<Button icon={<ReloadOutlined />} onClick={fetchConfig}>

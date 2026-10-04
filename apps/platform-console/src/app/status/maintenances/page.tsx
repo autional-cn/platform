@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import dayjs from 'dayjs';
 import { Button, Space, Modal, Form, Input, Select, Popconfirm, DatePicker } from 'antd';
 import { message } from '@/lib/antd-app';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -133,9 +134,9 @@ export default function MaintenancesPage() {
 								description: record.description,
 								status: record.status,
 								scheduledStartAt: record.scheduledStartAt
-									? new Date(record.scheduledStartAt)
+									? dayjs(record.scheduledStartAt)
 									: undefined,
-								scheduledEndAt: record.scheduledEndAt ? new Date(record.scheduledEndAt) : undefined,
+								scheduledEndAt: record.scheduledEndAt ? dayjs(record.scheduledEndAt) : undefined,
 								affectedServices: record.affectedServices?.join(', '),
 							});
 							setModalVisible(true);

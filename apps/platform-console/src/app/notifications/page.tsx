@@ -95,11 +95,16 @@ export default function PlatformNotificationsPage() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
+			<div className="flex items-center justify-between mb-2">
 				<Title level={4} className="!mb-0">
 					平台通信与通知
 				</Title>
 				<span className="text-neutral-600 text-xs">每 30 秒自动刷新</span>
+			</div>
+			{/* PL-31：两卡数字来源不同服务、时间窗不同（消息=通信服务近 30 天；通知=站内全量累计），不注明会被当矛盾 */}
+			<div className="text-neutral-600 text-xs mb-6">
+				口径说明：「消息」= 通信服务（短信 / 邮件等渠道）近 30 天发送量；「通知」= 站内通知全量累计（无时间窗）。
+				两者来源不同服务、统计范围不同，数字不可直接比较。
 			</div>
 
 			{(commError || notifError) && (
@@ -148,7 +153,7 @@ export default function PlatformNotificationsPage() {
 							<Skeleton active paragraph={{ rows: 0 }} />
 						) : (
 							<Statistic
-								title="通知总数"
+								title="通知总数（累计）"
 								value={notif?.totalSent ?? 0}
 								prefix={<BellOutlined className="text-purple-500" />}
 							/>

@@ -28,6 +28,15 @@ vi.mock('@autional-cn/ui', () => ({
 			{children}
 		</div>
 	),
+	Alert: ({ title }: { title?: string; variant?: string; icon?: React.ReactNode }) => (
+		<div data-testid="alert">{title}</div>
+	),
+	Result: ({ title, description }: { title?: string; description?: React.ReactNode }) => (
+		<div data-testid="result">
+			{title}
+			{description}
+		</div>
+	),
 }));
 
 vi.mock('@tanstack/react-query', () => ({

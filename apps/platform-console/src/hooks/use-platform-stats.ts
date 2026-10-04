@@ -35,14 +35,11 @@ export function usePlatformNotificationStats() {
 		queryKey: queryKeys.platform.notificationStats,
 		staleTime: 30000,
 		queryFn: async () => {
-			try {
-				const res = await getPlatformNotificationStats();
-				const data = extractItem<NotificationStatsResponse>(res);
-				return data ?? { totalSent: 0, totalRead: 0, readRate: 0, byType: {} };
-			} catch (e) {
-				console.warn('[usePlatformNotificationStats] API 失败，使用默认值 0:', e);
-				return { totalSent: 0, totalRead: 0, readRate: 0, byType: {} };
-			}
+			const res = await getPlatformNotificationStats();
+			const data = extractItem<NotificationStatsResponse>(res);
+			// 不再 catch 吞错回退全 0：接口失败应走 error 态（notifications 页显示重试、
+			// dashboard 显示「—」），此前会把故障谎报为“已发送 0 条”
+			return data ?? { totalSent: 0, totalRead: 0, readRate: 0, byType: {} };
 		},
 	});
 }

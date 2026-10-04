@@ -25,10 +25,16 @@ import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
+import { useNavigate } from 'react-router';
+import { useTenantSlug } from '@autional-cn/shared';
+import { buildNavHref } from '@/lib/nav';
+import { ROUTE } from '@/lib/route-paths';
 
 const { Option } = Select;
 
 export default function TenantsPage() {
+	const navigate = useNavigate();
+	const tenantSlug = useTenantSlug();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
 	const [editing, setEditing] = useState<TenantRecord | null>(null);
@@ -118,6 +124,12 @@ export default function TenantsPage() {
 		setSelectedTenant(record);
 		setDetailDrawerVisible(true);
 		setDetailData({ info: record });
+	};
+
+	// PL-10：配额 / 邀请配置此前零 UI 入口（仅直达 URL 可达），挂进详情抽屉
+	const goTenantSubPage = (route: string) => {
+		if (!selectedTenant) return;
+		navigate(buildNavHref(route.replace(':id', selectedTenant.id), tenantSlug));
 	};
 
 	const columns = [
@@ -303,6 +315,21 @@ export default function TenantsPage() {
 				size="lg"
 				open={detailDrawerVisible}
 				onClose={() => setDetailDrawerVisible(false)}
+				extra={
+					selectedTenant ? (
+						<Space size="small">
+							<Button size="small" onClick={() => goTenantSubPage(ROUTE.TENANT_QUOTA)}>
+								资源配额
+							</Button>
+							<Button
+								size="small"
+								onClick={() => goTenantSubPage(ROUTE.TENANT_INVITATION_CONFIG)}
+							>
+								邀请配置
+							</Button>
+						</Space>
+					) : null
+				}
 			>
 				<Tabs
 					defaultActiveKey="info"
