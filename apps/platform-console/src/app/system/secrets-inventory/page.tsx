@@ -339,10 +339,10 @@ export default function SystemSecretsInventoryPage() {
 			<Descriptions.Item label="描述">{record.description}</Descriptions.Item>
 			<Descriptions.Item label="分类">{record.category}</Descriptions.Item>
 			<Descriptions.Item label="创建时间">
-				{new Date(record.created).toLocaleString()}
+				{record.created ? new Date(record.created).toLocaleString() : '—'}
 			</Descriptions.Item>
 			<Descriptions.Item label="最后修改">
-				{new Date(record.lastModified).toLocaleString()}
+				{record.lastModified ? new Date(record.lastModified).toLocaleString() : '—'}
 			</Descriptions.Item>
 			<Descriptions.Item label="系统密钥">
 				{record.isSystem ? <Tag color="red">是</Tag> : '否'}
@@ -409,7 +409,7 @@ export default function SystemSecretsInventoryPage() {
 			title: '上次轮换',
 			dataIndex: 'lastRotated',
 			key: 'lastRotated',
-			render: (v: string) => new Date(v).toLocaleDateString(),
+			render: (v: string) => (v ? new Date(v).toLocaleDateString() : '—'),
 		},
 		{
 			title: '备注',
@@ -500,7 +500,7 @@ export default function SystemSecretsInventoryPage() {
 			title: '创建时间',
 			dataIndex: 'created',
 			key: 'created',
-			render: (v: string) => new Date(v).toLocaleDateString(),
+			render: (v: string) => (v ? new Date(v).toLocaleDateString() : '—'),
 		},
 		{
 			title: '状态',
@@ -561,7 +561,7 @@ export default function SystemSecretsInventoryPage() {
 			title: '最后使用',
 			dataIndex: 'lastUsed',
 			key: 'lastUsed',
-			render: (v: string) => new Date(v).toLocaleDateString(),
+			render: (v: string) => (v ? new Date(v).toLocaleDateString() : '—'),
 		},
 	];
 

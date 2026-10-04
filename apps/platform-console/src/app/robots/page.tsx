@@ -4,7 +4,13 @@ import React, { useState } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Button, Space, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import {
+	usePageTitle,
+	useTenantSlug,
+	fromPageResult,
+	toPageParams,
+	type PageResult,
+} from '@autional-cn/shared';
 import { ConsolePageHeader, EmptyState, ErrorState, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -20,15 +26,22 @@ import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
 
 interface RobotRecord {
-	id: string;
+	identityId?: string;
+	identity_id?: string;
 	name: string;
-	model: string;
-	location: string;
+	model?: string;
+	location?: string;
 	status: string;
-	workload_subtype: string;
-	firmware_ver: string;
-	owner_name: string;
-	created_at: string;
+	workloadSubtype?: string;
+	workload_subtype?: string;
+	firmwareVer?: string;
+	firmware_ver?: string;
+	ownerName?: string;
+	owner_name?: string;
+	ownerId?: string;
+	owner_id?: string;
+	createdAt?: string;
+	created_at?: string;
 }
 
 const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'neutral'> = {
@@ -47,11 +60,15 @@ function formatDate(iso: string): string {
 	return new Date(iso).toLocaleDateString('zh-CN');
 }
 
-async function fetchRobots(): Promise<RobotRecord[]> {
-	const data = await adminRobots({ tenant_id: '' } as any);
-	if (data?.items) return data.items;
-	if (Array.isArray(data)) return data;
-	return [];
+// 后端 RobotInfo 主键键名 = identity_id（无裸 id）；camel 化后 identityId。
+function recordId(r: RobotRecord): string {
+	return (r.identityId ?? r.identity_id ?? '') as string;
+}
+
+async function fetchRobots(page: number, pageSize: number): Promise<PageResult<RobotRecord>> {
+	// tenant 从 JWT claims 读取，不传 tenant_id（PL-37：空参残留已去）
+	const res = await adminRobots(toPageParams({ page, pageSize }) as any);
+	return fromPageResult<RobotRecord>(res);
 }
 
 async function createRobot(values: Record<string, unknown>): Promise<RobotRecord> {
@@ -69,17 +86,21 @@ export default function RobotsPage() {
 	const queryClient = useQueryClient();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [form] = Form.useForm();
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
 
 	const {
-		data: robots = [],
+		data,
 		isLoading,
 		error,
 		refetch,
 	} = useQuery({
-		queryKey: queryKeys.robots.all,
-		queryFn: fetchRobots,
+		queryKey: queryKeys.robots.list({ page, pageSize }),
+		queryFn: () => fetchRobots(page, pageSize),
 		staleTime: 300000,
 	});
+	const robots = data?.items ?? [];
+	const total = data?.total ?? 0;
 
 	const createMut = useMutation({
 		mutationFn: createRobot,
@@ -118,7 +139,14 @@ export default function RobotsPage() {
 			key: 'name',
 			render: (v: string, record: RobotRecord) => (
 				<a
-					onClick={() => navigate(buildNavHref(ROUTE.ROBOT_DETAIL.replace(':id', record.id), tenantSlug))}
+					onClick={() =>
+						navigate(
+							buildNavHref(
+								ROUTE.ROBOT_DETAIL.replace(':id', recordId(record)),
+								tenantSlug,
+							),
+						)
+					}
 					className="font-medium"
 				>
 					{v}
@@ -145,15 +173,15 @@ export default function RobotsPage() {
 		},
 		{
 			title: '所有者',
-			dataIndex: 'owner_name',
-			key: 'owner_name',
-			render: (v: string) => v || '-',
+			key: 'owner',
+			render: (_: unknown, r: RobotRecord) =>
+				(r.ownerName ?? r.owner_name ?? r.ownerId ?? r.owner_id) || '-',
 		},
 		{
 			title: '创建时间',
-			dataIndex: 'created_at',
-			key: 'created_at',
-			render: (v: string) => formatDate(v),
+			key: 'created',
+			render: (_: unknown, r: RobotRecord) =>
+				formatDate((r.createdAt ?? r.created_at ?? '') as string),
 		},
 		{
 			title: '操作',
@@ -165,7 +193,12 @@ export default function RobotsPage() {
 						icon={<EditOutlined />}
 						onClick={(e) => {
 							e.stopPropagation();
-							navigate(buildNavHref(ROUTE.ROBOT_DETAIL.replace(':id', record.id), tenantSlug));
+							navigate(
+								buildNavHref(
+									ROUTE.ROBOT_DETAIL.replace(':id', recordId(record)),
+									tenantSlug,
+								),
+							);
 						}}
 					>
 						编辑
@@ -173,7 +206,7 @@ export default function RobotsPage() {
 					<Popconfirm
 						title="确认删除该 Robot？"
 						description="此操作不可撤销。"
-						onConfirm={() => handleDelete(record.id)}
+						onConfirm={() => handleDelete(recordId(record))}
 						okText="删除"
 						okButtonProps={{ danger: true }}
 						cancelText="取消"
@@ -227,7 +260,7 @@ export default function RobotsPage() {
 				/>
 			)}
 
-			{!isLoading && !error && robots.length === 0 && (
+			{!isLoading && !error && total === 0 && (
 				<div className="flex flex-col items-center gap-4">
 					<EmptyState title="暂无 Robot" description="创建第一个 Robot 以开始使用。" />
 					<Button
@@ -243,14 +276,30 @@ export default function RobotsPage() {
 				</div>
 			)}
 
-			{!isLoading && !error && robots.length > 0 && (
+			{!isLoading && !error && total > 0 && (
 				<DataTable
-					rowKey="id"
+					rowKey={recordId}
 					columns={columns}
 					dataSource={robots}
-					pagination={{ pageSize: 10 }}
+					pagination={{
+						current: page,
+						pageSize,
+						total,
+						showSizeChanger: true,
+						showTotal: (t: number) => `共 ${t} 条 Robot`,
+						onChange: (p: number, ps: number) => {
+							setPage(p);
+							setPageSize(ps);
+						},
+					}}
 					onRow={(record) => ({
-						onClick: () => navigate(buildNavHref(ROUTE.ROBOT_DETAIL.replace(':id', record.id), tenantSlug)),
+						onClick: () =>
+							navigate(
+								buildNavHref(
+									ROUTE.ROBOT_DETAIL.replace(':id', recordId(record)),
+									tenantSlug,
+								),
+							),
 						style: { cursor: 'pointer' },
 					})}
 				/>

@@ -22,8 +22,8 @@ export default function FeatureGatesPage() {
 	const { data: planGates, isLoading: planLoading } = useQuery({
 		queryKey: ['feature-gates', tenantId],
 		queryFn: async () => {
-			const res = await adminBillingFeatureGates();
-			return res?.feature_gates ?? [];
+			const res = (await adminBillingFeatureGates()) as any;
+			return res?.featureGates ?? res?.feature_gates ?? [];
 		},
 		enabled: !!tenantId,
 	});
@@ -50,8 +50,8 @@ export default function FeatureGatesPage() {
 
 	const overrideMap = useMemo(() => {
 		const map = new Map<string, boolean>();
-		for (const o of overrides ?? []) {
-			map.set(o.gate_key, o.enabled);
+		for (const o of (overrides ?? []) as any[]) {
+			map.set(o.gateKey ?? o.gate_key, o.enabled);
 		}
 		return map;
 	}, [overrides]);

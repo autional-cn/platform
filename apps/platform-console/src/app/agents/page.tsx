@@ -4,7 +4,13 @@ import React, { useState } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Button, Space, Tag, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import {
+	usePageTitle,
+	useTenantSlug,
+	fromPageResult,
+	toPageParams,
+	type PageResult,
+} from '@autional-cn/shared';
 import { ConsolePageHeader, EmptyState, ErrorState, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -20,7 +26,8 @@ import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
 
 interface AgentRecord {
-	id: string;
+	identityId?: string;
+	identity_id?: string;
 	name: string;
 	description: string;
 	workloadSubtype?: string;
@@ -28,6 +35,8 @@ interface AgentRecord {
 	status: string;
 	ownerName?: string;
 	owner_name?: string;
+	ownerId?: string;
+	owner_id?: string;
 	rotationDays?: number;
 	rotation_days?: number;
 	jitTtl?: string;
@@ -64,11 +73,16 @@ function formatDate(iso: string): string {
 	return new Date(iso).toLocaleDateString('zh-CN');
 }
 
-async function fetchAgents(): Promise<AgentRecord[]> {
-	const data = await adminAgents(); // tenant_id 从 JWT claims 读取，不需传参
-	if (data?.items) return data.items;
-	if (Array.isArray(data)) return data;
-	return [];
+// 后端 AgentInfo 主键键名 = identity_id（无裸 id）；camel 化后 identityId。
+function recordId(r: AgentRecord): string {
+	return (r.identityId ?? r.identity_id ?? '') as string;
+}
+
+async function fetchAgents(page: number, pageSize: number): Promise<PageResult<AgentRecord>> {
+	// tenant 从 JWT claims 读取，不传 tenant_id（传参被后端忽略）
+	// wire 真名 page/page_size 由 toPageParams 单点构造
+	const res = await adminAgents(toPageParams({ page, pageSize }) as any);
+	return fromPageResult<AgentRecord>(res);
 }
 
 async function createAgent(values: Record<string, unknown>): Promise<AgentRecord> {
@@ -86,17 +100,21 @@ export default function AgentsPage() {
 	const queryClient = useQueryClient();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [form] = Form.useForm();
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
 
 	const {
-		data: agents = [],
+		data,
 		isLoading,
 		error,
 		refetch,
 	} = useQuery({
-		queryKey: queryKeys.agents.all,
-		queryFn: fetchAgents,
+		queryKey: queryKeys.agents.list({ page, pageSize }),
+		queryFn: () => fetchAgents(page, pageSize),
 		staleTime: 300000,
 	});
+	const agents = data?.items ?? [];
+	const total = data?.total ?? 0;
 
 	const createMut = useMutation({
 		mutationFn: createAgent,
@@ -109,8 +127,17 @@ export default function AgentsPage() {
 	});
 
 	const handleCreate = async (values: Record<string, unknown>) => {
+		// 后端 CreateAgentRequest.rotation_days/jit_ttl 为 int；antd Input 产出 string，
+		// 直接提交 422 —— 提交前归一为 number，空/非法值剔除（omitempty 走后端默认）。
+		const payload: Record<string, unknown> = { ...values };
+		for (const k of ['rotation_days', 'jit_ttl'] as const) {
+			const v = payload[k];
+			const n = v === '' || v === undefined || v === null ? NaN : Number(v);
+			if (Number.isFinite(n)) payload[k] = n;
+			else delete payload[k];
+		}
 		try {
-			await createMut.mutateAsync(values);
+			await createMut.mutateAsync(payload);
 			message.success('Agent 创建成功');
 			setModalVisible(false);
 			form.resetFields();
@@ -135,7 +162,14 @@ export default function AgentsPage() {
 			key: 'name',
 			render: (v: string, record: AgentRecord) => (
 				<a
-					onClick={() => navigate(buildNavHref(ROUTE.AGENT_DETAIL.replace(':id', record.id), tenantSlug))}
+					onClick={() =>
+						navigate(
+							buildNavHref(
+								ROUTE.AGENT_DETAIL.replace(':id', recordId(record)),
+								tenantSlug,
+							),
+						)
+					}
 					className="font-medium"
 				>
 					{v}
@@ -161,7 +195,8 @@ export default function AgentsPage() {
 		{
 			title: '所有者',
 			key: 'owner',
-			render: (_: unknown, r: AgentRecord) => (r.ownerName ?? r.owner_name) || '-',
+			render: (_: unknown, r: AgentRecord) =>
+				(r.ownerName ?? r.owner_name ?? r.ownerId ?? r.owner_id) || '-',
 		},
 		{
 			title: '创建时间',
@@ -179,7 +214,12 @@ export default function AgentsPage() {
 						icon={<EditOutlined />}
 						onClick={(e) => {
 							e.stopPropagation();
-							navigate(buildNavHref(ROUTE.AGENT_DETAIL.replace(':id', record.id), tenantSlug));
+							navigate(
+								buildNavHref(
+									ROUTE.AGENT_DETAIL.replace(':id', recordId(record)),
+									tenantSlug,
+								),
+							);
 						}}
 					>
 						编辑
@@ -187,7 +227,7 @@ export default function AgentsPage() {
 					<Popconfirm
 						title="确认删除该 Agent？"
 						description="此操作不可撤销。"
-						onConfirm={() => handleDelete(record.id)}
+						onConfirm={() => handleDelete(recordId(record))}
 						okText="删除"
 						okButtonProps={{ danger: true }}
 						cancelText="取消"
@@ -241,7 +281,7 @@ export default function AgentsPage() {
 				/>
 			)}
 
-			{!isLoading && !error && agents.length === 0 && (
+			{!isLoading && !error && total === 0 && (
 				<div className="flex flex-col items-center gap-4">
 					<EmptyState title="暂无 Agent" description="创建第一个 AI 智能体以开始使用。" />
 					<Button
@@ -257,14 +297,30 @@ export default function AgentsPage() {
 				</div>
 			)}
 
-			{!isLoading && !error && agents.length > 0 && (
+			{!isLoading && !error && total > 0 && (
 				<DataTable
-					rowKey="id"
+					rowKey={recordId}
 					columns={columns}
 					dataSource={agents}
-					pagination={{ pageSize: 10 }}
+					pagination={{
+						current: page,
+						pageSize,
+						total,
+						showSizeChanger: true,
+						showTotal: (t: number) => `共 ${t} 条 Agent`,
+						onChange: (p: number, ps: number) => {
+							setPage(p);
+							setPageSize(ps);
+						},
+					}}
 					onRow={(record) => ({
-						onClick: () => navigate(buildNavHref(ROUTE.AGENT_DETAIL.replace(':id', record.id), tenantSlug)),
+						onClick: () =>
+							navigate(
+								buildNavHref(
+									ROUTE.AGENT_DETAIL.replace(':id', recordId(record)),
+									tenantSlug,
+								),
+							),
 						style: { cursor: 'pointer' },
 					})}
 				/>
@@ -305,8 +361,8 @@ export default function AgentsPage() {
 					<Form.Item name="rotation_days" label="轮换周期（天）" initialValue={90}>
 						<Input type="number" placeholder="90" />
 					</Form.Item>
-					<Form.Item name="jit_ttl" label="JIT TTL" initialValue="1h">
-						<Input placeholder="1h, 30m, 5m" />
+					<Form.Item name="jit_ttl" label="JIT TTL（秒）" initialValue={3600}>
+						<Input type="number" placeholder="例如 3600" />
 					</Form.Item>
 				</Form>
 			</Modal>

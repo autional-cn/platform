@@ -83,7 +83,7 @@ async function decommissionRobot(id: string): Promise<void> {
 async function issueIntentToken(
 	id: string,
 	data: Record<string, unknown>,
-): Promise<{ intent_token?: string }> {
+): Promise<{ intentToken?: string; intent_token?: string }> {
 	return adminRobotsIntentByRobotsPost(id, data as any);
 }
 
@@ -189,7 +189,7 @@ export default function RobotDetailPage() {
 		if (!id) return;
 		try {
 			const result = await intentMut.mutateAsync({ id, data: values });
-			setIntentResult(result.intent_token ?? null);
+			setIntentResult(result.intentToken ?? result.intent_token ?? null);
 			message.success('Intent Token 已签发');
 		} catch (err) {
 			handleApiError(err, '签发失败');

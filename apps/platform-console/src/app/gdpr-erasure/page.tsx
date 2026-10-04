@@ -16,7 +16,8 @@ import type { StatusVariant } from '@autional-cn/ui';
 
 interface ErasureRequest {
 	id: string;
-	user_id: string;
+	userId?: string;
+	user_id?: string;
 	tenant_id: string;
 	status: 'pending' | 'approved' | 'executing' | 'completed' | 'rejected';
 	requested_at: string;
@@ -126,7 +127,7 @@ export default function GdprErasurePage() {
 				record.status === 'approved' ? (
 					<Popconfirm
 						title="确认执行擦除"
-						description={`这将永久擦除用户 ${record.user_id} 在身份、资料、会话、MFA、OAuth、积分与通知服务中的数据。此操作不可撤销。`}
+						description={`这将永久擦除用户 ${record.userId ?? record.user_id ?? ''} 在身份、资料、会话、MFA、OAuth、积分与通知服务中的数据。此操作不可撤销。`}
 						onConfirm={() => executeMutation.mutate(record.id)}
 						okText="执行"
 						okButtonProps={{ danger: true }}

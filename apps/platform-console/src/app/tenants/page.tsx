@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Button, Space, Tag, Modal, Form, Input, Select, Card, Descriptions, Tabs, Alert, Popconfirm, Row, Col } from 'antd';
-import { extractItem } from '@autional-cn/shared';
 import { message } from '@/lib/antd-app';
 import {
 	PlusOutlined,
@@ -19,6 +18,7 @@ import {
 	useDeleteTenant,
 	useActivateTenant,
 	useSuspendTenant,
+	type TenantRecord,
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
 import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
@@ -27,20 +27,6 @@ import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 
 const { Option } = Select;
-
-interface TenantRecord {
-	id: string;
-	name: string;
-	domain?: string;
-	status: 'active' | 'suspended';
-	plan?: string;
-	memberCount?: number;
-	createdAt: string;
-}
-
-function unwrapRes(res: any): any {
-	return extractItem(res) ?? res;
-}
 
 export default function TenantsPage() {
 	const [modalVisible, setModalVisible] = useState(false);
@@ -63,7 +49,17 @@ export default function TenantsPage() {
 	} = useApplications(detailTenantId);
 	const [form] = Form.useForm();
 
-	const { data, isLoading, refetch, error } = useTenants();
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [keyword, setKeyword] = useState('');
+
+	const { data, isLoading, refetch, error } = useTenants({
+		page,
+		pageSize,
+		search: keyword || undefined,
+	});
+	const tenants = data?.items ?? [];
+	const total = data?.total ?? 0;
 	const createTenantMutation = useCreateTenant();
 	const updateTenantMutation = useUpdateTenant();
 	const deleteTenantMutation = useDeleteTenant();
@@ -232,12 +228,32 @@ export default function TenantsPage() {
 
 			{error && <PageError message="加载租户列表失败" retry={refetch} className="mb-4" />}
 
+			<Input.Search
+				allowClear
+				placeholder="按名称 / 域名搜索租户"
+				style={{ width: 320, marginBottom: 16 }}
+				onSearch={(value) => {
+					setPage(1);
+					setKeyword(value.trim());
+				}}
+			/>
+
 			<DataTable
 				rowKey="id"
 				columns={columns}
-				dataSource={data || []}
+				dataSource={tenants}
 				loading={isLoading}
-				pagination={{ pageSize: 10 }}
+				pagination={{
+					current: page,
+					pageSize,
+					total,
+					showSizeChanger: true,
+					showTotal: (t: number) => `共 ${t} 条租户`,
+					onChange: (p: number, ps: number) => {
+						setPage(p);
+						setPageSize(ps);
+					},
+				}}
 				locale={{ emptyText: '暂无租户数据' }}
 			/>
 

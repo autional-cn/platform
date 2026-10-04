@@ -1,38 +1,31 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Form, InputNumber, Select, Button, Card, Skeleton } from 'antd';
+import { Form, InputNumber, Select, Button, Skeleton } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { usePageTitle } from '@autional-cn/shared';
 import { ConsolePageHeader, ErrorState, SectionCard } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminPoliciesNhi, adminPoliciesNhiPut } from '@autional-cn/shared/generated/api';
-import { message } from '@/lib/antd-app';
+import { message, modal } from '@/lib/antd-app';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
-
-interface NhiPolicy {
-	agent_max_count?: number;
-	agent_default_ttl?: string;
-	robot_max_count?: number;
-	device_max_per_owner?: number;
-	rotation_days_default?: number;
-}
+import { diffNhiPolicy, normalizeNhiPolicy, type NhiPolicy } from '@/lib/nhi-policy';
 
 async function fetchNhiPolicy(): Promise<NhiPolicy> {
 	const data = await adminPoliciesNhi();
-	return ((data?.data ?? data) as NhiPolicy) ?? {};
+	return normalizeNhiPolicy((data?.data ?? data) as Record<string, unknown>);
 }
 
 async function saveNhiPolicy(values: NhiPolicy): Promise<NhiPolicy> {
 	const data = await adminPoliciesNhiPut(values as any);
-	return (data?.data ?? data) as NhiPolicy;
+	return normalizeNhiPolicy((data?.data ?? data) as Record<string, unknown>);
 }
 
 export default function NhiPolicyPage() {
 	usePageTitle('NHI 策略');
 	const queryClient = useQueryClient();
-	const [form] = Form.useForm();
+	const [form] = Form.useForm<NhiPolicy>();
 
 	const {
 		data: policy,
@@ -58,13 +51,36 @@ export default function NhiPolicyPage() {
 		},
 	});
 
-	const handleSave = async (values: NhiPolicy) => {
+	const performSave = async (values: NhiPolicy) => {
 		try {
 			await saveMut.mutateAsync(values);
 			message.success('NHI 策略保存成功');
 		} catch (err) {
 			handleApiError(err, '保存失败');
 		}
+	};
+
+	const handleSave = (values: NhiPolicy) => {
+		const changes = diffNhiPolicy(policy ?? {}, values);
+		if (changes.length === 0) {
+			message.info('策略未变更，未提交');
+			return;
+		}
+		modal.confirm({
+			title: '确认保存以下变更？',
+			content: (
+				<div className="space-y-1">
+					{changes.map((c) => (
+						<div key={c.field}>
+							{c.label}：{String(c.from ?? '—')} → <strong>{String(c.to)}</strong>
+						</div>
+					))}
+				</div>
+			),
+			okText: '保存',
+			cancelText: '取消',
+			onOk: () => performSave(values),
+		});
 	};
 
 	if (isLoading) {
@@ -98,28 +114,17 @@ export default function NhiPolicyPage() {
 				/>
 			</div>
 
-			<Form
-				form={form}
-				layout="vertical"
-				onFinish={handleSave}
-				initialValues={{
-					agent_max_count: 100,
-					agent_default_ttl: '1h',
-					robot_max_count: 50,
-					device_max_per_owner: 10,
-					rotation_days_default: 90,
-				}}
-			>
+			<Form form={form} layout="vertical" onFinish={handleSave}>
 				<SectionCard title="Agent 默认值">
 					<Form.Item
-						name="agent_max_count"
+						name="agentMaxCount"
 						label="Agent 数量上限"
 						rules={[{ required: true, message: '必填' }]}
 					>
 						<InputNumber min={1} max={10000} style={{ width: 200 }} />
 					</Form.Item>
 					<Form.Item
-						name="agent_default_ttl"
+						name="agentDefaultTtl"
 						label="Agent 默认 TTL"
 						rules={[{ required: true, message: '必填' }]}
 					>
@@ -137,7 +142,7 @@ export default function NhiPolicyPage() {
 
 				<SectionCard title="Robot 默认值" className="mt-6">
 					<Form.Item
-						name="robot_max_count"
+						name="robotMaxCount"
 						label="Robot 数量上限"
 						rules={[{ required: true, message: '必填' }]}
 					>
@@ -147,7 +152,7 @@ export default function NhiPolicyPage() {
 
 				<SectionCard title="Device 默认值" className="mt-6">
 					<Form.Item
-						name="device_max_per_owner"
+						name="deviceMaxPerOwner"
 						label="每个所有者 Device 上限"
 						rules={[{ required: true, message: '必填' }]}
 					>
@@ -157,7 +162,7 @@ export default function NhiPolicyPage() {
 
 				<SectionCard title="安全默认值" className="mt-6">
 					<Form.Item
-						name="rotation_days_default"
+						name="rotationDaysDefault"
 						label="默认轮换周期（天）"
 						rules={[{ required: true, message: '必填' }]}
 					>

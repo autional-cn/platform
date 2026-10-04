@@ -30,7 +30,8 @@ export interface ServiceHealthItem {
 	status: string;
 	latency?: string;
 	port: number;
-	checked_at: string;
+	checkedAt?: string;
+	checked_at?: string;
 }
 
 export interface HealthData {

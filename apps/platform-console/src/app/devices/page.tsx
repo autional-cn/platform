@@ -4,7 +4,13 @@ import React, { useState } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Button, Space, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import {
+	usePageTitle,
+	useTenantSlug,
+	fromPageResult,
+	toPageParams,
+	type PageResult,
+} from '@autional-cn/shared';
 import { ConsolePageHeader, EmptyState, ErrorState, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminIots, adminIotsPost, adminIotsByIotsDelete } from '@autional-cn/shared/generated/api';
@@ -16,9 +22,10 @@ import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
 
 interface DeviceRecord {
-	id: string;
+	identityId?: string;
+	identity_id?: string;
 	name: string;
-	type: string;
+	type?: string;
 	workloadSubtype?: string;
 	workload_subtype?: string;
 	hardwareId?: string;
@@ -28,6 +35,8 @@ interface DeviceRecord {
 	manufacturer?: string;
 	ownerName?: string;
 	owner_name?: string;
+	ownerId?: string;
+	owner_id?: string;
 	createdAt?: string;
 	created_at?: string;
 }
@@ -55,11 +64,15 @@ function formatDate(iso: string): string {
 	return new Date(iso).toLocaleDateString('zh-CN');
 }
 
-async function fetchDevices(): Promise<DeviceRecord[]> {
-	const data = await adminIots();
-	if (data?.items) return data.items;
-	if (Array.isArray(data)) return data;
-	return [];
+// 后端 DeviceInfo 主键键名 = identity_id（无裸 id）；camel 化后 identityId。
+function recordId(r: DeviceRecord): string {
+	return (r.identityId ?? r.identity_id ?? '') as string;
+}
+
+async function fetchDevices(page: number, pageSize: number): Promise<PageResult<DeviceRecord>> {
+	// tenant 从 JWT claims 读取，不传 tenant_id（传参被后端忽略）
+	const res = await adminIots(toPageParams({ page, pageSize }) as any);
+	return fromPageResult<DeviceRecord>(res);
 }
 
 async function createDevice(values: Record<string, unknown>): Promise<DeviceRecord> {
@@ -77,17 +90,21 @@ export default function DevicesPage() {
 	const queryClient = useQueryClient();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [form] = Form.useForm();
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
 
 	const {
-		data: devices = [],
+		data,
 		isLoading,
 		error,
 		refetch,
 	} = useQuery({
-		queryKey: queryKeys.devices.all,
-		queryFn: fetchDevices,
+		queryKey: queryKeys.devices.list({ page, pageSize }),
+		queryFn: () => fetchDevices(page, pageSize),
 		staleTime: 300000,
 	});
+	const devices = data?.items ?? [];
+	const total = data?.total ?? 0;
 
 	const createMut = useMutation({
 		mutationFn: createDevice,
@@ -126,7 +143,14 @@ export default function DevicesPage() {
 			key: 'name',
 			render: (v: string, record: DeviceRecord) => (
 				<a
-					onClick={() => navigate(buildNavHref(ROUTE.DEVICE_DETAIL.replace(':id', record.id), tenantSlug))}
+					onClick={() =>
+						navigate(
+							buildNavHref(
+								ROUTE.DEVICE_DETAIL.replace(':id', recordId(record)),
+								tenantSlug,
+							),
+						)
+					}
 					className="font-medium"
 				>
 					{v}
@@ -145,8 +169,9 @@ export default function DevicesPage() {
 		},
 		{
 			title: '所有者',
-			key: 'owner_name',
-			render: (_: unknown, r: DeviceRecord) => (r.ownerName ?? r.owner_name) || '-',
+			key: 'owner',
+			render: (_: unknown, r: DeviceRecord) =>
+				(r.ownerName ?? r.owner_name ?? r.ownerId ?? r.owner_id) || '-',
 		},
 		{
 			title: '硬件 ID',
@@ -177,7 +202,12 @@ export default function DevicesPage() {
 						icon={<EditOutlined />}
 						onClick={(e) => {
 							e.stopPropagation();
-							navigate(buildNavHref(ROUTE.DEVICE_DETAIL.replace(':id', record.id), tenantSlug));
+							navigate(
+								buildNavHref(
+									ROUTE.DEVICE_DETAIL.replace(':id', recordId(record)),
+									tenantSlug,
+								),
+							);
 						}}
 					>
 						编辑
@@ -185,7 +215,7 @@ export default function DevicesPage() {
 					<Popconfirm
 						title="确认删除该 Device？"
 						description="此操作不可撤销。"
-						onConfirm={() => handleDelete(record.id)}
+						onConfirm={() => handleDelete(recordId(record))}
 						okText="删除"
 						okButtonProps={{ danger: true }}
 						cancelText="取消"
@@ -239,7 +269,7 @@ export default function DevicesPage() {
 				/>
 			)}
 
-			{!isLoading && !error && devices.length === 0 && (
+			{!isLoading && !error && total === 0 && (
 				<div className="flex flex-col items-center gap-4">
 					<EmptyState title="暂无 Device" description="创建第一个 Device 以开始使用。" />
 					<Button
@@ -255,14 +285,30 @@ export default function DevicesPage() {
 				</div>
 			)}
 
-			{!isLoading && !error && devices.length > 0 && (
+			{!isLoading && !error && total > 0 && (
 				<DataTable
-					rowKey="id"
+					rowKey={recordId}
 					columns={columns}
 					dataSource={devices}
-					pagination={{ pageSize: 10 }}
+					pagination={{
+						current: page,
+						pageSize,
+						total,
+						showSizeChanger: true,
+						showTotal: (t: number) => `共 ${t} 条 Device`,
+						onChange: (p: number, ps: number) => {
+							setPage(p);
+							setPageSize(ps);
+						},
+					}}
 					onRow={(record) => ({
-						onClick: () => navigate(buildNavHref(ROUTE.DEVICE_DETAIL.replace(':id', record.id), tenantSlug)),
+						onClick: () =>
+							navigate(
+								buildNavHref(
+									ROUTE.DEVICE_DETAIL.replace(':id', recordId(record)),
+									tenantSlug,
+								),
+							),
 						style: { cursor: 'pointer' },
 					})}
 				/>

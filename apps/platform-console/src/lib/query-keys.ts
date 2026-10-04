@@ -32,6 +32,7 @@ export const queryKeys = {
 	},
 	tenants: {
 		all: ['tenants'] as const,
+		list: (params?: unknown) => ['tenants', 'list', { params }] as const,
 		detail: (id: string) => ['tenants', id] as const,
 	},
 	departments: {

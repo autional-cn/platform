@@ -25,7 +25,7 @@ import {
 	UserOutlined,
 } from '@ant-design/icons';
 import { handleApiError } from '@/lib/error-handler';
-import { AuthService, extractList, extractItem } from '@autional-cn/shared';
+import { AuthService, fromPageResult, toPageParams } from '@autional-cn/shared';
 import {
 	adminTenantsMinorsProtectionByTenants,
 	adminTenantsMinorsProtectionByTenantsPut,
@@ -114,9 +114,14 @@ export default function MinorsProtectionPage() {
 	const [usersLoading, setUsersLoading] = useState(false);
 	const [usersError, setUsersError] = useState<Error | null>(null);
 	const [userTotal, setUserTotal] = useState<number | null>(null);
+	const [userPage, setUserPage] = useState(1);
+	const [userPageSize, setUserPageSize] = useState(20);
 	const [consents, setConsents] = useState<ConsentRecord[]>([]);
 	const [consentsLoading, setConsentsLoading] = useState(false);
 	const [consentsError, setConsentsError] = useState<Error | null>(null);
+	const [consentPage, setConsentPage] = useState(1);
+	const [consentPageSize, setConsentPageSize] = useState(20);
+	const [consentTotal, setConsentTotal] = useState<number | null>(null);
 	const [activeTab, setActiveTab] = useState('config');
 	const [form] = Form.useForm();
 
@@ -162,15 +167,16 @@ export default function MinorsProtectionPage() {
 		}
 	};
 
-	const loadUsers = async () => {
+	const loadUsers = async (page: number = userPage, pageSize: number = userPageSize) => {
 		setUsersLoading(true);
 		try {
-			// generated adminUsers 签名缺 is_minor/page_size（后端 UserListRequest 实收，契约漂移待 W2 对齐）
-			const data = await adminUsers({ page_size: 100, is_minor: true } as any);
+			// generated adminUsers 签名缺 is_minor/page_size（后端 UserListRequest 实收，契约漂移待对齐）
+			// 服务端分页：total 用后端真值，分页器不再切本地 100 条切片
+			const data = await adminUsers({ page, page_size: pageSize, is_minor: true } as any);
 			setUsersError(null);
-			const list = extractList<MinorUser>(data);
-			setUsers(list);
-			setUserTotal(extractItem<{ total?: number }>(data)?.total ?? list.length);
+			const result = fromPageResult<MinorUser>(data);
+			setUsers(result.items);
+			setUserTotal(result.total);
 		} catch (err) {
 			setUsersError(err instanceof Error ? err : new Error('加载未成年用户列表失败'));
 		} finally {
@@ -178,12 +184,14 @@ export default function MinorsProtectionPage() {
 		}
 	};
 
-	const loadConsents = async () => {
+	const loadConsents = async (page: number = consentPage, pageSize: number = consentPageSize) => {
 		setConsentsLoading(true);
 		try {
-			const data = await adminConsents({ page_size: 100 });
+			const data = await adminConsents(toPageParams({ page, pageSize }));
 			setConsentsError(null);
-			setConsents(extractList<ConsentRecord>(data));
+			const result = fromPageResult<ConsentRecord>(data);
+			setConsents(result.items);
+			setConsentTotal(result.total);
 		} catch (err) {
 			setConsentsError(err instanceof Error ? err : new Error('加载家长同意记录失败'));
 		} finally {
@@ -435,7 +443,7 @@ export default function MinorsProtectionPage() {
 							<ApiErrorState
 								error={usersError}
 								title="加载未成年用户列表失败"
-								onRetry={loadUsers}
+								onRetry={() => loadUsers()}
 							/>
 						) : (
 							<DataTable
@@ -444,10 +452,16 @@ export default function MinorsProtectionPage() {
 								rowKey="id"
 								loading={usersLoading}
 								pagination={{
-									pageSize: 20,
+									current: userPage,
+									pageSize: userPageSize,
 									total: userTotal ?? users.length,
 									showSizeChanger: true,
 									showTotal: (t) => `共 ${t} 人`,
+									onChange: (p: number, ps: number) => {
+										setUserPage(p);
+										setUserPageSize(ps);
+										loadUsers(p, ps);
+									},
 								}}
 								scroll={{ x: 800 }}
 							/>
@@ -460,7 +474,7 @@ export default function MinorsProtectionPage() {
 							<ApiErrorState
 								error={consentsError}
 								title="加载家长同意记录失败"
-								onRetry={loadConsents}
+								onRetry={() => loadConsents()}
 							/>
 						) : (
 							<DataTable
@@ -502,7 +516,18 @@ export default function MinorsProtectionPage() {
 								dataSource={consents}
 								rowKey="id"
 								loading={consentsLoading}
-								pagination={{ pageSize: 20 }}
+								pagination={{
+									current: consentPage,
+									pageSize: consentPageSize,
+									total: consentTotal ?? consents.length,
+									showSizeChanger: true,
+									showTotal: (t) => `共 ${t} 条`,
+									onChange: (p: number, ps: number) => {
+										setConsentPage(p);
+										setConsentPageSize(ps);
+										loadConsents(p, ps);
+									},
+								}}
 							/>
 						),
 					},

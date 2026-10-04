@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Tabs, Card, Checkbox, Button, Tag, Space, Modal, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions } from 'antd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Tabs, Card, Checkbox, Button, Tag, Space, Modal, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions, Spin } from 'antd';
 import {
 	SafetyCertificateOutlined,
 	CheckCircleOutlined,
@@ -41,9 +41,9 @@ interface ControlItem {
 interface ResolvedParam {
 	value: any;
 	source: string[];
-	merge_rule: string;
+	mergeRule: string;
 	overridden: boolean;
-	override_value?: any;
+	overrideValue?: any;
 	severity: string;
 }
 
@@ -55,7 +55,7 @@ interface GapItem {
 	compliant: boolean;
 	severity: string;
 	standard?: string;
-	control_ref?: string;
+	controlRef?: string;
 	description?: string;
 }
 
@@ -63,17 +63,18 @@ interface OverrideItem {
 	parameter: string;
 	value: any;
 	reason: string;
-	created_by: string;
-	created_at: string;
+	createdBy: string;
+	createdAt: string;
 }
 
 interface ReadinessItem {
-	standard_id: string;
-	standard_name: string;
-	total_controls: number;
-	passed_controls: number;
-	compliance_rate: number;
-	ready_for_audit: boolean;
+	standardId?: string;
+	standardName?: string;
+	totalControls: number;
+	passedControls: number;
+	complianceRate: number;
+	readyForAudit: boolean;
+	failedControls?: unknown[];
 	recommendations: string[];
 }
 
@@ -114,20 +115,30 @@ export default function CompliancePolicyPage() {
 	const [overrideForm] = Form.useForm();
 	const [resolvedStandards, setResolvedStandards] = useState<string[]>([]);
 
-	const { data: tenants } = useTenants();
+	const [tenantSearch, setTenantSearch] = useState('');
+	const [selectedTenantLabel, setSelectedTenantLabel] = useState<string | null>(null);
+	const { data: tenantPage, isLoading: tenantsLoading } = useTenants({
+		pageSize: 50,
+		search: tenantSearch || undefined,
+	});
+	// 排除平台租户自身（按响应里的 plan 字段判定，勿依赖裸 ULID）。
+	const tenantItems = useMemo(
+		() => (tenantPage?.items ?? []).filter((t) => t.plan !== 'platform'),
+		[tenantPage],
+	);
 	const currentTenantId = useAuthStore((s) => s.currentTenantId);
 	const switchTenant = useAuthStore((s) => s.switchTenant);
 
 	useEffect(() => {
-		if (!currentTenantId && tenants && tenants.length > 0) {
-			const first = tenants[0];
-			const firstId =
-				typeof first === 'string'
-					? first
-					: ((first as any)?.id as string) ?? ((first as any)?.tenant_id as string);
-			if (firstId) switchTenant(firstId);
+		if (!currentTenantId && tenantItems.length > 0) {
+			switchTenant(tenantItems[0].id);
 		}
-	}, [currentTenantId, tenants, switchTenant]);
+	}, [currentTenantId, tenantItems, switchTenant]);
+
+	useEffect(() => {
+		const found = tenantItems.find((t) => t.id === currentTenantId);
+		if (found?.name) setSelectedTenantLabel(found.name);
+	}, [tenantItems, currentTenantId]);
 
 	useEffect(() => {
 		fetchStandards();
@@ -172,10 +183,11 @@ export default function CompliancePolicyPage() {
 
 	const fetchScore = async () => {
 		try {
-		if (!currentTenantId) return;
-		const { adminComplianceTenantsScoreByTenants } = await import('@autional-cn/shared/generated/api');
-		const res = await adminComplianceTenantsScoreByTenants(currentTenantId);
-		setScore((res as any)?.data?.overall_score ?? null);
+			if (!currentTenantId) return;
+			const { adminComplianceTenantsScoreByTenants } = await import('@autional-cn/shared/generated/api');
+			const res = (await adminComplianceTenantsScoreByTenants(currentTenantId)) as any;
+			const payload = res?.data ?? res;
+			setScore(payload?.overallScore ?? payload?.overall_score ?? null);
 		} catch {
 			// 评分加载失败时保持默认
 		}
@@ -208,8 +220,9 @@ export default function CompliancePolicyPage() {
 			if (!currentTenantId) return;
 			const { adminComplianceTenantsGapAnalysisByTenantsPost } =
 				await import('@autional-cn/shared/generated/api');
-			const res = await adminComplianceTenantsGapAnalysisByTenantsPost(currentTenantId, {} as any);
-			setGapItems((res as any)?.data?.parameters || []);
+			const res = (await adminComplianceTenantsGapAnalysisByTenantsPost(currentTenantId, {} as any)) as any;
+			const payload = res?.data ?? res;
+			setGapItems(payload?.parameters ?? []);
 			setActiveTab('gaps');
 		} catch (err) {
 			handleApiError(err, '差距分析失败');
@@ -224,12 +237,12 @@ export default function CompliancePolicyPage() {
 			if (!currentTenantId) return;
 			const { adminComplianceTenantsReadinessByTenantsByReadinessPost } =
 				await import('@autional-cn/shared/generated/api');
-			const res = await adminComplianceTenantsReadinessByTenantsByReadinessPost(
+			const res = (await adminComplianceTenantsReadinessByTenantsByReadinessPost(
 				currentTenantId,
 				stdId,
 				{} as any,
-			);
-			setReadiness((prev) => ({ ...prev, [stdId]: (res as any)?.data }));
+			)) as any;
+			setReadiness((prev) => ({ ...prev, [stdId]: res?.data ?? res }));
 		} catch (err) {
 			handleApiError(err, '获取认证报告失败');
 		} finally {
@@ -272,11 +285,13 @@ export default function CompliancePolicyPage() {
 
 	const filteredStandards = standards;
 
-	const tenantOptions = (tenants || []).map((t) => {
-		const item = t as { id?: string; tenant_id?: string; name?: string };
-		const value = item.id ?? item.tenant_id ?? '';
-		return { value, label: item.name ?? value };
-	});
+	const tenantOptions = tenantItems.map((t) => ({
+		value: t.id,
+		label: t.name ?? t.id,
+	}));
+	if (currentTenantId && !tenantItems.some((t) => t.id === currentTenantId)) {
+		tenantOptions.unshift({ value: currentTenantId, label: selectedTenantLabel ?? currentTenantId });
+	}
 
 	const tabs = [
 		{
@@ -349,7 +364,7 @@ export default function CompliancePolicyPage() {
 							columns={[
 								{ title: '参数', dataIndex: 'parameter', width: 200 },
 								{ title: '要求值', dataIndex: 'value', render: (v: any) => String(v) },
-								{ title: '合并规则', dataIndex: 'merge_rule', width: 100 },
+								{ title: '合并规则', dataIndex: 'mergeRule', width: 100 },
 								{ title: '来源标准', dataIndex: 'source', render: (s: string[]) => s.join(', ') },
 								{
 									title: '严重度',
@@ -467,7 +482,7 @@ export default function CompliancePolicyPage() {
 									render: (v: any) => <Tag color="green">{String(v)}</Tag>,
 								},
 								{ title: '原因', dataIndex: 'reason' },
-								{ title: '设置时间', dataIndex: 'created_at', width: 180 },
+								{ title: '设置时间', dataIndex: 'createdAt', width: 180 },
 								{
 									title: '操作',
 									width: 80,
@@ -546,30 +561,30 @@ export default function CompliancePolicyPage() {
 													<Col span={6}>
 														<Statistic
 															title="就绪度"
-															value={Math.round(r.compliance_rate)}
+															value={Math.round(r.complianceRate ?? 0)}
 															suffix="%"
 														/>
 													</Col>
 													<Col span={6}>
 														<Statistic
 															title="通过"
-															value={r.passed_controls}
-															suffix={`/ ${r.total_controls}`}
+															value={r.passedControls}
+															suffix={`/ ${r.totalControls}`}
 														/>
 													</Col>
 													<Col span={6}>
-														<Statistic title="可提交审计" value={r.ready_for_audit ? '是' : '否'} />
+														<Statistic title="可提交审计" value={r.readyForAudit ? '是' : '否'} />
 													</Col>
 													<Col span={6}>
 														<Progress
 															type="circle"
-															percent={Math.round(r.compliance_rate)}
+															percent={Math.round(r.complianceRate ?? 0)}
 															size={60}
-															status={r.ready_for_audit ? 'success' : 'normal'}
+															status={r.readyForAudit ? 'success' : 'normal'}
 														/>
 													</Col>
 												</Row>
-												{r.recommendations.length > 0 && (
+												{(r.recommendations ?? []).length > 0 && (
 													<div style={{ marginTop: 12 }}>
 														<Descriptions title="建议操作" column={1} size="small">
 															{r.recommendations.map((rec, i) => (
@@ -616,6 +631,11 @@ export default function CompliancePolicyPage() {
 					value={currentTenantId || undefined}
 					onChange={(tid: string) => switchTenant(tid)}
 					options={tenantOptions}
+					showSearch
+					filterOption={false}
+					onSearch={setTenantSearch}
+					loading={tenantsLoading}
+					notFoundContent={tenantsLoading ? <Spin size="small" /> : undefined}
 				/>
 			</div>
 			<Tabs activeKey={activeTab} onChange={setActiveTab} items={tabs} />

@@ -1,6 +1,11 @@
 'use client';
 
-import { extractItem, extractList } from '@autional-cn/shared';
+import {
+	extractItem,
+	fromPageResult,
+	toPageParams,
+	type PageResult,
+} from '@autional-cn/shared';
 import { queryKeys } from '@/lib/query-keys';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,19 +19,43 @@ import {
 	suspendTenant,
 } from '@/lib/api.generated';
 
-export type TenantListResponse = Record<string, unknown>;
+// 列表响应经拦截器 camel 化后的形状（service-tenant TenantResponse）。
+export interface TenantRecord {
+	id: string;
+	name?: string;
+	displayName?: string;
+	domain?: string;
+	status?: string;
+	plan?: string;
+	ownerId?: string;
+	createdAt?: string;
+	updatedAt?: string;
+	[key: string]: unknown;
+}
 
 export type TenantDetail = Record<string, unknown>;
 
-export function useTenants() {
-	return useQuery({
-		queryKey: queryKeys.tenants.all,
+export interface TenantListParams {
+	page?: number;
+	pageSize?: number;
+	search?: string;
+	status?: string;
+	plan?: string;
+}
+
+// 服务端检索参数真名 = keyword（swagger/generated 里写成 search 是契约漂移）。
+export function useTenants(params?: TenantListParams) {
+	return useQuery<PageResult<TenantRecord>>({
+		queryKey: queryKeys.tenants.list(params),
 		staleTime: 60000,
 		queryFn: async () => {
-			const res = await getAllTenants();
-			const payload = extractItem<TenantListResponse>(res) ?? res;
-			const items = payload?.items ?? payload;
-			return Array.isArray(items) ? items : [];
+			const res = await getAllTenants({
+				...toPageParams({ page: params?.page, pageSize: params?.pageSize }),
+				...(params?.search ? { keyword: params.search } : {}),
+				...(params?.status ? { status: params.status } : {}),
+				...(params?.plan ? { plan: params.plan } : {}),
+			} as any);
+			return fromPageResult<TenantRecord>(res);
 		},
 	});
 }

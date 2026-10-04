@@ -40,7 +40,7 @@ export default function OpsPage() {
 					status: (svc.status as ServiceHealth['status']) ?? 'unknown',
 					latency: svc.latency,
 					port: svc.port,
-					checkedAt: svc.checked_at,
+					checkedAt: svc.checkedAt ?? svc.checked_at,
 				});
 			});
 			return svcs;
@@ -143,7 +143,18 @@ export default function OpsPage() {
 					))}
 				</Row>
 
-				<Card title="服务总览 (Grafana)" className="mb-6">
+				<Card
+					title="服务总览 (Grafana)"
+					className="mb-6"
+					// iframe 加载失败跨域不可检测（XFO/CSP/Basic Auth 均表现为空白）→ 链接恒显式渲染
+					extra={
+						isGrafanaConfigured ? (
+							<a href={ops.grafanaOverviewUrl} target="_blank" rel="noreferrer">
+								新窗口打开
+							</a>
+						) : undefined
+					}
+				>
 					{isGrafanaConfigured ? (
 						<iframe
 							src={ops.grafanaOverviewUrl}
@@ -166,7 +177,20 @@ export default function OpsPage() {
 					<Card
 						title={`${selectedService} 详情 (Grafana)`}
 						className="mb-6"
-						extra={<Tag color="blue">Grafana</Tag>}
+						extra={
+							<span className="flex items-center gap-3">
+								{isGrafanaConfigured && (
+									<a
+										href={ops.grafanaServicesUrl(selectedService)}
+										target="_blank"
+										rel="noreferrer"
+									>
+										新窗口打开
+									</a>
+								)}
+								<Tag color="blue">Grafana</Tag>
+							</span>
+						}
 					>
 						{isGrafanaConfigured ? (
 							<iframe

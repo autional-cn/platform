@@ -17,16 +17,25 @@ import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 
 interface AgentDetail {
-	id: string;
+	identityId?: string;
+	identity_id?: string;
 	name: string;
 	description: string;
-	workload_subtype: string;
+	workloadSubtype?: string;
+	workload_subtype?: string;
 	status: string;
-	owner_name: string;
-	rotation_days: number;
-	jit_ttl: string;
-	created_at: string;
-	updated_at: string;
+	ownerName?: string;
+	owner_name?: string;
+	ownerId?: string;
+	owner_id?: string;
+	rotationDays?: number;
+	rotation_days?: number;
+	jitTtl?: number;
+	jit_ttl?: number;
+	createdAt?: string;
+	created_at?: string;
+	updatedAt?: string;
+	updated_at?: string;
 }
 
 interface CredentialRecord {
@@ -163,10 +172,19 @@ export default function AgentDetailPage() {
 
 	usePageTitle(agent?.name ? `${agent.name} - Agent` : 'Agent 详情');
 
+	// 后端 UpdateAgentRequest.rotation_days/jit_ttl 为 *int；antd Input 产出 string，
+	// 直接提交 422 —— 提交前归一为 number，空/非法值剔除（omitempty 走后端默认）。
 	const handleEdit = async (values: Record<string, unknown>) => {
 		if (!id) return;
+		const payload: Record<string, unknown> = { ...values };
+		for (const k of ['rotation_days', 'jit_ttl'] as const) {
+			const v = payload[k];
+			const n = v === '' || v === undefined || v === null ? NaN : Number(v);
+			if (Number.isFinite(n)) payload[k] = n;
+			else delete payload[k];
+		}
 		try {
-			await updateMut.mutateAsync({ id, values });
+			await updateMut.mutateAsync({ id, values: payload });
 			message.success('Agent 更新成功');
 			setEditVisible(false);
 		} catch (err) {
@@ -179,12 +197,18 @@ export default function AgentDetailPage() {
 		form.setFieldsValue({
 			name: agent.name,
 			description: agent.description,
-			workload_subtype: agent.workload_subtype,
-			rotation_days: agent.rotation_days,
-			jit_ttl: agent.jit_ttl,
+			workload_subtype: agent.workloadSubtype ?? agent.workload_subtype,
+			rotation_days: agent.rotationDays ?? agent.rotation_days,
+			jit_ttl: agent.jitTtl ?? agent.jit_ttl,
 		});
 		setEditVisible(true);
 	};
+
+	const subtype = agent?.workloadSubtype ?? agent?.workload_subtype ?? '';
+	const ownerDisplay =
+		agent?.ownerName ?? agent?.owner_name ?? agent?.ownerId ?? agent?.owner_id ?? '';
+	const rotationDays = agent?.rotationDays ?? agent?.rotation_days;
+	const jitTtl = agent?.jitTtl ?? agent?.jit_ttl;
 
 	const credentialColumns = [
 		{ title: '名称', dataIndex: 'name', key: 'name' },
@@ -294,17 +318,23 @@ export default function AgentDetailPage() {
 								<StatusBadge variant={statusVariant(agent.status)}>{agent.status}</StatusBadge>
 							</Descriptions.Item>
 							<Descriptions.Item label="工作负载子类型">
-								<Tag color={SUBTYPE_COLORS[agent.workload_subtype] || 'default'}>
-									{SUBTYPE_LABELS[agent.workload_subtype] || agent.workload_subtype}
+								<Tag color={SUBTYPE_COLORS[subtype] || 'default'}>
+									{SUBTYPE_LABELS[subtype] || subtype || '-'}
 								</Tag>
 							</Descriptions.Item>
-							<Descriptions.Item label="所有者">{agent.owner_name || '-'}</Descriptions.Item>
+							<Descriptions.Item label="所有者">{ownerDisplay || '-'}</Descriptions.Item>
 							<Descriptions.Item label="轮换周期（天）">
-								{agent.rotation_days ?? '-'}
+								{rotationDays ?? '-'}
 							</Descriptions.Item>
-							<Descriptions.Item label="JIT TTL">{agent.jit_ttl || '-'}</Descriptions.Item>
-							<Descriptions.Item label="创建时间">{formatDate(agent.created_at)}</Descriptions.Item>
-							<Descriptions.Item label="更新时间">{formatDate(agent.updated_at)}</Descriptions.Item>
+							<Descriptions.Item label="JIT TTL">
+								{jitTtl ? `${jitTtl} 秒` : '-'}
+							</Descriptions.Item>
+							<Descriptions.Item label="创建时间">
+								{formatDate(agent.createdAt ?? agent.created_at ?? '')}
+							</Descriptions.Item>
+							<Descriptions.Item label="更新时间">
+								{formatDate(agent.updatedAt ?? agent.updated_at ?? '')}
+							</Descriptions.Item>
 						</Descriptions>
 					</SectionCard>
 
@@ -394,8 +424,8 @@ export default function AgentDetailPage() {
 					<Form.Item name="rotation_days" label="轮换周期（天）">
 						<Input type="number" placeholder="90" />
 					</Form.Item>
-					<Form.Item name="jit_ttl" label="JIT TTL">
-						<Input placeholder="1h, 30m, 5m" />
+					<Form.Item name="jit_ttl" label="JIT TTL（秒）">
+						<Input type="number" placeholder="例如 3600" />
 					</Form.Item>
 				</Form>
 			</Modal>

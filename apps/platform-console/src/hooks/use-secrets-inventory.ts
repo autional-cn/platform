@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { apiClient, extractList, extractItem } from '@autional-cn/shared';
+import { extractList, extractItem } from '@autional-cn/shared';
 import {
 	adminSecrets,
 	adminSecretsEncryptionKeys,
@@ -81,52 +81,77 @@ export interface SecretsInventoryOverview {
 	};
 }
 
+// 响应经拦截器 camel 化；snake 兜底防契约回退（PL-61）。
+function pickField<T>(item: object, camel: string, snake: string): T | undefined {
+	const rec = item as Record<string, unknown>;
+	return (rec[camel] as T | undefined) ?? (rec[snake] as T | undefined);
+}
+
 interface SecretApiItem {
 	key: string;
+	tenantId?: string;
 	tenant_id?: string;
 	version?: number;
 	status?: string;
 	description?: string;
 	expires?: string | null;
+	createdAt?: string;
 	created_at?: string;
+	updatedAt?: string;
 	updated_at?: string;
+	isSystem?: boolean;
 	is_system?: boolean;
 }
 
 interface EncryptionKeyApiItem {
+	keyId?: string;
 	key_id?: string;
 	algorithm?: string;
 	status?: string;
+	servicesUsing?: string[];
 	services_using?: string[];
 }
 
 interface ApiKeyApiItem {
+	keyPrefix?: string;
 	key_prefix?: string;
 	prefix?: string;
+	tenantId?: string;
 	tenant_id?: string;
 	type?: string;
+	createdAt?: string;
 	created_at?: string;
 	status?: string;
+	lastUsedAt?: string;
 	last_used_at?: string;
 	scopes?: string[];
 }
 
 interface OAuthClientApiItem {
 	provider?: string;
+	clientId?: string;
 	client_id?: string;
 	status?: string;
+	lastUsedAt?: string;
 	last_used_at?: string;
 }
 
 interface JwtKeyApiItem {
+	keyId?: string;
 	key_id?: string;
+	keyType?: string;
 	key_type?: string;
 	algorithm?: string;
+	keySize?: number;
 	key_size?: number;
 	fingerprint?: string;
+	hasPrivateKey?: boolean;
 	has_private_key?: boolean;
+	hasPublicKey?: boolean;
 	has_public_key?: boolean;
+	createdAt?: string;
 	created_at?: string;
+	updatedAt?: string;
 	updated_at?: string;
 	status?: string;
 	version?: number;
@@ -137,6 +162,7 @@ interface InfraCredentialApiItem {
 	key?: string;
 	infrastructure?: string;
 	container?: string;
+	sourceFile?: string;
 	source_file?: string;
 	consumers?: string[];
 	category?: string;
@@ -145,7 +171,7 @@ interface InfraCredentialApiItem {
 function mapKVRecord(item: SecretApiItem): SecretKVRecord {
 	return {
 		key: item.key ?? '',
-		tenantId: item.tenant_id ?? 'system',
+		tenantId: pickField<string>(item, 'tenantId', 'tenant_id') ?? 'system',
 		version: item.version ?? 1,
 		status: (item.status === 'active' || item.status === 'expired' || item.status === 'revoked'
 			? item.status
@@ -153,35 +179,38 @@ function mapKVRecord(item: SecretApiItem): SecretKVRecord {
 		description: item.description ?? '',
 		category: 'Secret KV',
 		expires: item.expires ?? null,
-		created: item.created_at ?? '',
-		lastModified: item.updated_at ?? item.created_at ?? '',
-		isSystem: item.is_system ?? false,
+		created: pickField<string>(item, 'createdAt', 'created_at') ?? '',
+		lastModified:
+			pickField<string>(item, 'updatedAt', 'updated_at') ??
+			pickField<string>(item, 'createdAt', 'created_at') ??
+			'',
+		isSystem: pickField<boolean>(item, 'isSystem', 'is_system') ?? false,
 	};
 }
 
 function mapEncryptionKey(item: EncryptionKeyApiItem): EncryptionKeyRecord {
 	return {
-		keyId: item.key_id ?? '',
+		keyId: pickField<string>(item, 'keyId', 'key_id') ?? '',
 		algorithm: item.algorithm ?? '',
 		status: (item.status === 'current' || item.status === 'fallback'
 			? item.status
 			: 'current') as EncryptionKeyRecord['status'],
-		servicesUsing: item.services_using ?? [],
+		servicesUsing: pickField<string[]>(item, 'servicesUsing', 'services_using') ?? [],
 	};
 }
 
 function mapApiKeyRecord(item: ApiKeyApiItem): ApiKeySummaryRecord {
 	return {
-		prefix: item.key_prefix ?? item.prefix ?? '',
-		tenantId: item.tenant_id ?? '',
+		prefix: pickField<string>(item, 'keyPrefix', 'key_prefix') ?? item.prefix ?? '',
+		tenantId: pickField<string>(item, 'tenantId', 'tenant_id') ?? '',
 		type: (item.type === 'user' || item.type === 'service' || item.type === 'system'
 			? item.type
 			: 'user') as ApiKeySummaryRecord['type'],
-		created: item.created_at ?? '',
+		created: pickField<string>(item, 'createdAt', 'created_at') ?? '',
 		status: (item.status === 'active' || item.status === 'expired' || item.status === 'revoked'
 			? item.status
 			: 'active') as ApiKeySummaryRecord['status'],
-		lastUsed: item.last_used_at ?? '',
+		lastUsed: pickField<string>(item, 'lastUsedAt', 'last_used_at') ?? '',
 		scopes: item.scopes ?? [],
 	};
 }
@@ -189,22 +218,26 @@ function mapApiKeyRecord(item: ApiKeyApiItem): ApiKeySummaryRecord {
 function mapOAuthRecord(item: OAuthClientApiItem): OAuthSecretRecord {
 	return {
 		provider: item.provider ?? '',
-		clientId: item.client_id ?? '',
+		clientId: pickField<string>(item, 'clientId', 'client_id') ?? '',
 		status: (item.status === 'active' || item.status === 'expired'
 			? item.status
 			: 'active') as OAuthSecretRecord['status'],
-		lastUsed: item.last_used_at ?? '',
+		lastUsed: pickField<string>(item, 'lastUsedAt', 'last_used_at') ?? '',
 	};
 }
 
 function mapJwtKeyRecord(item: JwtKeyApiItem): JwtKeyRecord {
+	const keyType = pickField<string>(item, 'keyType', 'key_type');
 	return {
-		keyName: item.key_type ? `${item.key_type.toUpperCase()} Key` : 'JWT Key',
+		keyName: keyType ? `${keyType.toUpperCase()} Key` : 'JWT Key',
 		algorithm: item.algorithm ?? '',
-		keyId: item.key_id ?? '',
+		keyId: pickField<string>(item, 'keyId', 'key_id') ?? '',
 		status: item.status ?? 'unknown',
-		lastRotated: item.updated_at ?? item.created_at ?? '',
-		inMemoryOnly: !item.has_public_key,
+		lastRotated:
+			pickField<string>(item, 'updatedAt', 'updated_at') ??
+			pickField<string>(item, 'createdAt', 'created_at') ??
+			'',
+		inMemoryOnly: !pickField<boolean>(item, 'hasPublicKey', 'has_public_key'),
 	};
 }
 
@@ -219,7 +252,7 @@ const CATEGORY_TYPE_MAP: Record<string, InfrastructureRecord['type']> = {
 function mapInfrastructureRecord(item: InfraCredentialApiItem): InfrastructureRecord {
 	return {
 		credentialName: item.name ?? '',
-		location: item.source_file ?? '',
+		location: pickField<string>(item, 'sourceFile', 'source_file') ?? '',
 		type: CATEGORY_TYPE_MAP[item.category ?? ''] ?? 'API',
 		managedBySecretService: false,
 	};
@@ -320,13 +353,9 @@ export function useSecretsInventoryKV() {
 		queryKey: queryKeys.secretsInventory.kv,
 		staleTime: 30000,
 		queryFn: async () => {
-			try {
-				const data = await adminSecrets();
-				const items = extractList<SecretApiItem>({ data });
-				return items.map(mapKVRecord);
-			} catch {
-				return [];
-			}
+			const data = await adminSecrets();
+			const items = extractList<SecretApiItem>({ data });
+			return items.map(mapKVRecord);
 		},
 	});
 }
@@ -336,25 +365,21 @@ export function useSecretsInventoryEncryptionKeys() {
 		queryKey: queryKeys.secretsInventory.encryptionKeys,
 		staleTime: 30000,
 		queryFn: async () => {
-			try {
-				const data = await adminSecretsEncryptionKeys();
-				const extracted = extractItem<any>({ data });
-				if (extracted?.keys && Array.isArray(extracted.keys)) {
-					return extracted.keys.map(mapEncryptionKey);
-				}
-				if (extracted?.available && Array.isArray(extracted.available)) {
-					const current = extracted.current ?? '';
-					return extracted.available.map((keyId: string, idx: number) => ({
-						keyId,
-						algorithm: '',
-						status: keyId === current ? ('current' as const) : ('fallback' as const),
-						servicesUsing: [],
-					}));
-				}
-				return [];
-			} catch {
-				return [];
+			const data = await adminSecretsEncryptionKeys();
+			const extracted = extractItem<any>({ data });
+			if (extracted?.keys && Array.isArray(extracted.keys)) {
+				return extracted.keys.map(mapEncryptionKey);
 			}
+			if (extracted?.available && Array.isArray(extracted.available)) {
+				const current = extracted.current ?? '';
+				return extracted.available.map((keyId: string, idx: number) => ({
+					keyId,
+					algorithm: '',
+					status: keyId === current ? ('current' as const) : ('fallback' as const),
+					servicesUsing: [],
+				}));
+			}
+			return [];
 		},
 	});
 }
@@ -364,16 +389,12 @@ export function useSecretsInventoryJwtKeys() {
 		queryKey: queryKeys.secretsInventory.jwtKeys,
 		staleTime: 60000,
 		queryFn: async () => {
-			try {
-				const res = await adminSecretsJwtKeys();
-				const data = extractItem<{ keys?: JwtKeyApiItem[] }>(res);
-				if (data?.keys && Array.isArray(data.keys)) {
-					return data.keys.map(mapJwtKeyRecord);
-				}
-				return [];
-			} catch {
-				return [];
+			const res = await adminSecretsJwtKeys();
+			const data = extractItem<{ keys?: JwtKeyApiItem[] }>(res);
+			if (data?.keys && Array.isArray(data.keys)) {
+				return data.keys.map(mapJwtKeyRecord);
 			}
+			return [];
 		},
 	});
 }
@@ -383,16 +404,12 @@ export function useSecretsInventoryInfrastructure() {
 		queryKey: queryKeys.secretsInventory.infrastructure,
 		staleTime: 60000,
 		queryFn: async () => {
-			try {
-				const data = await adminInfraCredentials();
-				const extracted = extractItem<{ credentials?: InfraCredentialApiItem[] }>({ data });
-				if (extracted?.credentials && Array.isArray(extracted.credentials)) {
-					return extracted.credentials.map(mapInfrastructureRecord);
-				}
-				return [];
-			} catch {
-				return [];
+			const data = await adminInfraCredentials();
+			const extracted = extractItem<{ credentials?: InfraCredentialApiItem[] }>({ data });
+			if (extracted?.credentials && Array.isArray(extracted.credentials)) {
+				return extracted.credentials.map(mapInfrastructureRecord);
 			}
+			return [];
 		},
 	});
 }
@@ -402,13 +419,9 @@ export function useSecretsInventoryApiKeys() {
 		queryKey: queryKeys.secretsInventory.apiKeys,
 		staleTime: 30000,
 		queryFn: async () => {
-			try {
-				const data = await adminAuthApiKeys();
-				const items = extractList<ApiKeyApiItem>({ data });
-				return items.map(mapApiKeyRecord);
-			} catch {
-				return [];
-			}
+			const data = await adminAuthApiKeys();
+			const items = extractList<ApiKeyApiItem>({ data });
+			return items.map(mapApiKeyRecord);
 		},
 	});
 }
@@ -418,13 +431,9 @@ export function useSecretsInventoryOAuth() {
 		queryKey: queryKeys.secretsInventory.oauth,
 		staleTime: 30000,
 		queryFn: async () => {
-			try {
-				const data = await adminOauthClients();
-				const items = extractList<OAuthClientApiItem>({ data });
-				return items.map(mapOAuthRecord);
-			} catch {
-				return [];
-			}
+			const data = await adminOauthClients();
+			const items = extractList<OAuthClientApiItem>({ data });
+			return items.map(mapOAuthRecord);
 		},
 	});
 }

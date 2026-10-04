@@ -86,7 +86,8 @@ export default function CompliancePage() {
 	const [dsarDrawer, setDsarDrawer] = useState(false);
 	const [currentDsar, setCurrentDsar] = useState<DSARRecord | null>(null);
 
-	const { data: tenants } = useTenants();
+	const { data: tenantPage } = useTenants();
+	const tenants = tenantPage?.items ?? [];
 	const currentTenantId = useAuthStore((s) => s.currentTenantId);
 	const switchTenant = useAuthStore((s) => s.switchTenant);
 
@@ -112,13 +113,8 @@ export default function CompliancePage() {
 	const loading = dsarLoading || policyLoading || sodLoading || isoLoading;
 
 	useEffect(() => {
-		if (!currentTenantId && tenants && tenants.length > 0) {
-			const first = tenants[0];
-			const firstId =
-				typeof first === 'string'
-					? first
-					: ((first as any)?.id as string) ?? ((first as any)?.tenant_id as string);
-			if (firstId) switchTenant(firstId);
+		if (!currentTenantId && tenants.length > 0) {
+			switchTenant(tenants[0].id);
 		}
 	}, [currentTenantId, tenants, switchTenant]);
 
@@ -128,12 +124,12 @@ export default function CompliancePage() {
 			try {
 				const { adminComplianceTenantsScoreByTenants, adminComplianceTenantsPolicyByTenants } =
 					await import('@autional-cn/shared/generated/api');
-				const scoreRes = await adminComplianceTenantsScoreByTenants(currentTenantId);
-				if ((scoreRes as any)?.data) {
-					setComplianceScore((scoreRes as any).data.overall_score ?? null);
-				}
-				const polRes = await adminComplianceTenantsPolicyByTenants(currentTenantId);
-				setStandardCount((polRes as any)?.data?.standards?.length || 0);
+				const scoreRes = (await adminComplianceTenantsScoreByTenants(currentTenantId)) as any;
+				const scorePayload = scoreRes?.data ?? scoreRes;
+				setComplianceScore(scorePayload?.overallScore ?? scorePayload?.overall_score ?? null);
+				const polRes = (await adminComplianceTenantsPolicyByTenants(currentTenantId)) as any;
+				const polPayload = polRes?.data ?? polRes;
+				setStandardCount(polPayload?.standards?.length || 0);
 			} catch {
 				// 合规评分加载失败时保持默认
 			}
@@ -353,11 +349,10 @@ export default function CompliancePage() {
 
 	const pendingDsarCount = (dsars as DSARRecord[]).filter((d) => d.status === 'pending').length;
 
-	const tenantOptions = (tenants || []).map((t) => {
-		const item = t as { id?: string; tenant_id?: string; name?: string };
-		const value = item.id ?? item.tenant_id ?? '';
-		return { value, label: item.name ?? value };
-	});
+	const tenantOptions = tenants.map((t) => ({
+		value: t.id,
+		label: t.name ?? t.id,
+	}));
 
 	return (
 		<div>
