@@ -207,7 +207,7 @@ export default function AgentsPage() {
 	];
 
 	return (
-		<div className="p-6">
+		<div>
 			<ConsolePageHeader
 				title="AI 智能体"
 				description="管理机器身份与工作负载凭证。"

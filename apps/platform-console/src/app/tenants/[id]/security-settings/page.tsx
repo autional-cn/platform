@@ -64,7 +64,7 @@ export default function SecuritySettingsPage() {
 	}
 
 	return (
-		<div className="p-6 max-w-2xl">
+		<div className="max-w-2xl">
 			<ConsolePageHeader
 				title="职责分离配置 (SoD)"
 				actions={

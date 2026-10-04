@@ -92,17 +92,14 @@ function LayoutWrapper() {
 				nav={<NavMenu />}
 				headerLeft={<Breadcrumb />}
 				headerRight={<HeaderActions />}
-				contentClassName="p-6"
 			>
-				<div className="min-h-[calc(100vh-112px)] rounded-lg bg-[var(--color-bg-surface)] p-6">
-					{bootstrap === 'loading' ? (
-						<div className="flex h-64 items-center justify-center">
-							<Spin indicator={<LoadingOutlined spin />} size="large" />
-						</div>
-					) : (
-						<Outlet />
-					)}
-				</div>
+				{bootstrap === 'loading' ? (
+					<div className="flex h-64 items-center justify-center">
+						<Spin indicator={<LoadingOutlined spin />} size="large" />
+					</div>
+				) : (
+					<Outlet />
+				)}
 			</AppShell>
 		</TenantSlugProvider>
 	);

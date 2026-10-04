@@ -69,7 +69,7 @@ export default function NhiPolicyPage() {
 
 	if (isLoading) {
 		return (
-			<div className="p-6 space-y-3">
+			<div className="space-y-3">
 				<Skeleton active />
 				<Skeleton active />
 				<Skeleton active />
@@ -79,7 +79,7 @@ export default function NhiPolicyPage() {
 
 	if (error && !policy) {
 		return (
-			<div className="p-6">
+			<div>
 				<ErrorState
 					title="加载 NHI 策略失败"
 					message="请检查网络连接后重试。"
@@ -90,7 +90,7 @@ export default function NhiPolicyPage() {
 	}
 
 	return (
-		<div className="p-6">
+		<div>
 			<div className="mb-6">
 				<ConsolePageHeader
 					title="NHI 策略配置"

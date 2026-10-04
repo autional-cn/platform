@@ -117,7 +117,7 @@ export default function InfraCredentialsPage() {
 	}, [groupedByType]);
 
 	return (
-		<div className="p-6">
+		<div>
 			<ConsolePageHeader
 				title="基础设施凭据"
 				description="数据库、缓存、消息队列、存储与 API 服务的基础设施凭据总览。"

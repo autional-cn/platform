@@ -108,7 +108,7 @@ export default function EnvVarsPage() {
 	];
 
 	return (
-		<div className="p-6">
+		<div>
 			<ConsolePageHeader
 				title="环境变量"
 				description="查看各服务运行时加载的全部环境变量。"

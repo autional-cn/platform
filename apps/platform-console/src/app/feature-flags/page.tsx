@@ -137,7 +137,7 @@ export default function FeatureFlagsPage() {
 	}, [data]);
 
 	return (
-		<div className="p-6">
+		<div>
 			<div className="mb-6">
 				<ConsolePageHeader
 					title="功能开关矩阵"

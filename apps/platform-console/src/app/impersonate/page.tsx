@@ -58,7 +58,7 @@ export default function ImpersonatePage() {
 
 	if (impersonateResult) {
 		return (
-			<div className="p-6">
+			<div>
 				<div className="mb-6">
 					<ConsolePageHeader title="管理员模拟登录" description="模拟其他用户登录系统" />
 				</div>
@@ -115,7 +115,7 @@ export default function ImpersonatePage() {
 	}
 
 	return (
-		<div className="p-6">
+		<div>
 			<div className="mb-6">
 				<ConsolePageHeader title="管理员模拟登录" description="以其他用户身份登录系统进行操作" />
 			</div>

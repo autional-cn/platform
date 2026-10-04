@@ -202,14 +202,14 @@ export default function RobotDetailPage() {
 
 	if (!id) {
 		return (
-			<div className="p-6">
+			<div>
 				<ErrorState title="Robot 无效" message="未提供 Robot ID。" />
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-6">
+		<div>
 			<div className="mb-6">
 				<Button
 					type="text"

@@ -239,14 +239,14 @@ export default function AgentDetailPage() {
 
 	if (!id) {
 		return (
-			<div className="p-6">
+			<div>
 				<ErrorState title="Agent 无效" message="未提供 Agent ID。" />
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-6">
+		<div>
 			<div className="mb-6">
 				<Button
 					type="text"

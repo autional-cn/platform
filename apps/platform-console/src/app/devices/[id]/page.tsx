@@ -110,14 +110,14 @@ export default function DeviceDetailPage() {
 
 	if (!id) {
 		return (
-			<div className="p-6">
+			<div>
 				<ErrorState title="Device 无效" message="未提供 Device ID。" />
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-6">
+		<div>
 			<div className="mb-6">
 				<Button
 					type="text"

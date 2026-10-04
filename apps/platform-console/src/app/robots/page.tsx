@@ -193,7 +193,7 @@ export default function RobotsPage() {
 	];
 
 	return (
-		<div className="p-6">
+		<div>
 			<ConsolePageHeader
 				title="Robot 管理"
 				description="管理物理机器人身份与工作负载凭证。"

@@ -205,7 +205,7 @@ export default function DevicesPage() {
 	];
 
 	return (
-		<div className="p-6">
+		<div>
 			<ConsolePageHeader
 				title="Device 管理"
 				description="管理 IoT 与边缘设备身份。"
