@@ -64,7 +64,8 @@ interface OverrideItem {
 	value: any;
 	reason: string;
 	createdBy: string;
-	createdAt: string;
+	created_at?: string;
+	createdAt?: string;
 }
 
 interface ReadinessItem {
@@ -482,7 +483,12 @@ export default function CompliancePolicyPage() {
 									render: (v: any) => <Tag color="green">{String(v)}</Tag>,
 								},
 								{ title: '原因', dataIndex: 'reason' },
-								{ title: '设置时间', dataIndex: 'createdAt', width: 180 },
+								{
+									title: '设置时间',
+									dataIndex: 'created_at',
+									width: 180,
+									render: (_: any, r: OverrideItem) => r.createdAt ?? r.created_at ?? '-',
+								},
 								{
 									title: '操作',
 									width: 80,
