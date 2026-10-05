@@ -2,15 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Tabs, Card, Checkbox, Button, Tag, Space, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions, Spin } from 'antd';
-import {
-	SafetyCertificateOutlined,
-	CheckCircleOutlined,
-	CloseCircleOutlined,
-	WarningOutlined,
-	SettingOutlined,
-	EditOutlined,
-	DeleteOutlined,
-} from '@ant-design/icons';
+import { BadgeCheck, CheckCircle2, XCircle, Pencil, Trash2 } from 'lucide-react';
 import { handleApiError } from '@/lib/error-handler';
 import { useAuthStore, extractItem, usePageTitle } from '@autional-cn/shared';
 import { PageError, DataTable, Modal } from '@autional-cn/ui/antd';
@@ -331,7 +323,7 @@ export default function CompliancePolicyPage() {
 					<Space>
 						<Button
 							type="primary"
-							icon={<SafetyCertificateOutlined />}
+							icon={<BadgeCheck size="1em" />}
 							onClick={handleApply}
 							loading={loading}
 						>
@@ -437,11 +429,11 @@ export default function CompliancePolicyPage() {
 										width: 80,
 										render: (v: boolean) =>
 											v ? (
-												<Tag color="green" icon={<CheckCircleOutlined />}>
+												<Tag color="green" icon={<CheckCircle2 size="1em" />}>
 													合规
 												</Tag>
 											) : (
-												<Tag color="red" icon={<CloseCircleOutlined />}>
+												<Tag color="red" icon={<XCircle size="1em" />}>
 													不合规
 												</Tag>
 											),
@@ -471,7 +463,7 @@ export default function CompliancePolicyPage() {
 					<Card
 						title="参数拔高覆盖"
 						extra={
-							<Button type="primary" icon={<EditOutlined />} onClick={() => setOverrideModal(true)}>
+							<Button type="primary" icon={<Pencil size="1em" />} onClick={() => setOverrideModal(true)}>
 								新增覆盖
 							</Button>
 						}
@@ -500,7 +492,7 @@ export default function CompliancePolicyPage() {
 										<Button
 											type="link"
 											danger
-											icon={<DeleteOutlined />}
+											icon={<Trash2 size="1em" />}
 											onClick={() => handleRemoveOverride(record.parameter)}
 										>
 											移除
@@ -626,7 +618,7 @@ export default function CompliancePolicyPage() {
 			<ConsolePageHeader
 				title={
 					<span>
-						<SafetyCertificateOutlined style={{ marginRight: 8 }} />
+						<BadgeCheck size="1em" style={{ marginRight: 8 }} />
 						{t('compliancePolicy.title', '合规策略管理')}
 					</span>
 				}

@@ -2,13 +2,7 @@
 
 import React, { useEffect, useRef, useMemo } from 'react';
 import { Card, Row, Col, Statistic, Skeleton, Tag } from 'antd';
-import {
-	ArrowUpOutlined,
-	BellOutlined,
-	EyeOutlined,
-	SendOutlined,
-	MailOutlined,
-} from '@ant-design/icons';
+import { Bell, Eye, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';
 import {
@@ -140,7 +134,7 @@ export default function PlatformNotificationsPage() {
 							<Statistic
 								title={t('platformNotifications.messages30d', '近 30 天已发送消息')}
 								value={comm?.totalSent ?? 0}
-								prefix={<SendOutlined className="text-info" />}
+								prefix={<Send size="1em" className="text-info" />}
 							/>
 						)}
 					</Card>
@@ -168,7 +162,7 @@ export default function PlatformNotificationsPage() {
 							<Statistic
 								title={t('platformNotifications.notificationsTotal', '通知总数（累计）')}
 								value={notif?.totalSent ?? 0}
-								prefix={<BellOutlined className="text-purple-500" />}
+								prefix={<Bell size="1em" className="text-purple-500" />}
 							/>
 						)}
 					</Card>
@@ -183,7 +177,7 @@ export default function PlatformNotificationsPage() {
 								value={notif?.readRate ? Math.round(notif.readRate * 10000) / 100 : 0}
 								suffix="%"
 								precision={1}
-								prefix={<EyeOutlined className="text-success" />}
+								prefix={<Eye size="1em" className="text-success" />}
 								valueStyle={{ color: (notif?.readRate ?? 0) > 0.4 ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}
 							/>
 						)}

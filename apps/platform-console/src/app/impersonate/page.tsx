@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button, Form, Input, Select, Space, Typography } from 'antd';
-import { WarningOutlined, ExportOutlined } from '@ant-design/icons';
+import { AlertTriangle, ExternalLink } from 'lucide-react';
 import dayjs from 'dayjs';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -178,7 +178,7 @@ export default function ImpersonatePage() {
 							<Button
 								key="open"
 								type="primary"
-								icon={<ExportOutlined />}
+								icon={<ExternalLink size="1em" />}
 								onClick={openAdminConsole}
 							>
 								{t('impersonate.openConsole', '打开管理控制台（模拟会话）')}
@@ -212,7 +212,7 @@ export default function ImpersonatePage() {
 				variant="warning"
 				title={t('impersonate.auditWarning', '模拟用户操作将被完整审计。请谨慎使用。')}
 				className="mb-6"
-				icon={<WarningOutlined />}
+				icon={<AlertTriangle size="1em" />}
 			/>
 
 			<SectionCard title={t('impersonate.formTitle', '模拟登录表单')} padding="lg">

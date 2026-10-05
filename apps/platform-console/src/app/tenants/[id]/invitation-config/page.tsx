@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Form, InputNumber, Select, Button, Card, Spin } from 'antd';
 import { message } from '@/lib/antd-app';
-import { SaveOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Save, RefreshCw } from 'lucide-react';
 import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { getInvitationConfig, updateInvitationConfig } from '@/lib/api.generated';
 import { handleApiError } from '@/lib/error-handler';
@@ -75,7 +75,7 @@ export default function InvitationConfigPage() {
 				description={tenantName ? `租户：${tenantName}` : tenantId ? `租户 ID：${tenantId}` : undefined}
 				actions={
 					<>
-						<Button icon={<ReloadOutlined />} onClick={fetchConfig}>
+						<Button icon={<RefreshCw size="1em" />} onClick={fetchConfig}>
 							刷新
 						</Button>
 					</>
@@ -108,7 +108,7 @@ export default function InvitationConfigPage() {
 								</Select>
 							</Form.Item>
 
-							<Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
+							<Button type="primary" htmlType="submit" icon={<Save size="1em" />}>
 								保存配置
 							</Button>
 

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { DataTable, Modal } from '@autional-cn/ui/antd';
 import { useParams, useNavigate } from 'react-router';
 import { Button, Tag, Form, Input, Select, Skeleton, Descriptions } from 'antd';
-import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Pencil, ArrowLeft } from 'lucide-react';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { ROUTE } from '@/lib/route-paths';
@@ -286,7 +286,7 @@ export default function AgentDetailPage() {
 			<div className="mb-6">
 				<Button
 					type="text"
-					icon={<ArrowLeftOutlined />}
+					icon={<ArrowLeft size="1em" />}
 					onClick={() => navigate(buildNavHref(ROUTE.AGENTS, tenantSlug))}
 					className="mb-4 pl-0"
 				>
@@ -298,7 +298,7 @@ export default function AgentDetailPage() {
 						description={agent?.description || (isLoading ? '加载中…' : '')}
 					/>
 					{agent && (
-						<Button icon={<EditOutlined />} onClick={openEdit}>
+						<Button icon={<Pencil size="1em" />} onClick={openEdit}>
 							编辑 Agent
 						</Button>
 					)}

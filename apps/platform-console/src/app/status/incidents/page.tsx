@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Space, Form, Input, Select, Popconfirm, Descriptions } from 'antd';
 import { message } from '@/lib/antd-app';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
 import {
 	useIncidents,
 	useIncident,
@@ -147,7 +147,7 @@ export default function IncidentsPage() {
 					<Button
 						type="text"
 						size="small"
-						icon={<EyeOutlined />}
+						icon={<Eye size="1em" />}
 						onClick={() => setDrawerId(record.id)}
 					>
 						详情
@@ -155,7 +155,7 @@ export default function IncidentsPage() {
 					<Button
 						type="text"
 						size="small"
-						icon={<EditOutlined />}
+						icon={<Pencil size="1em" />}
 						onClick={() => {
 							setEditing(record);
 							form.setFieldsValue({
@@ -171,7 +171,7 @@ export default function IncidentsPage() {
 						编辑
 					</Button>
 					<Popconfirm title="确认删除该事故？" onConfirm={() => handleDelete(record.id)}>
-						<Button type="text" danger size="small" icon={<DeleteOutlined />}>
+						<Button type="text" danger size="small" icon={<Trash2 size="1em" />}>
 							删除
 						</Button>
 					</Popconfirm>
@@ -188,7 +188,7 @@ export default function IncidentsPage() {
 					<>
 						<Button
 							type="primary"
-							icon={<PlusOutlined />}
+							icon={<Plus size="1em" />}
 							onClick={() => {
 								setEditing(null);
 								form.resetFields();

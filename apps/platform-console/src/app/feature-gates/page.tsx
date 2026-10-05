@@ -5,14 +5,13 @@ import { useCurrentTenantId, usePageTitle } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { Card, Switch, Space, App, Spin, Tag } from 'antd';
-import { LockOutlined } from '@ant-design/icons';
+import { Lock } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	adminBillingFeatureGates,
 	adminBillingFeatureGatesOverrides,
 	adminBillingFeatureGatesOverridesPut,
 } from '@autional-cn/shared/generated/api';
-
 
 export default function FeatureGatesPage() {
 	const { t } = useTranslation();
@@ -68,7 +67,7 @@ export default function FeatureGatesPage() {
 			render: (v: boolean) => (
 				<Space>
 					<Tag color={v ? 'green' : 'red'}>{v ? '启用' : '禁用'}</Tag>
-					<LockOutlined style={{ color: '#999', fontSize: 12 }} />
+					<Lock size={12} style={{ color: '#999' }} />
 				</Space>
 			),
 		},

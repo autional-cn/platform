@@ -3,13 +3,7 @@
 import React, { useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Tag, Skeleton } from 'antd';
-import {
-	DatabaseOutlined,
-	CloudServerOutlined,
-	HddOutlined,
-	GlobalOutlined,
-	SafetyOutlined,
-} from '@ant-design/icons';
+import { Database, Cloud, HardDrive, Globe, ShieldCheck } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';
@@ -40,12 +34,12 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
-	database: <DatabaseOutlined />,
-	cache: <HddOutlined />,
-	mq: <CloudServerOutlined />,
-	storage: <CloudServerOutlined />,
-	monitoring: <CloudServerOutlined />,
-	security: <SafetyOutlined />,
+	database: <Database size="1em" />,
+	cache: <HardDrive size="1em" />,
+	mq: <Cloud size="1em" />,
+	storage: <Cloud size="1em" />,
+	monitoring: <Cloud size="1em" />,
+	security: <ShieldCheck size="1em" />,
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -158,7 +152,7 @@ export default function InfraCredentialsPage() {
 						{sortedTypes.map((type) => {
 							const items = groupedByType[type];
 							const label = t(`infraCredentials.type.${type}`, TYPE_LABELS[type] || type);
-							const icon = TYPE_ICONS[type] || <GlobalOutlined />;
+							const icon = TYPE_ICONS[type] || <Globe size="1em" />;
 							const color = TYPE_COLORS[type] || 'default';
 
 							return (

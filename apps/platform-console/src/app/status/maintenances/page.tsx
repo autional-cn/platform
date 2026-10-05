@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { Button, Space, Form, Input, Select, Popconfirm, DatePicker } from 'antd';
 import { message } from '@/lib/antd-app';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import {
 	useMaintenances,
 	useCreateMaintenance,
@@ -131,7 +131,7 @@ export default function MaintenancesPage() {
 					<Button
 						type="text"
 						size="small"
-						icon={<EditOutlined />}
+						icon={<Pencil size="1em" />}
 						onClick={() => {
 							setEditing(record);
 							form.setFieldsValue({
@@ -150,7 +150,7 @@ export default function MaintenancesPage() {
 						编辑
 					</Button>
 					<Popconfirm title="确认删除该项维护？" onConfirm={() => handleDelete(record.id)}>
-						<Button type="text" danger size="small" icon={<DeleteOutlined />}>
+						<Button type="text" danger size="small" icon={<Trash2 size="1em" />}>
 							删除
 						</Button>
 					</Popconfirm>
@@ -167,7 +167,7 @@ export default function MaintenancesPage() {
 					<>
 						<Button
 							type="primary"
-							icon={<PlusOutlined />}
+							icon={<Plus size="1em" />}
 							onClick={() => {
 								setEditing(null);
 								form.resetFields();

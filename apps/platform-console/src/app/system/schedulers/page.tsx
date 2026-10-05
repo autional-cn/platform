@@ -1,13 +1,7 @@
 'use client';
 
 import { Card, Tag, Badge, Statistic, Row, Col, Button } from 'antd';
-import {
-	ReloadOutlined,
-	CheckCircleFilled,
-	CloseCircleFilled,
-	MinusCircleFilled,
-	ClockCircleOutlined,
-} from '@ant-design/icons';
+import { RefreshCw, CheckCircle2, XCircle, MinusCircle, Clock } from 'lucide-react';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';
@@ -56,7 +50,7 @@ export default function SystemSchedulersPage() {
 			key: 'interval',
 			render: (interval: string) => (
 				<span>
-					<ClockCircleOutlined style={{ marginRight: 6 }} />
+					<Clock size="1em" style={{ marginRight: 6 }} />
 					{interval || '—'}
 				</span>
 			),
@@ -110,7 +104,7 @@ export default function SystemSchedulersPage() {
 									title={t('schedulers.statusRunning', '运行中')}
 									value={stats.running}
 									valueStyle={{ color: 'var(--color-success)' }}
-									prefix={<CheckCircleFilled />}
+									prefix={<CheckCircle2 size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -120,7 +114,7 @@ export default function SystemSchedulersPage() {
 									title={t('schedulers.statusPaused', '已暂停')}
 									value={stats.paused}
 									valueStyle={{ color: 'var(--color-warning)' }}
-									prefix={<MinusCircleFilled />}
+									prefix={<MinusCircle size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -130,7 +124,7 @@ export default function SystemSchedulersPage() {
 									title={t('schedulers.statusFailed', '失败')}
 									value={stats.failed}
 									valueStyle={{ color: 'var(--color-danger)' }}
-									prefix={<CloseCircleFilled />}
+									prefix={<XCircle size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -140,7 +134,7 @@ export default function SystemSchedulersPage() {
 									title={t('schedulers.statusDisabled', '已禁用')}
 									value={stats.disabled}
 									valueStyle={{ color: 'var(--color-text-disabled)' }}
-									prefix={<CloseCircleFilled />}
+									prefix={<XCircle size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -149,7 +143,7 @@ export default function SystemSchedulersPage() {
 					<Card
 						title={t('schedulers.list', '调度器列表')}
 						extra={
-							<Button icon={<ReloadOutlined />} onClick={() => refetch()}>
+							<Button icon={<RefreshCw size="1em" />} onClick={() => refetch()}>
 								{t('common.refresh', '刷新')}
 							</Button>
 						}

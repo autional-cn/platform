@@ -6,13 +6,7 @@ import { usePageTitle } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { Card, Tabs, Tag, Input, Tooltip, Badge } from 'antd';
-import {
-	CloudServerOutlined,
-	DatabaseOutlined,
-	EnvironmentOutlined,
-	ExperimentOutlined,
-	SearchOutlined,
-} from '@ant-design/icons';
+import { Cloud, Database, MapPin, FlaskConical, Search } from 'lucide-react';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import {
 	useServiceList,
@@ -28,7 +22,7 @@ import {
 	type FeatureStatus,
 } from '@/hooks/use-system-config';
 
-const { Search } = Input;
+const { Search: SearchInput } = Input;
 
 function ServicesTab() {
 	const { data: serviceList, isLoading, error, refetch } = useServiceList();
@@ -107,11 +101,11 @@ function InfrastructureTab() {
 			width: 140,
 			render: (text: string, record: InfraComponent) => {
 				const icons: Record<string, React.ReactNode> = {
-					postgres: <DatabaseOutlined className="mr-2 text-info" />,
-					redis: <DatabaseOutlined className="mr-2 text-danger" />,
-					rabbitmq: <CloudServerOutlined className="mr-2 text-warning" />,
-					mongodb: <DatabaseOutlined className="mr-2 text-success" />,
-					minio: <CloudServerOutlined className="mr-2 text-info" />,
+					postgres: <Database size="1em" className="mr-2 text-info" />,
+					redis: <Database size="1em" className="mr-2 text-danger" />,
+					rabbitmq: <Cloud size="1em" className="mr-2 text-warning" />,
+					mongodb: <Database size="1em" className="mr-2 text-success" />,
+					minio: <Cloud size="1em" className="mr-2 text-info" />,
 				};
 				return (
 					<span>
@@ -240,12 +234,12 @@ function EnvironmentVariablesTab() {
 	return (
 		<div>
 			<div className="mb-4">
-				<Search
+				<SearchInput
 					placeholder="搜索环境变量名称、来源或分类..."
 					allowClear
 					onChange={(e) => setSearchText(e.target.value)}
 					value={searchText}
-					prefix={<SearchOutlined />}
+					prefix={<Search size="1em" />}
 					style={{ maxWidth: 480 }}
 				/>
 			</div>
@@ -370,7 +364,7 @@ export default function SystemConfigPage() {
 			key: 'services',
 			label: (
 				<span>
-					<CloudServerOutlined />
+					<Cloud size="1em" />
 					服务列表
 				</span>
 			),
@@ -380,7 +374,7 @@ export default function SystemConfigPage() {
 			key: 'infrastructure',
 			label: (
 				<span>
-					<DatabaseOutlined />
+					<Database size="1em" />
 					基础设施
 				</span>
 			),
@@ -390,7 +384,7 @@ export default function SystemConfigPage() {
 			key: 'env-vars',
 			label: (
 				<span>
-					<EnvironmentOutlined />
+					<MapPin size="1em" />
 					环境变量
 				</span>
 			),
@@ -400,7 +394,7 @@ export default function SystemConfigPage() {
 			key: 'feature-flags',
 			label: (
 				<span>
-					<ExperimentOutlined />
+					<FlaskConical size="1em" />
 					功能标志
 				</span>
 			),

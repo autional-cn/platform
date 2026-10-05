@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DataTable, Modal } from '@autional-cn/ui/antd';
 import { Button, Space, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import {
 	usePageTitle,
 	useTenantSlug,
@@ -199,7 +199,7 @@ export default function DevicesPage() {
 				<Space size="small">
 					<Button
 						type="link"
-						icon={<EditOutlined />}
+						icon={<Pencil size="1em" />}
 						onClick={(e) => {
 							e.stopPropagation();
 							navigate(
@@ -223,7 +223,7 @@ export default function DevicesPage() {
 						<Button
 							type="link"
 							danger
-							icon={<DeleteOutlined />}
+							icon={<Trash2 size="1em" />}
 							onClick={(e) => e.stopPropagation()}
 						>
 							删除
@@ -242,7 +242,7 @@ export default function DevicesPage() {
 				actions={
 					<Button
 						type="primary"
-						icon={<PlusOutlined />}
+						icon={<Plus size="1em" />}
 						onClick={() => {
 							form.resetFields();
 							setModalVisible(true);
@@ -274,7 +274,7 @@ export default function DevicesPage() {
 					<EmptyState title="暂无 Device" description="创建第一个 Device 以开始使用。" />
 					<Button
 						type="primary"
-						icon={<PlusOutlined />}
+						icon={<Plus size="1em" />}
 						onClick={() => {
 							form.resetFields();
 							setModalVisible(true);

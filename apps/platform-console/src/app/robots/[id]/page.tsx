@@ -15,13 +15,7 @@ import {
 	Popconfirm,
 } from 'antd';
 import { Modal } from '@autional-cn/ui/antd';
-import {
-	EditOutlined,
-	ArrowLeftOutlined,
-	PlayCircleOutlined,
-	PauseCircleOutlined,
-	KeyOutlined,
-} from '@ant-design/icons';
+import { Pencil, ArrowLeft, Play, PauseCircle, KeyRound } from 'lucide-react';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { ConsolePageHeader, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';
@@ -215,7 +209,7 @@ export default function RobotDetailPage() {
 			<div className="mb-6">
 				<Button
 					type="text"
-					icon={<ArrowLeftOutlined />}
+					icon={<ArrowLeft size="1em" />}
 					onClick={() => navigate(buildNavHref(ROUTE.ROBOTS, tenantSlug))}
 					className="mb-4 pl-0"
 				>
@@ -230,7 +224,7 @@ export default function RobotDetailPage() {
 						<Space>
 							{canCommission && (
 								<Button
-									icon={<PlayCircleOutlined />}
+									icon={<Play size="1em" />}
 									style={{ color: 'var(--color-success)', borderColor: 'var(--color-success)' }}
 									onClick={handleCommission}
 									loading={commissionMut.isPending}
@@ -247,7 +241,7 @@ export default function RobotDetailPage() {
 									onConfirm={handleDecommission}
 								>
 									<Button
-										icon={<PauseCircleOutlined />}
+										icon={<PauseCircle size="1em" />}
 										danger
 										loading={decommissionMut.isPending}
 									>
@@ -257,7 +251,7 @@ export default function RobotDetailPage() {
 							)}
 							{canIssueIntent && (
 								<Button
-									icon={<KeyOutlined />}
+									icon={<KeyRound size="1em" />}
 									onClick={() => {
 										intentForm.resetFields();
 										setIntentResult(null);
@@ -267,7 +261,7 @@ export default function RobotDetailPage() {
 									签发 Intent
 								</Button>
 							)}
-							<Button icon={<EditOutlined />} onClick={openEdit}>
+							<Button icon={<Pencil size="1em" />} onClick={openEdit}>
 								编辑 Robot
 							</Button>
 						</Space>

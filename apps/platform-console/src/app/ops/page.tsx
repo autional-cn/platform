@@ -3,12 +3,7 @@
 import React, { useState } from 'react';
 import { Card, Tag, Row, Col, Spin, Statistic } from 'antd';
 import { message } from '@/lib/antd-app';
-import {
-	CheckCircleOutlined,
-	CloseCircleOutlined,
-	CloudServerOutlined,
-	WarningOutlined,
-} from '@ant-design/icons';
+import { CheckCircle2, XCircle, Cloud, AlertTriangle } from 'lucide-react';
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { PageError } from '@autional-cn/ui/antd';
@@ -88,7 +83,7 @@ export default function OpsPage() {
 								<Statistic
 									title="服务总数"
 									value={healthData.servicesTotal}
-									prefix={<CloudServerOutlined />}
+									prefix={<Cloud size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -99,7 +94,7 @@ export default function OpsPage() {
 									value={healthData.servicesHealthy}
 									suffix={`/ ${healthData.servicesTotal}`}
 									valueStyle={{ color: 'var(--color-success-text)' }}
-									prefix={<CheckCircleOutlined />}
+									prefix={<CheckCircle2 size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -109,7 +104,7 @@ export default function OpsPage() {
 									title="活跃事故"
 									value={healthData.activeIncidents}
 									valueStyle={{ color: healthData.activeIncidents > 0 ? 'var(--color-danger-text)' : undefined }}
-									prefix={<WarningOutlined />}
+									prefix={<AlertTriangle size="1em" />}
 								/>
 							</Card>
 						</Col>
@@ -129,7 +124,7 @@ export default function OpsPage() {
 									<div className="font-medium">{svc.name}</div>
 									<Tag
 										icon={
-											svc.status === 'healthy' ? <CheckCircleOutlined /> : <CloseCircleOutlined />
+											svc.status === 'healthy' ? <CheckCircle2 size="1em" /> : <XCircle size="1em" />
 										}
 										color={
 											svc.status === 'healthy'

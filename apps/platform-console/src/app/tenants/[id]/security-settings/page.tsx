@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Form, Select, Button, Card, Spin, Descriptions, Tag } from 'antd';
 import { message } from '@/lib/antd-app';
-import { SaveOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Save, RefreshCw } from 'lucide-react';
 import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { apiClient, API_PATHS } from '@autional-cn/shared';
 import { handleApiError } from '@/lib/error-handler';
@@ -69,7 +69,7 @@ export default function SecuritySettingsPage() {
 				title="职责分离配置 (SoD)"
 				actions={
 					<>
-						<Button icon={<ReloadOutlined />} onClick={fetchConfig} loading={loading}>
+						<Button icon={<RefreshCw size="1em" />} onClick={fetchConfig} loading={loading}>
 							刷新
 						</Button>
 					</>
@@ -116,7 +116,7 @@ export default function SecuritySettingsPage() {
 						</Form.Item>
 
 						<Form.Item>
-							<Button type="primary" htmlType="submit" loading={saving} icon={<SaveOutlined />}>
+							<Button type="primary" htmlType="submit" loading={saving} icon={<Save size="1em" />}>
 								保存配置
 							</Button>
 						</Form.Item>

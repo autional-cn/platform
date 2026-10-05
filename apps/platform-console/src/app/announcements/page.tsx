@@ -3,13 +3,7 @@
 import React, { useState } from 'react';
 import { Button, Space, Tag, Form, Input, Select, Popconfirm, Checkbox } from 'antd';
 import { message, modal } from '@/lib/antd-app';
-import {
-	PlusOutlined,
-	EditOutlined,
-	DeleteOutlined,
-	SendOutlined,
-	RollbackOutlined,
-} from '@ant-design/icons';
+import { Plus, Pencil, Trash2, Send, Undo2 } from 'lucide-react';
 import {
 	useAnnouncements,
 	useCreateAnnouncement,
@@ -173,7 +167,7 @@ export default function AnnouncementsPage() {
 					<Button
 						type="text"
 						size="small"
-						icon={<EditOutlined />}
+						icon={<Pencil size="1em" />}
 						onClick={() => {
 							setEditing(record);
 							form.setFieldsValue({
@@ -197,7 +191,7 @@ export default function AnnouncementsPage() {
 							<Button
 								type="text"
 								size="small"
-								icon={<SendOutlined />}
+								icon={<Send size="1em" />}
 								loading={publishMut.isPending}
 							>
 								发布
@@ -208,7 +202,7 @@ export default function AnnouncementsPage() {
 						<Button
 							type="text"
 							size="small"
-							icon={<RollbackOutlined />}
+							icon={<Undo2 size="1em" />}
 							onClick={() => handleUnpublish(record.id)}
 							loading={unpublishMut.isPending}
 						>
@@ -216,7 +210,7 @@ export default function AnnouncementsPage() {
 						</Button>
 					)}
 					<Popconfirm title="确认删除该公告？" onConfirm={() => handleDelete(record.id)}>
-						<Button type="text" danger size="small" icon={<DeleteOutlined />}>
+						<Button type="text" danger size="small" icon={<Trash2 size="1em" />}>
 							删除
 						</Button>
 					</Popconfirm>
@@ -233,7 +227,7 @@ export default function AnnouncementsPage() {
 					<>
 						<Button
 							type="primary"
-							icon={<PlusOutlined />}
+							icon={<Plus size="1em" />}
 							onClick={() => {
 								setEditing(null);
 								form.resetFields();

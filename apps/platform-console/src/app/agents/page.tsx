@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DataTable, Modal } from '@autional-cn/ui/antd';
 import { Button, Space, Tag, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import {
 	usePageTitle,
 	useTenantSlug,
@@ -224,7 +224,7 @@ export default function AgentsPage() {
 				<Space size="small">
 					<Button
 						type="link"
-						icon={<EditOutlined />}
+						icon={<Pencil size="1em" />}
 						onClick={(e) => {
 							e.stopPropagation();
 							navigate(
@@ -248,7 +248,7 @@ export default function AgentsPage() {
 						<Button
 							type="link"
 							danger
-							icon={<DeleteOutlined />}
+							icon={<Trash2 size="1em" />}
 							onClick={(e) => e.stopPropagation()}
 						>
 							删除
@@ -267,7 +267,7 @@ export default function AgentsPage() {
 				actions={
 					<Button
 						type="primary"
-						icon={<PlusOutlined />}
+						icon={<Plus size="1em" />}
 						onClick={() => {
 							form.resetFields();
 							setModalVisible(true);
@@ -299,7 +299,7 @@ export default function AgentsPage() {
 					<EmptyState title="暂无 Agent" description="创建第一个 AI 智能体以开始使用。" />
 					<Button
 						type="primary"
-						icon={<PlusOutlined />}
+						icon={<Plus size="1em" />}
 						onClick={() => {
 							form.resetFields();
 							setModalVisible(true);

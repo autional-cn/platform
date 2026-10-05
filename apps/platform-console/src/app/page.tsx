@@ -1,12 +1,6 @@
 import { useMemo, type ReactNode } from 'react';
 import { Button, Card, Col, Row, Skeleton, Statistic } from 'antd';
-import {
-	TeamOutlined,
-	NotificationOutlined,
-	CloudServerOutlined,
-	WarningOutlined,
-	ArrowRightOutlined,
-} from '@ant-design/icons';
+import { Users, Megaphone, Cloud, AlertTriangle, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
@@ -57,7 +51,7 @@ export default function DashboardPage() {
 		{
 			title: t('dashboard.kpi.tenants', '租户总数'),
 			value: tenants?.total ?? '—',
-			icon: <TeamOutlined />,
+			icon: <Users size="1em" />,
 			note: t('dashboard.kpi.tenantsNote', '点击下钻 · 租户管理'),
 			route: ROUTE.TENANTS,
 			warning: !!tenantsError,
@@ -65,7 +59,7 @@ export default function DashboardPage() {
 		{
 			title: t('dashboard.kpi.incidents', '活跃事故'),
 			value: overview?.activeIncidents ?? '—',
-			icon: <WarningOutlined />,
+			icon: <AlertTriangle size="1em" />,
 			note: t('dashboard.note.publicStatus', '公开状态页口径 · 点击下钻'),
 			route: ROUTE.INCIDENTS,
 			warning: !!overviewError,
@@ -74,7 +68,7 @@ export default function DashboardPage() {
 			title: t('dashboard.kpi.healthy', '健康服务'),
 			value: overview?.servicesHealthy ?? '—',
 			suffix: overview?.servicesTotal != null ? `/ ${overview.servicesTotal}` : undefined,
-			icon: <CloudServerOutlined />,
+			icon: <Cloud size="1em" />,
 			note: t('dashboard.note.publicStatus', '公开状态页口径 · 点击下钻'),
 			route: ROUTE.OPS,
 			warning: !!overviewError,
@@ -82,7 +76,7 @@ export default function DashboardPage() {
 		{
 			title: t('dashboard.kpi.notifications', '平台通知'),
 			value: stats?.totalSent ?? '—',
-			icon: <NotificationOutlined />,
+			icon: <Megaphone size="1em" />,
 			note: t('dashboard.kpi.notificationsNote', '站内通知全量累计 · 点击下钻'),
 			route: ROUTE.PLATFORM_NOTIFICATIONS,
 			warning: !!statsError,
@@ -172,7 +166,7 @@ export default function DashboardPage() {
 									key={link.route}
 									type="link"
 									className="justify-start !px-0"
-									icon={<ArrowRightOutlined className="text-xs" />}
+									icon={<ArrowRight size="1em" className="text-xs" />}
 									onClick={() => go(link.route)}
 								>
 									{link.label}

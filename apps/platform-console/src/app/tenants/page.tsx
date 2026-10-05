@@ -3,14 +3,7 @@
 import React, { useState } from 'react';
 import { Button, Space, Tag, Form, Input, Select, Card, Descriptions, Tabs, Popconfirm, Row, Col } from 'antd';
 import { message } from '@/lib/antd-app';
-import {
-	PlusOutlined,
-	EyeOutlined,
-	PauseCircleOutlined,
-	PlayCircleOutlined,
-	DeleteOutlined,
-	EditOutlined,
-} from '@ant-design/icons';
+import { Plus, Eye, PauseCircle, Play, Trash2, Pencil } from 'lucide-react';
 import {
 	useTenants,
 	useCreateTenant,
@@ -184,7 +177,7 @@ export default function TenantsPage() {
 					<Button
 						type="text"
 						size="small"
-						icon={<EyeOutlined />}
+						icon={<Eye size="1em" />}
 						onClick={() => openDetail(record)}
 					>
 						详情
@@ -193,7 +186,7 @@ export default function TenantsPage() {
 						<Button
 							type="text"
 							size="small"
-							icon={<PauseCircleOutlined />}
+							icon={<PauseCircle size="1em" />}
 							onClick={() => handleSuspend(record.id)}
 						>
 							暂停
@@ -202,7 +195,7 @@ export default function TenantsPage() {
 						<Button
 							type="text"
 							size="small"
-							icon={<PlayCircleOutlined />}
+							icon={<Play size="1em" />}
 							onClick={() => handleActivate(record.id)}
 						>
 							激活
@@ -211,7 +204,7 @@ export default function TenantsPage() {
 					<Button
 						type="text"
 						size="small"
-						icon={<EditOutlined />}
+						icon={<Pencil size="1em" />}
 						onClick={() => {
 							setEditing(record);
 							form.setFieldsValue({
@@ -229,7 +222,7 @@ export default function TenantsPage() {
 						title="确认删除租户？此操作不可恢复！"
 						onConfirm={() => handleDelete(record.id)}
 					>
-						<Button type="text" danger size="small" icon={<DeleteOutlined />}>
+						<Button type="text" danger size="small" icon={<Trash2 size="1em" />}>
 							删除
 						</Button>
 					</Popconfirm>
@@ -246,7 +239,7 @@ export default function TenantsPage() {
 					<>
 						<Button
 							type="primary"
-							icon={<PlusOutlined />}
+							icon={<Plus size="1em" />}
 							onClick={() => {
 								setEditing(null);
 								form.resetFields();

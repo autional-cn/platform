@@ -19,12 +19,7 @@ import {
 	Tag,
 	Popconfirm,
 } from 'antd';
-import {
-	SafetyCertificateOutlined,
-	SaveOutlined,
-	ReloadOutlined,
-	UserOutlined,
-} from '@ant-design/icons';
+import { BadgeCheck, Save, RefreshCw, User } from 'lucide-react';
 import { handleApiError } from '@/lib/error-handler';
 import { AuthService, fromPageResult, toPageParams, usePageTitle } from '@autional-cn/shared';
 import { useTranslation } from 'react-i18next';
@@ -293,7 +288,7 @@ export default function MinorsProtectionPage() {
 						<Statistic
 							title="未成年用户数"
 							value={userTotal ?? '—'}
-							prefix={<UserOutlined />}
+							prefix={<User size="1em" />}
 						/>
 					</Card>
 				</Col>
@@ -317,7 +312,7 @@ export default function MinorsProtectionPage() {
 										: '关闭'
 									: '—'
 							}
-							prefix={<SafetyCertificateOutlined />}
+							prefix={<BadgeCheck size="1em" />}
 						/>
 					</Card>
 				</Col>
@@ -426,7 +421,7 @@ export default function MinorsProtectionPage() {
 								<div style={{ marginTop: 24, textAlign: 'right' }}>
 									<Button
 										onClick={loadConfig}
-										icon={<ReloadOutlined />}
+										icon={<RefreshCw size="1em" />}
 										style={{ marginRight: 8 }}
 									>
 										重置
@@ -440,7 +435,7 @@ export default function MinorsProtectionPage() {
 										<Button
 											type="primary"
 											loading={saving}
-											icon={<SaveOutlined />}
+											icon={<Save size="1em" />}
 										>
 											保存配置
 										</Button>

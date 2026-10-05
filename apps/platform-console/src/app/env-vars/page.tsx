@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Input, Button, Skeleton } from 'antd';
-import { EyeOutlined, EyeInvisibleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Eye, EyeOff, Search } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';
@@ -92,7 +92,7 @@ export default function EnvVarsPage() {
 						<Button
 							type="text"
 							size="small"
-							icon={revealed ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+							icon={revealed ? <EyeOff size="1em" /> : <Eye size="1em" />}
 							onClick={() => toggleReveal(record.key)}
 							title={revealed ? t('envVars.hide', '隐藏值') : t('envVars.reveal', '显示值')}
 						/>
@@ -136,7 +136,7 @@ export default function EnvVarsPage() {
 							<Input
 								placeholder={t('envVars.searchPlaceholder', '按键名搜索…')}
 								allowClear
-								prefix={<SearchOutlined />}
+								prefix={<Search size="1em" />}
 								value={searchText}
 								onChange={(e) => setSearchText(e.target.value)}
 								style={{ maxWidth: 480 }}
