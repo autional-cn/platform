@@ -116,7 +116,7 @@ export default function CompliancePage() {
 		if (!currentTenantId && tenants.length > 0) {
 			switchTenant(tenants[0].id);
 		}
-	}, [currentTenantId, tenants, switchTenant]);
+	}, [currentTenantId, tenantPage, switchTenant]);
 
 	useEffect(() => {
 		if (!currentTenantId) return;
