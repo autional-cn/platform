@@ -28,6 +28,7 @@ export interface TenantRecord {
 	status?: string;
 	plan?: string;
 	ownerId?: string;
+	memberCount?: number;
 	createdAt?: string;
 	updatedAt?: string;
 	[key: string]: unknown;
