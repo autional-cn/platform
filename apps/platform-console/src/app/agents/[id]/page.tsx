@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { DataTable, Modal } from '@autional-cn/ui/antd';
 import { useParams, useNavigate } from 'react-router';
 import { Button, Tag, Form, Input, Select, Skeleton, Descriptions } from 'antd';
-import { Pencil, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { ROUTE } from '@/lib/route-paths';

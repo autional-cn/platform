@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DataTable, Modal } from '@autional-cn/ui/antd';
 import { Button, Space, Tag, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import {
 	usePageTitle,
 	useTenantSlug,

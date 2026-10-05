@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Space, Form, Input, Select, Popconfirm, Descriptions } from 'antd';
 import { message } from '@/lib/antd-app';
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
 import {
 	useIncidents,
 	useIncident,

@@ -1,6 +1,12 @@
 import { useMemo, type ReactNode } from 'react';
 import { Button, Card, Col, Row, Skeleton, Statistic } from 'antd';
-import { Users, Megaphone, Cloud, AlertTriangle, ArrowRight } from 'lucide-react';
+import {
+	AlertTriangle,
+	ArrowRight,
+	Cloud,
+	Megaphone,
+	Users,
+} from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';

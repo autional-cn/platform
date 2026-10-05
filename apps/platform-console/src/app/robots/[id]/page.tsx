@@ -15,7 +15,13 @@ import {
 	Popconfirm,
 } from 'antd';
 import { Modal } from '@autional-cn/ui/antd';
-import { Pencil, ArrowLeft, Play, PauseCircle, KeyRound } from 'lucide-react';
+import {
+	ArrowLeft,
+	KeyRound,
+	PauseCircle,
+	Pencil,
+	Play,
+} from 'lucide-react';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
 import { ConsolePageHeader, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';

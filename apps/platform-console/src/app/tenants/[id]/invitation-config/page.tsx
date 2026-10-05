@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Form, InputNumber, Select, Button, Card, Spin } from 'antd';
 import { message } from '@/lib/antd-app';
-import { Save, RefreshCw } from 'lucide-react';
+import { RefreshCw, Save } from 'lucide-react';
 import { extractItem, usePageTitle } from '@autional-cn/shared';
 import { getInvitationConfig, updateInvitationConfig } from '@/lib/api.generated';
 import { handleApiError } from '@/lib/error-handler';

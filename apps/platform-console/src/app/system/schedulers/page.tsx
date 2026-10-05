@@ -1,7 +1,13 @@
 'use client';
 
 import { Card, Tag, Badge, Statistic, Row, Col, Button } from 'antd';
-import { RefreshCw, CheckCircle2, XCircle, MinusCircle, Clock } from 'lucide-react';
+import {
+	CheckCircle2,
+	Clock,
+	MinusCircle,
+	RefreshCw,
+	XCircle,
+} from 'lucide-react';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';

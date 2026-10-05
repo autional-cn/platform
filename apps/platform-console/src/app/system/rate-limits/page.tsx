@@ -2,7 +2,12 @@
 
 import React from 'react';
 import { Card, Tag, Descriptions } from 'antd';
-import { Cloud, CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
+import {
+	CheckCircle2,
+	Cloud,
+	HelpCircle,
+	XCircle,
+} from 'lucide-react';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';

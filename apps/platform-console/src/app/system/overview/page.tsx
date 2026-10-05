@@ -2,7 +2,16 @@
 
 import React, { useMemo } from 'react';
 import { Card, Col, Row, Tag, Statistic } from 'antd';
-import { CheckCircle2, XCircle, HelpCircle, Database, BadgeCheck, AlertTriangle, Users, Cloud } from 'lucide-react';
+import {
+	AlertTriangle,
+	BadgeCheck,
+	CheckCircle2,
+	Cloud,
+	Database,
+	HelpCircle,
+	Users,
+	XCircle,
+} from 'lucide-react';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';

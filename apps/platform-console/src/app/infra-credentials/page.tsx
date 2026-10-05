@@ -3,7 +3,13 @@
 import React, { useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Tag, Skeleton } from 'antd';
-import { Database, Cloud, HardDrive, Globe, ShieldCheck } from 'lucide-react';
+import {
+	Cloud,
+	Database,
+	Globe,
+	HardDrive,
+	ShieldCheck,
+} from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';

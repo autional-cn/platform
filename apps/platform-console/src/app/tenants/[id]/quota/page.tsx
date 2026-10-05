@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 import { Form, InputNumber, Button, Card, Spin, Descriptions, Tag } from 'antd';
 import { useQueryClient } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
-import { Save, RefreshCw } from 'lucide-react';
+import { RefreshCw, Save } from 'lucide-react';
 import { usePageTitle } from '@autional-cn/shared';
 import { updateTenantQuota } from '@/lib/api.generated';
 import { handleApiError } from '@/lib/error-handler';

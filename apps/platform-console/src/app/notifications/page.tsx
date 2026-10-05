@@ -2,7 +2,11 @@
 
 import React, { useEffect, useRef, useMemo } from 'react';
 import { Card, Row, Col, Statistic, Skeleton, Tag } from 'antd';
-import { Bell, Eye, Send } from 'lucide-react';
+import {
+	Bell,
+	Eye,
+	Send,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';
 import {

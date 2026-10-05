@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { Button, Space, Form, Input, Select, Popconfirm, DatePicker } from 'antd';
 import { message } from '@/lib/antd-app';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import {
 	useMaintenances,
 	useCreateMaintenance,

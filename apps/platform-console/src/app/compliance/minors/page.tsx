@@ -19,7 +19,12 @@ import {
 	Tag,
 	Popconfirm,
 } from 'antd';
-import { BadgeCheck, Save, RefreshCw, User } from 'lucide-react';
+import {
+	BadgeCheck,
+	RefreshCw,
+	Save,
+	User,
+} from 'lucide-react';
 import { handleApiError } from '@/lib/error-handler';
 import { AuthService, fromPageResult, toPageParams, usePageTitle } from '@autional-cn/shared';
 import { useTranslation } from 'react-i18next';

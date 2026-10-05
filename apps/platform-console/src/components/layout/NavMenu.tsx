@@ -5,7 +5,20 @@ import { useTenantSlug } from '@autional-cn/shared';
 import { usePlatformMember } from '@/components/auth/usePlatformMember';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref, stripTenantPrefix } from '@/lib/nav';
-import { LayoutDashboard, Users, Megaphone, AlertTriangle, Bot, SlidersHorizontal, ShieldCheck, Cloud, Settings, Monitor, Plug, KeyRound } from 'lucide-react';
+import {
+	AlertTriangle,
+	Bot,
+	Cloud,
+	KeyRound,
+	LayoutDashboard,
+	Megaphone,
+	Monitor,
+	Plug,
+	Settings,
+	ShieldCheck,
+	SlidersHorizontal,
+	Users,
+} from 'lucide-react';
 import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
 

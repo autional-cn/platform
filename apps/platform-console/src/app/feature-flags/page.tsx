@@ -3,7 +3,13 @@
 import React, { useMemo } from 'react';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Card, Statistic, Tag, Row, Col, Spin } from 'antd';
-import { CheckCircle2, XCircle, LayoutGrid, Settings, Minus } from 'lucide-react';
+import {
+	CheckCircle2,
+	LayoutGrid,
+	Minus,
+	Settings,
+	XCircle,
+} from 'lucide-react';
 import { usePageTitle } from '@autional-cn/shared';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { adminFeatureFlags } from '@autional-cn/shared/generated/api';

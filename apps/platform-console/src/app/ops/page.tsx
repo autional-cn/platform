@@ -3,7 +3,12 @@
 import React, { useState } from 'react';
 import { Card, Tag, Row, Col, Spin, Statistic } from 'antd';
 import { message } from '@/lib/antd-app';
-import { CheckCircle2, XCircle, Cloud, AlertTriangle } from 'lucide-react';
+import {
+	AlertTriangle,
+	CheckCircle2,
+	Cloud,
+	XCircle,
+} from 'lucide-react';
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { PageError } from '@autional-cn/ui/antd';
