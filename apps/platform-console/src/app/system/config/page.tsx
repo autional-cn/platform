@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { Card, Tabs, Tag, Input, Tooltip, Badge } from 'antd';
@@ -158,7 +160,7 @@ function InfrastructureTab() {
 				title="未接入"
 				className="mb-4"
 			>
-				"中间件健康数据源尚未接入；下表为静态配置参考，非实时状态。"
+				中间件健康数据源尚未接入；下表为静态配置参考，非实时状态。
 			</Alert>
 			<DataTable
 				rowKey="key"
@@ -361,6 +363,8 @@ function FeatureFlagsTab() {
 }
 
 export default function SystemConfigPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('systemConfig.title', '系统配置'));
 	const tabItems = [
 		{
 			key: 'services',
@@ -406,16 +410,10 @@ export default function SystemConfigPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
-				title="系统配置"
-				actions={
-					<>
-						<Tag color="red" className="text-xs">
-							仅超级管理员可访问
-						</Tag>
-					</>
-				}
-			/>
+			{/* PL-66：此前的「仅超级管理员可访问」红标与实际门禁不符
+			    （PlatformMemberGuard 对 super_admin 与 admin 均放行），与 URL/环境变量/调度器等
+			    同级页对齐后移除 */}
+			<ConsolePageHeader title={t('systemConfig.title', '系统配置')} />
 			<Card>
 				<Tabs defaultActiveKey="services" items={tabItems} />
 			</Card>

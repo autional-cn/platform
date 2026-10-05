@@ -26,7 +26,8 @@ import {
 	UserOutlined,
 } from '@ant-design/icons';
 import { handleApiError } from '@/lib/error-handler';
-import { AuthService, fromPageResult, toPageParams } from '@autional-cn/shared';
+import { AuthService, fromPageResult, toPageParams, usePageTitle } from '@autional-cn/shared';
+import { useTranslation } from 'react-i18next';
 import {
 	adminTenantsMinorsProtectionByTenants,
 	adminTenantsMinorsProtectionByTenantsPut,
@@ -107,6 +108,8 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function MinorsProtectionPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('complianceMinors.title', '未成年人保护'));
 	const [config, setConfig] = useState<MinorsProtectionConfig | null>(null);
 	const [configError, setConfigError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -279,7 +282,10 @@ export default function MinorsProtectionPage() {
 
 	return (
 		<div style={{ padding: 24 }}>
-			<ConsolePageHeader title="未成年人保护" description="配置防沉迷策略、查看未成年用户、管理家长同意" />
+			<ConsolePageHeader
+				title={t('complianceMinors.title', '未成年人保护')}
+				description={t('complianceMinors.description', '配置防沉迷策略、查看未成年用户、管理家长同意')}
+			/>
 
 			<Row gutter={16} style={{ marginBottom: 24 }}>
 				<Col span={8}>
@@ -463,7 +469,7 @@ export default function MinorsProtectionPage() {
 									pageSize: userPageSize,
 									total: userTotal ?? users.length,
 									showSizeChanger: true,
-									showTotal: (t) => `共 ${t} 人`,
+									showTotal: (n) => `共 ${n} 人`,
 									onChange: (p: number, ps: number) => {
 										setUserPage(p);
 										setUserPageSize(ps);
@@ -528,7 +534,7 @@ export default function MinorsProtectionPage() {
 									pageSize: consentPageSize,
 									total: consentTotal ?? consents.length,
 									showSizeChanger: true,
-									showTotal: (t) => `共 ${t} 条`,
+									showTotal: (n) => `共 ${n} 条`,
 									onChange: (p: number, ps: number) => {
 										setConsentPage(p);
 										setConsentPageSize(ps);

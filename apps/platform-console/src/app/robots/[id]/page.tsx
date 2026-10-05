@@ -6,7 +6,6 @@ import {
 	Button,
 	Tag,
 	Space,
-	Modal,
 	Form,
 	Input,
 	Select,
@@ -15,6 +14,7 @@ import {
 	Typography,
 	Popconfirm,
 } from 'antd';
+import { Modal } from '@autional-cn/ui/antd';
 import {
 	EditOutlined,
 	ArrowLeftOutlined,
@@ -23,7 +23,8 @@ import {
 	KeyOutlined,
 } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
-import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
+import { ConsolePageHeader, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
 import {
@@ -223,7 +224,7 @@ export default function RobotDetailPage() {
 				<div className="flex items-center justify-between">
 					<ConsolePageHeader
 						title={robot?.name || 'Robot 详情'}
-						description={robot?.model ? `型号：${robot.model}` : '加载中…'}
+						description={robot?.model ? `型号：${robot.model}` : isLoading ? '加载中…' : ''}
 					/>
 					{robot && (
 						<Space>
@@ -282,9 +283,9 @@ export default function RobotDetailPage() {
 			)}
 
 			{!isLoading && error && (
-				<ErrorState
+				<ApiErrorState
+					error={error}
 					title="加载 Robot 详情失败"
-					message="请重试。"
 					onRetry={() => refetch()}
 				/>
 			)}

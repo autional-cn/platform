@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
+import { DataTable, Modal } from '@autional-cn/ui/antd';
 import { useParams, useNavigate } from 'react-router';
-import { Button, Tag, Modal, Form, Input, Select, Skeleton, Descriptions } from 'antd';
+import { Button, Tag, Form, Input, Select, Skeleton, Descriptions } from 'antd';
 import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
 import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
@@ -79,8 +80,19 @@ const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' |
 	provisioning: 'info',
 };
 
+const STATUS_LABELS: Record<string, string> = {
+	active: '活跃',
+	disabled: '已停用',
+	suspended: '已暂停',
+	provisioning: '配置中',
+};
+
 function statusVariant(s: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
 	return STATUS_VARIANT[s] || 'neutral';
+}
+
+function statusLabel(s: string): string {
+	return STATUS_LABELS[s] || s || '-';
 }
 
 function formatDate(iso: string): string {
@@ -223,7 +235,7 @@ export default function AgentDetailPage() {
 			dataIndex: 'status',
 			key: 'status',
 			render: (v: string) => (
-				<StatusBadge variant={v === 'active' ? 'success' : 'neutral'}>{v || '-'}</StatusBadge>
+				<StatusBadge variant={v === 'active' ? 'success' : 'neutral'}>{statusLabel(v)}</StatusBadge>
 			),
 		},
 		{
@@ -283,7 +295,7 @@ export default function AgentDetailPage() {
 				<div className="flex items-center justify-between">
 					<ConsolePageHeader
 						title={agent?.name || 'Agent 详情'}
-						description={agent?.description || '加载中…'}
+						description={agent?.description || (isLoading ? '加载中…' : '')}
 					/>
 					{agent && (
 						<Button icon={<EditOutlined />} onClick={openEdit}>
@@ -302,9 +314,9 @@ export default function AgentDetailPage() {
 			)}
 
 			{!isLoading && error && (
-				<ErrorState
+				<ApiErrorState
+					error={error}
 					title="加载 Agent 详情失败"
-					message="请重试。"
 					onRetry={() => refetch()}
 				/>
 			)}
@@ -315,7 +327,9 @@ export default function AgentDetailPage() {
 						<Descriptions column={2} bordered size="small">
 							<Descriptions.Item label="名称">{agent.name}</Descriptions.Item>
 							<Descriptions.Item label="状态">
-								<StatusBadge variant={statusVariant(agent.status)}>{agent.status}</StatusBadge>
+								<StatusBadge variant={statusVariant(agent.status)}>
+								{statusLabel(agent.status)}
+							</StatusBadge>
 							</Descriptions.Item>
 							<Descriptions.Item label="工作负载子类型">
 								<Tag color={SUBTYPE_COLORS[subtype] || 'default'}>

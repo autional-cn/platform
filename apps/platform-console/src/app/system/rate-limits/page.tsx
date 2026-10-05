@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@autional-cn/shared';
 import { useQuery } from '@tanstack/react-query';
 import { ops } from '@/lib/api.generated';
 import { PageLoading } from '@autional-cn/ui/antd';
@@ -22,6 +23,7 @@ interface RateLimitData {
 
 export default function SystemRateLimitsPage() {
 	const { t } = useTranslation();
+	usePageTitle(t('rateLimits.title', '限流状态'));
 
 	const { data, isLoading, error, refetch } = useQuery<RateLimitData>({
 		queryKey: ['system', 'rate-limits'],

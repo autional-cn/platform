@@ -13,6 +13,8 @@ import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } fro
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { PageError } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@autional-cn/shared';
 
 interface ServiceHealth {
 	name: string;
@@ -23,6 +25,8 @@ interface ServiceHealth {
 }
 
 export default function OpsPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('ops.title', '运维视图'));
 	const [selectedService, setSelectedService] = useState<string | null>(null);
 
 	const { data: opsStatus, isLoading: opsLoading, error, refetch } = useOpsStatus();
@@ -68,7 +72,7 @@ export default function OpsPage() {
 			{error && <PageError message="加载运维状态失败" retry={refetch} className="mb-4" />}
 
 			<ConsolePageHeader
-				title="运维视图"
+				title={t('ops.title', '运维视图')}
 			/>
 
 			<Spin spinning={loading}>
@@ -102,7 +106,7 @@ export default function OpsPage() {
 						<Col xs={24} sm={8}>
 							<Card>
 								<Statistic
-									title="活跃事件"
+									title="活跃事故"
 									value={healthData.activeIncidents}
 									valueStyle={{ color: healthData.activeIncidents > 0 ? 'var(--color-danger-text)' : undefined }}
 									prefix={<WarningOutlined />}
@@ -178,7 +182,7 @@ export default function OpsPage() {
 							variant="info"
 							title="Grafana 未接入"
 						>
-							"当前环境未配置 Grafana 面板地址；接入后在此展示服务总览面板。"
+							当前环境未配置 Grafana 面板地址；接入后在此展示服务总览面板。
 						</Alert>
 					)}
 				</Card>
@@ -215,7 +219,7 @@ export default function OpsPage() {
 								variant="info"
 								title="Grafana 未接入"
 							>
-								"当前环境未配置 Grafana 面板地址；接入后在此展示该服务面板。"
+								当前环境未配置 Grafana 面板地址；接入后在此展示该服务面板。
 							</Alert>
 						)}
 					</Card>

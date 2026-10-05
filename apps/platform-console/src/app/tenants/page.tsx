@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Space, Tag, Modal, Form, Input, Select, Card, Descriptions, Tabs, Popconfirm, Row, Col } from 'antd';
+import { Button, Space, Tag, Form, Input, Select, Card, Descriptions, Tabs, Popconfirm, Row, Col } from 'antd';
 import { message } from '@/lib/antd-app';
 import {
 	PlusOutlined,
@@ -21,18 +21,22 @@ import {
 	type TenantRecord,
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
-import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
+import { formatDateTime } from '@/lib/format';
+import { DataTable, Drawer, Modal, PageError } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 import { useNavigate } from 'react-router';
-import { useTenantSlug } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import { useTranslation } from 'react-i18next';
 import { buildNavHref } from '@/lib/nav';
 import { ROUTE } from '@/lib/route-paths';
 
 const { Option } = Select;
 
 export default function TenantsPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('tenants.title', '租户管理'));
 	const navigate = useNavigate();
 	const tenantSlug = useTenantSlug();
 	const [modalVisible, setModalVisible] = useState(false);
@@ -41,6 +45,8 @@ export default function TenantsPage() {
 	const [selectedTenant, setSelectedTenant] = useState<TenantRecord | null>(null);
 	const [detailData, setDetailData] = useState<any>({});
 	const detailTenantId = selectedTenant?.id || '';
+	const detailCreatedAt: string | undefined =
+		detailData.info?.createdAt || selectedTenant?.createdAt;
 	const {
 		data: detailMembers = [],
 		isLoading: detailMembersLoading,
@@ -153,10 +159,17 @@ export default function TenantsPage() {
 			key: 'memberCount',
 			render: (v?: number) => v ?? '-',
 		},
-		{ title: '创建时间', dataIndex: 'createdAt', key: 'createdAt' },
+		{
+			title: '创建时间',
+			dataIndex: 'createdAt',
+			key: 'createdAt',
+			render: (v?: string) => (v ? formatDateTime(v) : '-'),
+		},
 		{
 			title: '操作',
 			key: 'action',
+			// PL-07：操作列四项动作在窄屏被挤出可视区，固定到右侧
+			fixed: 'right' as const,
 			render: (_: any, record: TenantRecord) => (
 				<Space size="small">
 					<Button
@@ -218,7 +231,7 @@ export default function TenantsPage() {
 	return (
 		<div>
 			<ConsolePageHeader
-				title="租户管理"
+				title={t('tenants.title', '租户管理')}
 				actions={
 					<>
 						<Button
@@ -259,12 +272,14 @@ export default function TenantsPage() {
 				columns={columns}
 				dataSource={tenants}
 				loading={isLoading}
+				/* PL-07：配合操作列 fixed:'right' 提供横向滚动容器 */
+				scroll={{ x: 1200 }}
 				pagination={{
 					current: page,
 					pageSize,
 					total,
 					showSizeChanger: true,
-					showTotal: (t: number) => `共 ${t} 条租户`,
+					showTotal: (n: number) => `共 ${n} 条租户`,
 					onChange: (p: number, ps: number) => {
 						setPage(p);
 						setPageSize(ps);
@@ -366,7 +381,7 @@ export default function TenantsPage() {
 											{detailData.info?.plan || selectedTenant?.plan || '-'}
 										</Descriptions.Item>
 										<Descriptions.Item label="创建时间">
-											{detailData.info?.createdAt || selectedTenant?.createdAt}
+											{detailCreatedAt ? formatDateTime(detailCreatedAt) : '-'}
 										</Descriptions.Item>
 									</Descriptions>
 								</Card>

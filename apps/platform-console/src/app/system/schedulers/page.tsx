@@ -10,9 +10,11 @@ import {
 } from '@ant-design/icons';
 import { ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@autional-cn/shared';
 import { PageLoading, DataTable } from '@autional-cn/ui/antd';
 import { useSchedulers } from '@/hooks/use-schedulers';
 import { ApiErrorState } from '@/components/ApiErrorState';
+import { formatDateTime } from '@/lib/format';
 
 const statusConfig: Record<string, { labelKey: string; label: string }> = {
 	running: { labelKey: 'schedulers.statusRunning', label: '运行中' },
@@ -23,6 +25,7 @@ const statusConfig: Record<string, { labelKey: string; label: string }> = {
 
 export default function SystemSchedulersPage() {
 	const { t } = useTranslation();
+	usePageTitle(t('schedulers.title', '系统作业'));
 	const { data, isLoading, error, refetch } = useSchedulers();
 
 	if (isLoading) return <PageLoading />;
@@ -78,7 +81,8 @@ export default function SystemSchedulersPage() {
 			title: t('schedulers.lastRun', '上次运行'),
 			dataIndex: 'lastRun',
 			key: 'lastRun',
-			render: (v: string) => v || '—',
+			// 后端 last_run 为 ISO 串；零值（从未运行）为 Go 零时间 "0001-01-01T00:00:00Z"，兜底为「—」
+			render: (v: string) => (v && !v.startsWith('0001-01-01') ? formatDateTime(v) : '—'),
 		},
 	];
 

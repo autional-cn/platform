@@ -117,7 +117,7 @@ export default function InvitationConfigPage() {
 								title="每日邀请上限 — 未接入"
 								className="mt-4"
 							>
-								"后端邀请配置接口暂未提供每日邀请上限字段；接入后在此展示并支持配置。"
+								后端邀请配置接口暂未提供每日邀请上限字段；接入后在此展示并支持配置。
 							</Alert>
 						</Form>
 					</Card>

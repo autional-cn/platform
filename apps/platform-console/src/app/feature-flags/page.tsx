@@ -141,7 +141,7 @@ export default function FeatureFlagsPage() {
 		<div>
 			<div className="mb-6">
 				<ConsolePageHeader
-					title="功能开关矩阵"
+					title="功能开关"
 					description="跨服务功能开关配置矩阵 —— 全部 21 个服务总览"
 				/>
 			</div>

@@ -14,6 +14,7 @@ import {
 } from '@ant-design/icons';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@autional-cn/shared';
 import { useSystemServices, useSystemTenants, CATEGORY_LABELS } from '@/hooks/use-system-overview';
 import type { ServiceInfo } from '@/hooks/use-system-overview';
 import { PageLoading } from '@autional-cn/ui/antd';
@@ -36,6 +37,7 @@ const categoryColors: Record<ServiceInfo['category'], string> = {
 
 export default function SystemOverviewPage() {
 	const { t } = useTranslation();
+	usePageTitle(t('systemOverview.title', '系统总览'));
 	const servicesQuery = useSystemServices();
 	const tenantsQuery = useSystemTenants();
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, Statistic, Tag, Badge, Input, Select, Row, Col, Tabs, Modal, Typography, Space, Button, Descriptions, Tooltip, Popconfirm } from 'antd';
+import { Card, Statistic, Tag, Badge, Input, Select, Row, Col, Tabs, Typography, Space, Button, Descriptions, Tooltip, Popconfirm } from 'antd';
 import { message, modal } from '@/lib/antd-app';
 import {
 	SearchOutlined,
@@ -22,7 +22,7 @@ import {
 	LoadingOutlined,
 	CopyOutlined,
 } from '@ant-design/icons';
-import { PageLoading, PageError, DataTable } from '@autional-cn/ui/antd';
+import { PageLoading, PageError, DataTable, Modal } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import {
 	useSecretsInventoryOverview,
@@ -41,6 +41,8 @@ import {
 	type OAuthSecretRecord,
 } from '@/hooks/use-secrets-inventory';
 import { handleApiError } from '@/lib/error-handler';
+import { usePageTitle } from '@autional-cn/shared';
+import { useTranslation } from 'react-i18next';
 import {
 	useRotateSecret,
 	useRevokeSecret,
@@ -60,6 +62,8 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function SystemSecretsInventoryPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('secretsInventory.title', '密钥清单'));
 	const [activeTab, setActiveTab] = useState('overview');
 	const [kvKeyword, setKvKeyword] = useState('');
 	const [kvStatusFilter, setKvStatusFilter] = useState('all');
@@ -837,8 +841,8 @@ export default function SystemSecretsInventoryPage() {
 	return (
 		<div>
 			<ConsolePageHeader
-				title="密钥清单"
-				description="平台级密钥总览与管理"
+				title={t('secretsInventory.title', '密钥清单')}
+				description={t('secretsInventory.description', '平台级密钥总览与管理')}
 			/>
 
 			{overviewLoading ? (
@@ -1103,7 +1107,7 @@ function OverviewTab({
 				title="安全配置检测未接入"
 				className="mb-4"
 			>
-				"PASSWORD_PEPPER 与 HIBP 的启用状态暂无平台侧数据源；接入后将在此展示。"
+				PASSWORD_PEPPER 与 HIBP 的启用状态暂无平台侧数据源；接入后将在此展示。
 			</Alert>
 		</div>
 	);

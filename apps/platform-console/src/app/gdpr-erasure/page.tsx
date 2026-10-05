@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Button, Select, Popconfirm, Modal, Empty } from 'antd';
+import { DataTable, Modal } from '@autional-cn/ui/antd';
+import { Button, Select, Popconfirm, Empty } from 'antd';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, usePageTitle } from '@autional-cn/shared';
 import { Alert, ConsolePageHeader, EmptyState, SectionCard, StatusBadge } from '@autional-cn/ui';
@@ -163,7 +163,7 @@ export default function GdprErasurePage() {
 					title="擦除不可撤销"
 					className="mb-4"
 				>
-					"擦除操作不可撤销。执行前请确认已通知用户，且等待期已结束。"
+					擦除操作不可撤销。执行前请确认已通知用户，且等待期已结束。
 				</Alert>
 
 				<div className="flex items-center justify-between mb-4">

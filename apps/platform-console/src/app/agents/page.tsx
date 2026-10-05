@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Button, Space, Tag, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
+import { DataTable, Modal } from '@autional-cn/ui/antd';
+import { Button, Space, Tag, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
 	usePageTitle,
@@ -47,8 +47,8 @@ interface AgentRecord {
 
 const SUBTYPE_LABELS: Record<string, string> = {
 	agent: 'Agent',
-	service_account: 'Service Account',
-	automation: 'Automation',
+	service_account: '服务账号',
+	automation: '自动化',
 };
 
 const SUBTYPE_COLORS: Record<string, string> = {
@@ -64,8 +64,19 @@ const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' |
 	provisioning: 'info',
 };
 
+const STATUS_LABELS: Record<string, string> = {
+	active: '活跃',
+	disabled: '已停用',
+	suspended: '已暂停',
+	provisioning: '配置中',
+};
+
 function statusVariant(s: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
 	return STATUS_VARIANT[s] || 'neutral';
+}
+
+function statusLabel(s: string): string {
+	return STATUS_LABELS[s] || s || '-';
 }
 
 function formatDate(iso: string): string {
@@ -190,7 +201,9 @@ export default function AgentsPage() {
 			title: '状态',
 			dataIndex: 'status',
 			key: 'status',
-			render: (v: string) => <StatusBadge variant={statusVariant(v)}>{v || '-'}</StatusBadge>,
+			render: (v: string) => (
+				<StatusBadge variant={statusVariant(v)}>{statusLabel(v)}</StatusBadge>
+			),
 		},
 		{
 			title: '所有者',

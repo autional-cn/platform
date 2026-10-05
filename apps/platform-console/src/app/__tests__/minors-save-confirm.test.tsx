@@ -27,6 +27,7 @@ vi.mock('@autional-cn/shared', () => ({
 	AuthService: { getCurrentTenantId: () => 't-1' },
 	fromPageResult: (d: any) => ({ items: d?.items ?? [], total: d?.total ?? 0 }),
 	toPageParams: (p: any) => p,
+	usePageTitle: vi.fn(),
 }));
 
 import MinorsProtectionPage from '@/app/compliance/minors/page';

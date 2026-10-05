@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Button, Space, Modal, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
+import { DataTable, Modal } from '@autional-cn/ui/antd';
+import { Button, Space, Form, Input, Select, Popconfirm, Skeleton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
 	usePageTitle,

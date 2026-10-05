@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, Space, Modal, Form, Input, Select, Popconfirm, Descriptions } from 'antd';
+import { Button, Space, Form, Input, Select, Popconfirm, Descriptions } from 'antd';
 import { message } from '@/lib/antd-app';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import {
@@ -15,14 +15,18 @@ import {
 import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { formatDateTime } from '@/lib/format';
-import { DataTable, Drawer, PageError } from '@autional-cn/ui/antd';
+import { DataTable, Drawer, Modal, PageError } from '@autional-cn/ui/antd';
 import { ConsolePageHeader, StatusBadge } from '@autional-cn/ui';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@autional-cn/shared';
 import { severityBadge, severityLabels, statusBadge, statusLabels } from '@/lib/incident-meta';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 export default function IncidentsPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('incidents.title', '事故管理'));
 	const [modalVisible, setModalVisible] = useState(false);
 	const [editing, setEditing] = useState<IncidentRecord | null>(null);
 	const [drawerId, setDrawerId] = useState<string | null>(null);
@@ -69,10 +73,10 @@ export default function IncidentsPage() {
 			};
 			if (editing) {
 				await updateMut.mutateAsync({ id: editing.id, data: payload });
-				message.success('事件更新成功');
+				message.success('事故更新成功');
 			} else {
 				await createMut.mutateAsync(payload);
-				message.success('事件创建成功');
+				message.success('事故创建成功');
 			}
 			setModalVisible(false);
 			setEditing(null);
@@ -166,7 +170,7 @@ export default function IncidentsPage() {
 					>
 						编辑
 					</Button>
-					<Popconfirm title="确认删除该事件？" onConfirm={() => handleDelete(record.id)}>
+					<Popconfirm title="确认删除该事故？" onConfirm={() => handleDelete(record.id)}>
 						<Button type="text" danger size="small" icon={<DeleteOutlined />}>
 							删除
 						</Button>
@@ -179,7 +183,7 @@ export default function IncidentsPage() {
 	return (
 		<div>
 			<ConsolePageHeader
-				title="事件管理"
+				title={t('incidents.title', '事故管理')}
 				actions={
 					<>
 						<Button
@@ -191,7 +195,7 @@ export default function IncidentsPage() {
 								setModalVisible(true);
 							}}
 						>
-							创建事件
+							创建事故
 						</Button>
 					</>
 				}
@@ -225,7 +229,7 @@ export default function IncidentsPage() {
 				</Select>
 			</div>
 
-			{error && <PageError message="加载事件列表失败" retry={refetch} className="mb-4" />}
+			{error && <PageError message="加载事故列表失败" retry={refetch} className="mb-4" />}
 			<DataTable
 				rowKey="id"
 				columns={columns}
@@ -235,7 +239,7 @@ export default function IncidentsPage() {
 			/>
 
 			<Modal
-				title={editing ? '编辑事件' : '创建事件'}
+				title={editing ? '编辑事故' : '创建事故'}
 				open={modalVisible}
 				onCancel={() => {
 					setModalVisible(false);
@@ -248,10 +252,10 @@ export default function IncidentsPage() {
 			>
 				<Form form={form} layout="vertical" onFinish={handleSave}>
 					<Form.Item name="title" label="标题" rules={[{ required: true }]}>
-						<Input placeholder="事件标题" />
+						<Input placeholder="事故标题" />
 					</Form.Item>
 					<Form.Item name="description" label="描述">
-						<TextArea rows={4} placeholder="事件描述" />
+						<TextArea rows={4} placeholder="事故描述" />
 					</Form.Item>
 					<Form.Item name="severity" label="严重级别" rules={[{ required: true }]}>
 						<Select placeholder="选择严重级别">
@@ -277,7 +281,7 @@ export default function IncidentsPage() {
 			</Modal>
 
 			<Drawer
-				title="事件详情"
+				title="事故详情"
 				open={!!drawerId}
 				onClose={() => {
 					setDrawerId(null);
@@ -343,7 +347,7 @@ export default function IncidentsPage() {
 							preserve={false}
 						>
 							<Form.Item name="message" label="进展描述" rules={[{ required: true }]}>
-								<TextArea rows={3} placeholder="输入事件进展信息" />
+								<TextArea rows={3} placeholder="输入事故进展信息" />
 							</Form.Item>
 							<Form.Item name="status" label="更新状态" initialValue={drawerIncident.status}>
 								<Select>

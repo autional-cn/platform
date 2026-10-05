@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Button, Tag, Modal, Form, Input, Select, Skeleton, Descriptions } from 'antd';
+import { Button, Tag, Form, Input, Select, Skeleton, Descriptions } from 'antd';
+import { Modal } from '@autional-cn/ui/antd';
 import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, extractItem } from '@autional-cn/shared';
@@ -130,7 +132,13 @@ export default function DeviceDetailPage() {
 				<div className="flex items-center justify-between">
 					<ConsolePageHeader
 						title={device?.name || 'Device 详情'}
-						description={device?.manufacturer ? `制造商：${device.manufacturer}` : '加载中…'}
+						description={
+							device?.manufacturer
+								? `制造商：${device.manufacturer}`
+								: isLoading
+									? '加载中…'
+									: ''
+						}
 					/>
 					{device && (
 						<Button icon={<EditOutlined />} onClick={openEdit}>
@@ -147,9 +155,9 @@ export default function DeviceDetailPage() {
 			)}
 
 			{!isLoading && error && (
-				<ErrorState
+				<ApiErrorState
+					error={error}
 					title="加载 Device 详情失败"
-					message="请重试。"
 					onRetry={() => refetch()}
 				/>
 			)}

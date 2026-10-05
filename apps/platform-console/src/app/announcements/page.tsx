@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Space, Tag, Modal, Form, Input, Select, Popconfirm, Checkbox } from 'antd';
+import { Button, Space, Tag, Form, Input, Select, Popconfirm, Checkbox } from 'antd';
 import { message, modal } from '@/lib/antd-app';
 import {
 	PlusOutlined,
@@ -20,9 +20,10 @@ import {
 	type AnnouncementRecord,
 } from '@/hooks/use-announcements';
 import { handleApiError } from '@/lib/error-handler';
-import { extractItem } from '@autional-cn/shared';
-import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { extractItem, usePageTitle } from '@autional-cn/shared';
+import { PageError, DataTable, Modal } from '@autional-cn/ui/antd';
 import { ConsolePageHeader } from '@autional-cn/ui';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -36,6 +37,8 @@ interface AnnouncementFormValues {
 }
 
 export default function AnnouncementsPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('announcements.title', '平台公告'));
 	const [modalVisible, setModalVisible] = useState(false);
 	const [editing, setEditing] = useState<AnnouncementRecord | null>(null);
 	const [form] = Form.useForm<AnnouncementFormValues>();
@@ -225,7 +228,7 @@ export default function AnnouncementsPage() {
 	return (
 		<div>
 			<ConsolePageHeader
-				title="平台公告"
+				title={t('announcements.title', '平台公告')}
 				actions={
 					<>
 						<Button

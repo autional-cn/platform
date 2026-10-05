@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Tabs, Card, Checkbox, Button, Tag, Space, Modal, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions, Spin } from 'antd';
+import { Tabs, Card, Checkbox, Button, Tag, Space, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions, Spin } from 'antd';
 import {
 	SafetyCertificateOutlined,
 	CheckCircleOutlined,
@@ -12,8 +12,10 @@ import {
 	DeleteOutlined,
 } from '@ant-design/icons';
 import { handleApiError } from '@/lib/error-handler';
-import { useAuthStore, extractItem } from '@autional-cn/shared';
-import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { useAuthStore, extractItem, usePageTitle } from '@autional-cn/shared';
+import { PageError, DataTable, Modal } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional-cn/ui';
+import { useTranslation } from 'react-i18next';
 import { useTenants } from '@/hooks/use-tenants';
 
 const API_BASE = '/compliance/api/v1/admin/compliance';
@@ -102,6 +104,8 @@ const categoryLabel: Record<string, string> = {
 };
 
 export default function CompliancePolicyPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('compliancePolicy.title', '合规策略管理'));
 	const [activeTab, setActiveTab] = useState('standards');
 	const [standards, setStandards] = useState<StandardItem[]>([]);
 	const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -619,31 +623,28 @@ export default function CompliancePolicyPage() {
 
 	return (
 		<div>
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-					marginBottom: 16,
-				}}
-			>
-				<h2 style={{ margin: 0 }}>
-					<SafetyCertificateOutlined style={{ marginRight: 8 }} />
-					合规策略管理
-				</h2>
-				<Select
-					style={{ width: 240 }}
-					placeholder="选择租户"
-					value={currentTenantId || undefined}
-					onChange={(tid: string) => switchTenant(tid)}
-					options={tenantOptions}
-					showSearch
-					filterOption={false}
-					onSearch={setTenantSearch}
-					loading={tenantsLoading}
-					notFoundContent={tenantsLoading ? <Spin size="small" /> : undefined}
-				/>
-			</div>
+			<ConsolePageHeader
+				title={
+					<span>
+						<SafetyCertificateOutlined style={{ marginRight: 8 }} />
+						{t('compliancePolicy.title', '合规策略管理')}
+					</span>
+				}
+				actions={
+					<Select
+						style={{ width: 240 }}
+						placeholder="选择租户"
+						value={currentTenantId || undefined}
+						onChange={(tid: string) => switchTenant(tid)}
+						options={tenantOptions}
+						showSearch
+						filterOption={false}
+						onSearch={setTenantSearch}
+						loading={tenantsLoading}
+						notFoundContent={tenantsLoading ? <Spin size="small" /> : undefined}
+					/>
+				}
+			/>
 			<Tabs activeKey={activeTab} onChange={setActiveTab} items={tabs} />
 		</div>
 	);

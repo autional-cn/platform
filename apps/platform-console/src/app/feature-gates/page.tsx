@@ -1,9 +1,10 @@
 'use client';
 import { useMemo } from 'react';
-import { useCurrentTenantId } from '@autional-cn/shared';
+import { useTranslation } from 'react-i18next';
+import { useCurrentTenantId, usePageTitle } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
-import { Alert } from '@autional-cn/ui';
-import { Card, Switch, Space, App, Typography, Spin, Tag } from 'antd';
+import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { Card, Switch, Space, App, Spin, Tag } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -13,9 +14,9 @@ import {
 } from '@autional-cn/shared/generated/api';
 
 
-const { Title } = Typography;
-
 export default function FeatureGatesPage() {
+	const { t } = useTranslation();
+	usePageTitle(t('featureGates.title', '功能门控'));
 	const { message } = App.useApp();
 	const queryClient = useQueryClient();
 	const tenantId = useCurrentTenantId() ?? '';
@@ -44,9 +45,9 @@ export default function FeatureGatesPage() {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['feature-gates-overrides'] });
-			message.success('功能开关覆盖已更新');
+			message.success(t('featureGates.overrideUpdated', '功能门控覆盖已更新'));
 		},
-		onError: () => message.error('更新覆盖失败'),
+		onError: () => message.error(t('featureGates.overrideFailed', '更新覆盖失败')),
 	});
 
 	const overrideMap = useMemo(() => {
@@ -58,7 +59,7 @@ export default function FeatureGatesPage() {
 	}, [overrides]);
 
 	const planColumns = [
-		{ title: '开关键', dataIndex: 'key', key: 'key' },
+		{ title: '门控键', dataIndex: 'key', key: 'key' },
 		{ title: '名称', dataIndex: 'name', key: 'name' },
 		{
 			title: '套餐默认',
@@ -74,7 +75,7 @@ export default function FeatureGatesPage() {
 	];
 
 	const overrideColumns = [
-		{ title: '开关键', dataIndex: 'key', key: 'key' },
+		{ title: '门控键', dataIndex: 'key', key: 'key' },
 		{
 			title: '套餐默认',
 			dataIndex: 'enabled',
@@ -111,14 +112,14 @@ export default function FeatureGatesPage() {
 
 	return (
 		<div style={{ padding: 24 }}>
-			<Title level={3}>功能开关</Title>
+			<ConsolePageHeader title={t('featureGates.title', '功能门控')} />
 			{/* PL-55：标明生效范围，避免误以为改的是平台全局（判定为「当前租户」） */}
 			<Alert
 				variant="info"
 				title={`生效范围：当前租户${tenantId ? `（${tenantId}）` : ''}`}
 				className="mb-4"
 			>
-				开关判定按当前租户生效：先取套餐默认权益，存在租户覆盖时以覆盖为准。
+				门控判定按当前租户生效：先取套餐默认权益，存在租户覆盖时以覆盖为准。
 			</Alert>
 			<Space direction="vertical" size="large" style={{ width: '100%' }}>
 				<Card title="套餐能力">
