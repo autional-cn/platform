@@ -1,4 +1,10 @@
-import { AuthService, useAuthStore, useTenantsQuery, PLATFORM_TENANT_ID } from '@autional-cn/shared';
+import {
+	AuthService,
+	useAuthStore,
+	useTenantsQuery,
+	PLATFORM_TENANT_ID,
+	decodeJwtPayload,
+} from '@autional-cn/shared';
 
 /**
  * 平台成员判定（PL-77）：当前会话是否平台租户成员。供路由门（PlatformMemberGuard）与
@@ -29,17 +35,14 @@ import { AuthService, useAuthStore, useTenantsQuery, PLATFORM_TENANT_ID } from '
  */
 export type PlatformMemberState = 'member' | 'non-member' | 'unknown';
 
-/** 读 access_token 的租户 claim（与 shared oauth-login 同形：tenant_id 驼峰兜底） */
+/** 读 access_token 的租户 claim（shared decodeJwtPayload 归一化解码：tenant_id 驼峰兜底） */
 function readTokenTenantId(token: string | null): string | null {
 	if (!token) return null;
-	try {
-		const parts = token.split('.');
-		if (parts.length !== 3) return null;
-		const p = JSON.parse(atob(parts[1])) as Record<string, unknown>;
-		return (p?.tenant_id as string) || (p?.tenantId as string) || null;
-	} catch {
-		return null;
-	}
+	// 此前裸 atob 不认 base64url 字母表（-/_）也不补填充，命中即整链解析失败
+	// → 合法平台会话被判非平台（误 403）。
+	const p = decodeJwtPayload(token);
+	if (!p) return null;
+	return (p.tenant_id as string) || (p.tenantId as string) || null;
 }
 
 export function usePlatformMember(): PlatformMemberState {

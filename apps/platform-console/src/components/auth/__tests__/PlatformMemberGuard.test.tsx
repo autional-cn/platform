@@ -17,15 +17,19 @@ const mocks = vi.hoisted(() => ({
 	token: null as string | null,
 }));
 
-vi.mock('@autional-cn/shared', () => ({
-	PLATFORM_TENANT_ID: '01KSQCBNVMS6SX64PJS937CE33',
-	AuthService: { getAccessToken: () => mocks.token },
-	useAuthStore: (selector: (s: typeof mocks.authState) => unknown) => selector(mocks.authState),
-	useTenantsQuery: () => mocks.queryState,
-	PlatformGuard: ({ children }: { children: ReactNode }) => (
-		<div data-testid="platform-guard">{children}</div>
-	),
-}));
+vi.mock('@autional-cn/shared', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@autional-cn/shared')>();
+	return {
+		...actual,
+		PLATFORM_TENANT_ID: '01KSQCBNVMS6SX64PJS937CE33',
+		AuthService: { getAccessToken: () => mocks.token },
+		useAuthStore: (selector: (s: typeof mocks.authState) => unknown) => selector(mocks.authState),
+		useTenantsQuery: () => mocks.queryState,
+		PlatformGuard: ({ children }: { children: ReactNode }) => (
+			<div data-testid="platform-guard">{children}</div>
+		),
+	};
+});
 
 import { PlatformMemberGuard } from '@/components/auth/PlatformMemberGuard';
 
@@ -35,6 +39,15 @@ const ACME_ID = '01ACME00000000000000000000';
 /** 造可解 JWT（头.载荷.签名三段即可 —— 守卫只 decode 载荷） */
 function makeToken(payload: Record<string, unknown>): string {
 	return `h.${btoa(JSON.stringify(payload))}.s`;
+}
+
+/** 造 base64url 形态段（含 -/_、无填充）—— 真实身份 token 形态。
+ *  pad 连排 9 个 '?'（0x3F 低 6 位=111111）：任意连续 3 字节位中恰有一处全局
+ *  下标 ≡2 (mod 3)，其 6bit 组 = 63 → base64url `_` —— 段内定产 `_`，非碰运气。 */
+function makeTokenUrlSafe(payload: Record<string, unknown>): string {
+	const json = JSON.stringify({ ...payload, pad: '?????????' });
+	const segment = btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+	return `h.${segment}.s`;
 }
 
 function renderGuard() {
@@ -72,6 +85,21 @@ describe('PlatformMemberGuard', () => {
 		renderGuard();
 		expect(screen.getByText('shell')).toBeInTheDocument();
 		expect(screen.getByTestId('platform-guard')).toBeInTheDocument();
+		expect(screen.queryByText('denied')).not.toBeInTheDocument();
+	});
+
+	it('放行（PL-70 回归锁）：base64url 载荷（含 -/_、无填充）claim=平台 —— 裸 atob 整链抛错误判非成员', () => {
+		reset({
+			token: makeTokenUrlSafe({ tenant_id: PLATFORM_ID }),
+			currentTenantId: PLATFORM_ID,
+			isFetched: true,
+			data: [platformRow],
+		});
+		// 夹具自证：段内确实含 base64url 字母表字符（'=' 已去），旧裸 atob 对
+		// `_`（或长度 %4≠0）抛 InvalidCharacterError → null → 误 403。
+		expect(mocks.token!.split('.')[1]).toMatch(/[-_]/);
+		renderGuard();
+		expect(screen.getByText('shell')).toBeInTheDocument();
 		expect(screen.queryByText('denied')).not.toBeInTheDocument();
 	});
 
