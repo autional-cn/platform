@@ -168,7 +168,9 @@ export default function TenantsPage() {
 		{
 			title: '操作',
 			key: 'action',
-			// PL-07：操作列四项动作在窄屏被挤出可视区，固定到右侧
+			// PL-07：操作列固定到右侧 + 显式宽度不可省——table-layout:fixed 下
+			// pinned 列只分到均摊的 150px，装不下四个按钮（实测内容需 309px）
+			width: 320,
 			fixed: 'right' as const,
 			render: (_: any, record: TenantRecord) => (
 				<Space size="small">
