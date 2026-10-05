@@ -113,8 +113,9 @@ export default function CompliancePage() {
 	const loading = dsarLoading || policyLoading || sodLoading || isoLoading;
 
 	useEffect(() => {
-		if (!currentTenantId && tenants.length > 0) {
-			switchTenant(tenants[0].id);
+		const rows = tenantPage?.items ?? [];
+		if (!currentTenantId && rows.length > 0) {
+			switchTenant(rows[0].id);
 		}
 	}, [currentTenantId, tenantPage, switchTenant]);
 
