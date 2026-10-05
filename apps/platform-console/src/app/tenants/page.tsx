@@ -34,6 +34,17 @@ import { ROUTE } from '@/lib/route-paths';
 
 const { Option } = Select;
 
+const TENANT_STATUS_MAP: Record<string, { label: string; color: string }> = {
+	active: { label: '正常', color: 'success' },
+	suspended: { label: '已暂停', color: 'error' },
+	pending: { label: '待激活', color: 'warning' },
+};
+
+const renderTenantStatus = (status?: string) => {
+	const meta = TENANT_STATUS_MAP[status ?? ''] ?? { label: status || '-', color: 'default' };
+	return <Tag color={meta.color}>{meta.label}</Tag>;
+};
+
 export default function TenantsPage() {
 	const { t } = useTranslation();
 	usePageTitle(t('tenants.title', '租户管理'));
@@ -146,11 +157,7 @@ export default function TenantsPage() {
 			title: '状态',
 			dataIndex: 'status',
 			key: 'status',
-			render: (status: string) => (
-				<Tag color={status === 'active' ? 'success' : 'error'}>
-					{status === 'active' ? '正常' : '已暂停'}
-				</Tag>
-			),
+			render: (status: string) => renderTenantStatus(status),
 		},
 		{ title: '套餐', dataIndex: 'plan', key: 'plan', render: (v?: string) => v || '-' },
 		{
@@ -209,6 +216,7 @@ export default function TenantsPage() {
 							setEditing(record);
 							form.setFieldsValue({
 								name: record.name,
+								displayName: record.displayName || record.name,
 								domain: record.domain,
 								plan: record.plan,
 							});
@@ -302,19 +310,22 @@ export default function TenantsPage() {
 				destroyOnHidden
 			>
 				<Form form={form} layout="vertical" onFinish={handleSave}>
-					<Form.Item name="name" label="租户名称" rules={[{ required: true }]}>
-						<Input placeholder="如：Acme Corp" />
+					<Form.Item name="name" label="租户标识" rules={[{ required: true }]} extra="创建后不可修改">
+						<Input placeholder="如：acme-corp" disabled={!!editing} />
+					</Form.Item>
+					<Form.Item name="displayName" label="显示名称" rules={[{ required: true }]}>
+						<Input placeholder="如：ACME Corp" />
 					</Form.Item>
 					<Form.Item name="domain" label="域名">
 						<Input placeholder="如：acme.example.com" />
 					</Form.Item>
 					{!editing && (
 						<Form.Item
-							name="adminEmail"
-							label="初始管理员邮箱"
-							rules={[{ required: true, type: 'email' }]}
+							name="ownerId"
+							label="所有者用户 ID"
+							rules={[{ required: true }, { pattern: /^[0-9A-HJKMNP-TV-Z]{26}$/, message: '请输入 26 位用户 ULID' }]}
 						>
-							<Input placeholder="admin@example.com" />
+							<Input placeholder="如：01KTKJF63A4RDHHJSHTY1ACP2F" />
 						</Form.Item>
 					)}
 					<Form.Item name="plan" label="套餐" rules={[{ required: true }]} initialValue="free">
@@ -363,21 +374,14 @@ export default function TenantsPage() {
 										<Descriptions.Item label="名称">
 											{detailData.info?.name || selectedTenant?.name}
 										</Descriptions.Item>
+										<Descriptions.Item label="显示名称">
+											{detailData.info?.displayName || selectedTenant?.displayName || '-'}
+										</Descriptions.Item>
 										<Descriptions.Item label="域名">
 											{detailData.info?.domain || selectedTenant?.domain || '-'}
 										</Descriptions.Item>
 										<Descriptions.Item label="状态">
-											<Tag
-												color={
-													(detailData.info?.status || selectedTenant?.status) === 'active'
-														? 'success'
-														: 'error'
-												}
-											>
-												{(detailData.info?.status || selectedTenant?.status) === 'active'
-													? '正常'
-													: '已暂停'}
-											</Tag>
+											{renderTenantStatus(detailData.info?.status || selectedTenant?.status)}
 										</Descriptions.Item>
 										<Descriptions.Item label="套餐">
 											{detailData.info?.plan || selectedTenant?.plan || '-'}
