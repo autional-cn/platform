@@ -15,10 +15,10 @@ import {
 import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { formatDateTime } from '@/lib/format';
-import { DataTable, Drawer, Modal, PageError } from '@autional-cn/ui/antd';
-import { ConsolePageHeader, StatusBadge } from '@autional-cn/ui';
+import { DataTable, Drawer, Modal, PageError } from '@autional/ui/antd';
+import { ConsolePageHeader, StatusBadge } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 import { severityBadge, severityLabels, statusBadge, statusLabels } from '@/lib/incident-meta';
 
 const { Option } = Select;

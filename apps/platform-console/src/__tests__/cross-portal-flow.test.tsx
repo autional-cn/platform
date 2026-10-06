@@ -15,7 +15,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // 不 mock react-i18next：测试 setup 已初始化真实 i18n 并钉死 zh-CN，
 // 断言的中文文案就走真实词典与插值（与生产一致）。
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	useAuthStore: (selector?: (s: unknown) => unknown) => {
 		const state = {
 			user: { email: 'platform-admin@autional.dev', username: 'root' },
@@ -66,7 +66,7 @@ vi.mock('@/hooks/use-platform-stats', () => ({
 	}),
 }));
 
-vi.mock('@autional-cn/ui', () => ({
+vi.mock('@autional/ui', () => ({
 	useTheme: () => ({ theme: 'light', toggle: vi.fn() }),
 	ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
 	EmptyState: ({ title, description }: { title: string; description?: string }) => (

@@ -2,9 +2,9 @@
 
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { usePageTitle } from '@autional/shared';
+import { DataTable } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { Card, Tabs, Tag, Input, Tooltip, Badge } from 'antd';
 import {
 	Cloud,

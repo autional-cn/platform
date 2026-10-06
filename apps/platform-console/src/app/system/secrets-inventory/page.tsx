@@ -21,8 +21,8 @@ import {
 	ShieldCheck,
 	Trash2,
 } from 'lucide-react';
-import { PageLoading, PageError, DataTable, Modal } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { PageLoading, PageError, DataTable, Modal } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import {
 	useSecretsInventoryOverview,
 	useSecretsInventoryKV,
@@ -41,7 +41,7 @@ import {
 } from '@/hooks/use-secrets-inventory';
 import { handleApiError } from '@/lib/error-handler';
 import { ApiErrorState } from '@/components/ApiErrorState';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 import { useTranslation } from 'react-i18next';
 import {
 	useRotateSecret,

@@ -20,9 +20,9 @@ import {
 	type AnnouncementRecord,
 } from '@/hooks/use-announcements';
 import { handleApiError } from '@/lib/error-handler';
-import { extractItem, usePageTitle } from '@autional-cn/shared';
-import { PageError, DataTable, Modal } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { extractItem, usePageTitle } from '@autional/shared';
+import { PageError, DataTable, Modal } from '@autional/ui/antd';
+import { ConsolePageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;

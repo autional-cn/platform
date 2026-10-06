@@ -14,10 +14,10 @@ import {
 import type { MaintenanceRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { formatDateTime } from '@/lib/format';
-import { PageError, DataTable, Modal } from '@autional-cn/ui/antd';
-import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional-cn/ui';
+import { PageError, DataTable, Modal } from '@autional/ui/antd';
+import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 
 const { Option } = Select;
 const { TextArea } = Input;

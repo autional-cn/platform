@@ -12,9 +12,9 @@ import {
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { ApiErrorState } from '@/components/ApiErrorState';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 
 interface ServiceHealth {
 	name: string;

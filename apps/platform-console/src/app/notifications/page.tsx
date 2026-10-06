@@ -8,13 +8,13 @@ import {
 	Send,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 import {
 	usePlatformCommunicationStats,
 	usePlatformNotificationStats,
 } from '@/hooks/use-platform-stats';
-import { ConsolePageHeader } from '@autional-cn/ui';
-import { PageError, DataTable } from '@autional-cn/ui/antd';
+import { ConsolePageHeader } from '@autional/ui';
+import { PageError, DataTable } from '@autional/ui/antd';
 import {
 	LineChart,
 	Line,

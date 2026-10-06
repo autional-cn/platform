@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
-import { ConsolePageHeader, StatusBadge } from '@autional-cn/ui';
+import { usePageTitle, useTenantSlug } from '@autional/shared';
+import { ConsolePageHeader, StatusBadge } from '@autional/ui';
 import { useSystemTenants } from '@/hooks/use-system-overview';
 import { useIncidents, useOverview } from '@/hooks/use-status';
 import { usePlatformNotificationStats } from '@/hooks/use-platform-stats';

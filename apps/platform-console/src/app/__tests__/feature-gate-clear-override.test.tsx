@@ -20,12 +20,12 @@ const mocks = vi.hoisted(() => ({
 	message: { success: vi.fn(), error: vi.fn() },
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	useCurrentTenantId: () => 't-1',
 	usePageTitle: vi.fn(),
 }));
 
-vi.mock('@autional-cn/shared/generated/api', () => ({
+vi.mock('@autional/shared/generated/api', () => ({
 	adminBillingFeatureGates: (...args: unknown[]) => mocks.featureGates(...args),
 	adminBillingFeatureGatesOverrides: (...args: unknown[]) => mocks.overrides(...args),
 	adminBillingFeatureGatesOverridesPut: (...args: unknown[]) => mocks.putOverride(...args),

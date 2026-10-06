@@ -19,10 +19,10 @@ const api = vi.hoisted(() => ({
 	adminOauthClientsRotateSecretByClientsPost: vi.fn(),
 }));
 
-vi.mock('@autional-cn/shared/generated/api', () => api);
+vi.mock('@autional/shared/generated/api', () => api);
 
 // 忠实复刻真实实现（utils/response.ts，信封解包双分支），保证 mock 与生产形状一致
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	extractList: (res: unknown) => {
 		if (!res) return [];
 		if (Array.isArray(res)) return res;

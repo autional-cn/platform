@@ -8,12 +8,12 @@ import {
 	HelpCircle,
 	XCircle,
 } from 'lucide-react';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { ConsolePageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 import { useQuery } from '@tanstack/react-query';
 import { ops } from '@/lib/api.generated';
-import { PageLoading } from '@autional-cn/ui/antd';
+import { PageLoading } from '@autional/ui/antd';
 import { ApiErrorState } from '@/components/ApiErrorState';
 
 interface RateLimitData {

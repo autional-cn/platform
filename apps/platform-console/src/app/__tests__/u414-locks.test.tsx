@@ -92,14 +92,14 @@ vi.mock('@/lib/error-handler', () => ({
 	handleApiError: vi.fn(),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	usePageTitle: vi.fn(),
 	useTenantSlug: () => 'demo',
 	useAuthStore: (selector: (s: Record<string, unknown>) => unknown) =>
 		selector({ currentTenantId: 't-1', switchTenant: vi.fn() }),
 }));
 
-vi.mock('@autional-cn/shared/generated/api', () => ({
+vi.mock('@autional/shared/generated/api', () => ({
 	adminComplianceTenantsScoreByTenants: vi.fn(async () => ({
 		data: { overall_score: 83, grade: 'B' },
 	})),

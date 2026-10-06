@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
+import { DataTable } from '@autional/ui/antd';
 import { Tag, Skeleton } from 'antd';
 import {
 	Cloud,
@@ -12,9 +12,9 @@ import {
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
-import { adminInfraCredentials } from '@autional-cn/shared/generated/api';
-import { ConsolePageHeader, EmptyState, SectionCard } from '@autional-cn/ui';
+import { usePageTitle } from '@autional/shared';
+import { adminInfraCredentials } from '@autional/shared/generated/api';
+import { ConsolePageHeader, EmptyState, SectionCard } from '@autional/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { queryKeys } from '@/lib/query-keys';
 

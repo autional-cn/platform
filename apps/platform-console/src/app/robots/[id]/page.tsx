@@ -14,7 +14,7 @@ import {
 	Typography,
 	Popconfirm,
 } from 'antd';
-import { Modal } from '@autional-cn/ui/antd';
+import { Modal } from '@autional/ui/antd';
 import {
 	ArrowLeft,
 	KeyRound,
@@ -22,8 +22,8 @@ import {
 	Pencil,
 	Play,
 } from 'lucide-react';
-import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
-import { ConsolePageHeader, ErrorState, SectionCard, StatusBadge } from '@autional-cn/ui';
+import { usePageTitle, useTenantSlug } from '@autional/shared';
+import { ConsolePageHeader, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
@@ -33,13 +33,13 @@ import {
 	adminRobotsCommissionByRobotsPost,
 	adminRobotsDecommissionByRobotsPost,
 	adminRobotsIntentByRobotsPost,
-} from '@autional-cn/shared/generated/api';
+} from '@autional/shared/generated/api';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
 import { operationHint, statusLabel, statusVariant } from '@/lib/robot-status';
-import type { RobotInfo } from '@autional-cn/shared/generated/types';
+import type { RobotInfo } from '@autional/shared/generated/types';
 
 const { Paragraph, Text } = Typography;
 

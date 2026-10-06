@@ -22,12 +22,12 @@ import {
 } from '@/hooks/use-tenants';
 import { handleApiError } from '@/lib/error-handler';
 import { formatDateTime } from '@/lib/format';
-import { DataTable, Drawer, Modal, PageError } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { DataTable, Drawer, Modal, PageError } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { useMembers } from '@/hooks/use-members';
 import { useApplications } from '@/hooks/use-applications';
 import { useNavigate } from 'react-router';
-import { usePageTitle, useTenantSlug } from '@autional-cn/shared';
+import { usePageTitle, useTenantSlug } from '@autional/shared';
 import { useTranslation } from 'react-i18next';
 import { buildNavHref } from '@/lib/nav';
 import { ROUTE } from '@/lib/route-paths';

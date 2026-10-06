@@ -109,7 +109,7 @@ vi.mock('@/lib/error-handler', () => ({
 	extractApiErrorMessage: vi.fn(() => ''),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	AuthService: { getCurrentTenantId: () => 't-1' },
 	fromPageResult: (d: any) => ({ items: d?.items ?? [], total: d?.total ?? 0 }),
 	toPageParams: (p: unknown) => p,
@@ -120,7 +120,7 @@ vi.mock('@autional-cn/shared', () => ({
 	extractItem: (x: unknown) => x,
 }));
 
-vi.mock('@autional-cn/shared/generated/api', () => ({
+vi.mock('@autional/shared/generated/api', () => ({
 	adminTenantsMinorsProtectionByTenants: (...args: unknown[]) => mocks.getMinorsConfig(...args),
 	adminTenantsMinorsProtectionByTenantsPut: (...args: unknown[]) => mocks.putMinorsConfig(...args),
 	adminUsers: (...args: unknown[]) => mocks.adminUsers(...args),

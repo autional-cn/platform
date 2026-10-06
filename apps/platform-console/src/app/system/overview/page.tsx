@@ -12,12 +12,12 @@ import {
 	Users,
 	XCircle,
 } from 'lucide-react';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
+import { usePageTitle } from '@autional/shared';
 import { useSystemServices, useSystemTenants, CATEGORY_LABELS } from '@/hooks/use-system-overview';
 import type { ServiceInfo } from '@/hooks/use-system-overview';
-import { PageLoading } from '@autional-cn/ui/antd';
+import { PageLoading } from '@autional/ui/antd';
 import { ApiErrorState } from '@/components/ApiErrorState';
 
 const statusConfig: Record<string, { icon: React.ReactNode }> = {

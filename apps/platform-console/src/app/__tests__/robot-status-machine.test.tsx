@@ -27,7 +27,7 @@ const mocks = vi.hoisted(() => ({
 	deleteRobot: vi.fn(),
 }));
 
-vi.mock('@autional-cn/shared/generated/api', () => ({
+vi.mock('@autional/shared/generated/api', () => ({
 	adminRobotsByRobots: (...args: unknown[]) => mocks.getRobot(...args),
 	adminRobotsByRobotsPut: (...args: unknown[]) => mocks.updateRobot(...args),
 	adminRobotsCommissionByRobotsPost: (...args: unknown[]) => mocks.commission(...args),
@@ -38,7 +38,7 @@ vi.mock('@autional-cn/shared/generated/api', () => ({
 	adminRobotsByRobotsDelete: (...args: unknown[]) => mocks.deleteRobot(...args),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	usePageTitle: vi.fn(),
 	useTenantSlug: () => 'demo',
 	fromPageResult: (res: unknown) => res,

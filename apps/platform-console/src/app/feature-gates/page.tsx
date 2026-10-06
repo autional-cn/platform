@@ -1,9 +1,9 @@
 'use client';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCurrentTenantId, usePageTitle } from '@autional-cn/shared';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { useCurrentTenantId, usePageTitle } from '@autional/shared';
+import { DataTable } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { Card, Switch, Space, App, Spin, Tag, Popconfirm, Button } from 'antd';
 import { Lock } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,7 +12,7 @@ import {
 	adminBillingFeatureGatesOverrides,
 	adminBillingFeatureGatesOverridesPut,
 	adminBillingFeatureGatesOverridesByOverridesDelete,
-} from '@autional-cn/shared/generated/api';
+} from '@autional/shared/generated/api';
 
 export default function FeatureGatesPage() {
 	const { t } = useTranslation();

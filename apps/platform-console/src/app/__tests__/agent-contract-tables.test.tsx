@@ -26,7 +26,7 @@ const mocks = vi.hoisted(() => ({
 	apiGet: vi.fn(),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	apiClient: { get: (...args: unknown[]) => mocks.apiGet(...args) },
 	extractItem: (x: unknown) => x,
 	usePageTitle: vi.fn(),
@@ -35,7 +35,7 @@ vi.mock('@autional-cn/shared', () => ({
 	toPageParams: (p: unknown) => p,
 }));
 
-vi.mock('@autional-cn/shared/generated/api', () => ({
+vi.mock('@autional/shared/generated/api', () => ({
 	adminAgentsByAgents: (...args: unknown[]) => mocks.getAgent(...args),
 	adminAgentsByAgentsPut: (...args: unknown[]) => mocks.putAgent(...args),
 	adminAgents: (...args: unknown[]) => mocks.listAgents(...args),

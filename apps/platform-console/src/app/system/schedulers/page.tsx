@@ -8,10 +8,10 @@ import {
 	RefreshCw,
 	XCircle,
 } from 'lucide-react';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { ConsolePageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@autional-cn/shared';
-import { PageLoading, DataTable } from '@autional-cn/ui/antd';
+import { usePageTitle } from '@autional/shared';
+import { PageLoading, DataTable } from '@autional/ui/antd';
 import { useSchedulers } from '@/hooks/use-schedulers';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { formatDateTime } from '@/lib/format';
