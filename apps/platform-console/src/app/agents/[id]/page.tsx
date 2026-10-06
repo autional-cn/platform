@@ -16,6 +16,7 @@ import { adminAgentsByAgents, adminAgentsByAgentsPut } from '@autional-cn/shared
 import { message } from '@/lib/antd-app';
 import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
+import { statusLabel, statusVariant } from '@/lib/agent-status';
 
 interface AgentDetail {
 	identityId?: string;
@@ -39,26 +40,31 @@ interface AgentDetail {
 	updated_at?: string;
 }
 
+// 三接口 = 后端 DTO 真形状（camelCaseKeys 管道后）：
+// internal/agent/domain.AgentCredentialInfo / AgentActivityInfo / AgentPermissionInfo
 interface CredentialRecord {
 	id: string;
+	agentId?: string;
 	name: string;
-	type: string;
+	credType?: string;
+	keyPrefix?: string;
 	status: string;
-	last_used_at: string;
-	expires_at: string;
+	createdAt?: string;
 }
 
 interface ActivityRecord {
-	id: string;
 	action: string;
-	detail: string;
-	timestamp: string;
+	detail?: string;
+	operatorId?: string;
+	createdAt?: string;
 }
 
 interface PermissionRecord {
-	id: string;
+	code?: string;
+	name?: string;
 	resource: string;
 	action: string;
+	effect?: string;
 }
 
 const SUBTYPE_LABELS: Record<string, string> = {
@@ -72,28 +78,6 @@ const SUBTYPE_COLORS: Record<string, string> = {
 	service_account: 'green',
 	automation: 'orange',
 };
-
-const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'neutral'> = {
-	active: 'success',
-	disabled: 'danger',
-	suspended: 'warning',
-	provisioning: 'info',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-	active: '活跃',
-	disabled: '已停用',
-	suspended: '已暂停',
-	provisioning: '配置中',
-};
-
-function statusVariant(s: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
-	return STATUS_VARIANT[s] || 'neutral';
-}
-
-function statusLabel(s: string): string {
-	return STATUS_LABELS[s] || s || '-';
-}
 
 function formatDate(iso: string): string {
 	if (!iso) return '-';
@@ -222,12 +206,19 @@ export default function AgentDetailPage() {
 	const rotationDays = agent?.rotationDays ?? agent?.rotation_days;
 	const jitTtl = agent?.jitTtl ?? agent?.jit_ttl;
 
+	// 列绑定后端真字段（旧版绑 type/last_used_at/expires_at/timestamp —— 后端不存在，整列恒 '-'）
 	const credentialColumns = [
 		{ title: '名称', dataIndex: 'name', key: 'name' },
 		{
+			title: '前缀',
+			dataIndex: 'keyPrefix',
+			key: 'keyPrefix',
+			render: (v: string) => (v ? <code className="text-xs">{v}</code> : '-'),
+		},
+		{
 			title: '类型',
-			dataIndex: 'type',
-			key: 'type',
+			dataIndex: 'credType',
+			key: 'credType',
 			render: (v: string) => <Tag>{v || '-'}</Tag>,
 		},
 		{
@@ -235,20 +226,14 @@ export default function AgentDetailPage() {
 			dataIndex: 'status',
 			key: 'status',
 			render: (v: string) => (
-				<StatusBadge variant={v === 'active' ? 'success' : 'neutral'}>{statusLabel(v)}</StatusBadge>
+				<StatusBadge variant={statusVariant(v)}>{statusLabel(v)}</StatusBadge>
 			),
 		},
 		{
-			title: '最后使用',
-			key: 'last_used',
-			render: (_: unknown, r: any) =>
-				formatDate((r.lastUsedAt as string) ?? (r.last_used_at as string) ?? ''),
-		},
-		{
-			title: '过期时间',
-			key: 'expires',
-			render: (_: unknown, r: any) =>
-				formatDate((r.expiresAt as string) ?? (r.expires_at as string) ?? ''),
+			title: '创建时间',
+			dataIndex: 'createdAt',
+			key: 'createdAt',
+			render: (v: string) => formatDate(v),
 		},
 	];
 
@@ -257,8 +242,8 @@ export default function AgentDetailPage() {
 		{ title: '详情', dataIndex: 'detail', key: 'detail', ellipsis: true },
 		{
 			title: '时间',
-			dataIndex: 'timestamp',
-			key: 'timestamp',
+			dataIndex: 'createdAt',
+			key: 'createdAt',
 			render: (v: string) => formatDate(v),
 		},
 	];
@@ -378,7 +363,10 @@ export default function AgentDetailPage() {
 							<EmptyState title="暂无活动" description="该 Agent 近期没有活动。" />
 						) : (
 							<DataTable
-								rowKey="id"
+								// 后端 AgentActivityInfo 无 id —— 复合键防 React key 塌陷
+								rowKey={(r: ActivityRecord) =>
+									`${r.action}|${r.createdAt ?? ''}|${r.detail ?? ''}`
+								}
 								columns={activityColumns}
 								dataSource={activity}
 								pagination={false}
@@ -397,7 +385,10 @@ export default function AgentDetailPage() {
 							/>
 						) : (
 							<DataTable
-								rowKey="id"
+								// 后端 AgentPermissionInfo 无 id —— 复合键防 React key 塌陷
+								rowKey={(r: PermissionRecord) =>
+									`${r.code ?? ''}|${r.resource}|${r.action}`
+								}
 								columns={permissionColumns}
 								dataSource={permissions}
 								pagination={false}

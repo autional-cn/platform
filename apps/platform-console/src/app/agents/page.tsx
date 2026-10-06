@@ -24,6 +24,7 @@ import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
+import { statusLabel, statusVariant } from '@/lib/agent-status';
 
 interface AgentRecord {
 	identityId?: string;
@@ -56,28 +57,6 @@ const SUBTYPE_COLORS: Record<string, string> = {
 	service_account: 'green',
 	automation: 'orange',
 };
-
-const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'neutral'> = {
-	active: 'success',
-	disabled: 'danger',
-	suspended: 'warning',
-	provisioning: 'info',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-	active: '活跃',
-	disabled: '已停用',
-	suspended: '已暂停',
-	provisioning: '配置中',
-};
-
-function statusVariant(s: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
-	return STATUS_VARIANT[s] || 'neutral';
-}
-
-function statusLabel(s: string): string {
-	return STATUS_LABELS[s] || s || '-';
-}
 
 function formatDate(iso: string): string {
 	if (!iso) return '-';
