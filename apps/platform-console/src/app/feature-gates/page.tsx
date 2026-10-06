@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useCurrentTenantId, usePageTitle } from '@autional-cn/shared';
 import { DataTable } from '@autional-cn/ui/antd';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
-import { Card, Switch, Space, App, Spin, Tag } from 'antd';
+import { Card, Switch, Space, App, Spin, Tag, Popconfirm, Button } from 'antd';
 import { Lock } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	adminBillingFeatureGates,
 	adminBillingFeatureGatesOverrides,
 	adminBillingFeatureGatesOverridesPut,
+	adminBillingFeatureGatesOverridesByOverridesDelete,
 } from '@autional-cn/shared/generated/api';
 
 export default function FeatureGatesPage() {
@@ -47,6 +48,17 @@ export default function FeatureGatesPage() {
 			message.success(t('featureGates.overrideUpdated', '功能门控覆盖已更新'));
 		},
 		onError: () => message.error(t('featureGates.overrideFailed', '更新覆盖失败')),
+	});
+
+	const overrideClearMutation = useMutation({
+		mutationFn: async (gateKey: string) => {
+			return adminBillingFeatureGatesOverridesByOverridesDelete(gateKey);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['feature-gates-overrides'] });
+			message.success(t('featureGates.overrideCleared', '功能门控覆盖已清除'));
+		},
+		onError: () => message.error(t('featureGates.overrideClearFailed', '清除覆盖失败')),
 	});
 
 	const overrideMap = useMemo(() => {
@@ -99,6 +111,30 @@ export default function FeatureGatesPage() {
 						<Tag color={currentOverride !== undefined ? 'blue' : 'default'}>
 							{currentOverride !== undefined ? '自定义' : '默认'}
 						</Tag>
+						{currentOverride !== undefined && (
+							<Popconfirm
+								title={t('featureGates.clearOverrideTitle', '清除该门控的租户覆盖？')}
+								description={t(
+									'featureGates.clearOverrideDesc',
+									'清除后将恢复为套餐默认权益。'
+								)}
+								onConfirm={() => overrideClearMutation.mutate(record.key)}
+								okText={t('featureGates.clearOverrideOk', '清除')}
+								okButtonProps={{ danger: true }}
+								cancelText={t('featureGates.clearOverrideCancel', '取消')}
+							>
+								<Button
+									size="small"
+									type="link"
+									loading={
+										overrideClearMutation.isPending &&
+										overrideClearMutation.variables === record.key
+									}
+								>
+									{t('featureGates.clearOverride', '清除覆盖')}
+								</Button>
+							</Popconfirm>
+						)}
 					</Space>
 				);
 			},
