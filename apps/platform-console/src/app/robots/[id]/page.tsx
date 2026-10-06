@@ -38,22 +38,10 @@ import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
+import { operationHint, statusLabel, statusVariant } from '@/lib/robot-status';
 import type { RobotInfo } from '@autional-cn/shared/generated/types';
 
 const { Paragraph, Text } = Typography;
-
-const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'neutral'> = {
-	active: 'success',
-	commissioning: 'info',
-	degraded: 'warning',
-	decommissioned: 'neutral',
-	maintenance: 'warning',
-	provisioning: 'info',
-};
-
-function statusVariant(s: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
-	return STATUS_VARIANT[s] || 'neutral';
-}
 
 const SUBTYPE_LABELS: Record<string, string> = {
 	industrial: '工业',
@@ -198,9 +186,11 @@ export default function RobotDetailPage() {
 		}
 	};
 
-	const canCommission = robot?.status === 'decommissioned' || robot?.status === 'provisioning';
-	const canDecommission = robot?.status === 'active';
-	const canIssueIntent = robot?.status === 'active';
+	// U408：动作门与后端状态机对齐（CanCommission 仅认 commissioning；停用/签发 = active∪degraded）。
+	const canCommission = robot?.status === 'commissioning';
+	const canDecommission = robot?.status === 'active' || robot?.status === 'degraded';
+	const canIssueIntent = robot?.status === 'active' || robot?.status === 'degraded';
+	const statusHint = operationHint(robot?.status);
 
 	if (!id) {
 		return (
@@ -296,8 +286,8 @@ export default function RobotDetailPage() {
 						<Descriptions column={2} bordered size="small">
 							<Descriptions.Item label="名称">{robot.name}</Descriptions.Item>
 							<Descriptions.Item label="状态">
-								<StatusBadge variant={statusVariant(robot.status || '')}>
-									{robot.status || '-'}
+								<StatusBadge variant={statusVariant(robot.status)}>
+									{statusLabel(robot.status)}
 								</StatusBadge>
 							</Descriptions.Item>
 							<Descriptions.Item label="型号">{robot.model || '-'}</Descriptions.Item>
@@ -329,21 +319,18 @@ export default function RobotDetailPage() {
 						<div className="space-y-4">
 							<div>
 								<Text strong>启用状态：</Text>
-								{canCommission && <Text type="success">可启用</Text>}
-								{canDecommission && <Text type="warning">活跃 —— 可停用</Text>}
-								{robot.status === 'decommissioned' && <Text type="secondary">已停用</Text>}
-								{robot.status === 'degraded' && (
-									<Text type="warning">运行于降级模式</Text>
+								<Text type={statusHint.type}>{statusHint.text}</Text>
+							</div>
+							<div>
+								<Text strong>Intent 令牌：</Text>
+								{canIssueIntent ? (
+									<Text>可用 —— 点击「签发 Intent」生成一次性操作令牌。</Text>
+								) : (
+									<Text type="secondary">
+										不可用 —— 仅活跃或降级运行的 Robot 可签发。
+									</Text>
 								)}
 							</div>
-							{canIssueIntent && (
-								<div>
-									<Text strong>Intent 令牌：</Text>
-									<Text>
-										可用 —— 点击「签发 Intent」生成一次性操作令牌。
-									</Text>
-								</div>
-							)}
 						</div>
 					</SectionCard>
 				</>

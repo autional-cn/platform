@@ -24,6 +24,7 @@ import { handleApiError } from '@/lib/error-handler';
 import { queryKeys } from '@/lib/query-keys';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
+import { statusLabel, statusVariant } from '@/lib/robot-status';
 
 interface RobotRecord {
 	identityId?: string;
@@ -42,17 +43,6 @@ interface RobotRecord {
 	owner_id?: string;
 	createdAt?: string;
 	created_at?: string;
-}
-
-const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'neutral'> = {
-	active: 'success',
-	offline: 'danger',
-	maintenance: 'warning',
-	provisioning: 'info',
-};
-
-function statusVariant(s: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
-	return STATUS_VARIANT[s] || 'neutral';
 }
 
 function formatDate(iso: string): string {
@@ -169,7 +159,9 @@ export default function RobotsPage() {
 			title: '状态',
 			dataIndex: 'status',
 			key: 'status',
-			render: (v: string) => <StatusBadge variant={statusVariant(v)}>{v || '-'}</StatusBadge>,
+			render: (v: string) => (
+				<StatusBadge variant={statusVariant(v)}>{statusLabel(v)}</StatusBadge>
+			),
 		},
 		{
 			title: '所有者',
