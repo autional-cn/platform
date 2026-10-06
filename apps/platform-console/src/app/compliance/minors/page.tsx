@@ -8,7 +8,6 @@ import {
 	InputNumber,
 	Switch,
 	Button,
-	message,
 	Spin,
 	TimePicker,
 	Space,
@@ -26,6 +25,7 @@ import {
 	User,
 } from 'lucide-react';
 import { handleApiError } from '@/lib/error-handler';
+import { message } from '@/lib/antd-app';
 import { AuthService, fromPageResult, toPageParams, usePageTitle } from '@autional-cn/shared';
 import { useTranslation } from 'react-i18next';
 import {
@@ -134,6 +134,27 @@ export default function MinorsProtectionPage() {
 		loadUsers();
 	}, []);
 
+	// U412①：首屏 loading 早退期间 Form 尚未挂载，原 loadConfig 内的同步 setFieldsValue
+	// 会触发「useForm 未挂载」告警；改为配置到位且表单挂载后再回填。
+	useEffect(() => {
+		if (!config || loading) return;
+		form.setFieldsValue({
+			daily_usage_limit_min: config.dailyUsageLimitMin,
+			monthly_spend_limit: config.monthlySpendLimit,
+			night_mode_enabled: config.nightModeEnabled,
+			night_mode_start: config.nightModeStart
+				? dayjs(config.nightModeStart, 'HH:mm')
+				: dayjs('22:00', 'HH:mm'),
+			night_mode_end: config.nightModeEnd
+				? dayjs(config.nightModeEnd, 'HH:mm')
+				: dayjs('06:00', 'HH:mm'),
+			live_stream_blocked_under_16: config.liveStreamBlockedUnder16,
+			content_filter_enabled: config.contentFilterEnabled,
+			child_default_max_privacy: config.childDefaultMaxPrivacy,
+			minor_data_retention_days: config.minorDataRetentionDays,
+		});
+	}, [config, loading, form]);
+
 	const loadConfig = async () => {
 		const tenantId = AuthService.getCurrentTenantId();
 		if (!tenantId) {
@@ -148,21 +169,6 @@ export default function MinorsProtectionPage() {
 			)) as MinorsProtectionConfig;
 			setConfigError(null);
 			setConfig(res);
-			form.setFieldsValue({
-				daily_usage_limit_min: res.dailyUsageLimitMin,
-				monthly_spend_limit: res.monthlySpendLimit,
-				night_mode_enabled: res.nightModeEnabled,
-				night_mode_start: res.nightModeStart
-					? dayjs(res.nightModeStart, 'HH:mm')
-					: dayjs('22:00', 'HH:mm'),
-				night_mode_end: res.nightModeEnd
-					? dayjs(res.nightModeEnd, 'HH:mm')
-					: dayjs('06:00', 'HH:mm'),
-				live_stream_blocked_under_16: res.liveStreamBlockedUnder16,
-				content_filter_enabled: res.contentFilterEnabled,
-				child_default_max_privacy: res.childDefaultMaxPrivacy,
-				minor_data_retention_days: res.minorDataRetentionDays,
-			});
 		} catch (err) {
 			setConfig(null);
 			setConfigError(err instanceof Error ? err : new Error('加载未成年人保护配置失败'));

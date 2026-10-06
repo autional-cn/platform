@@ -184,7 +184,7 @@ export default function FeatureFlagsPage() {
 									title="已启用功能"
 									value={isLoading ? '-' : totalFeaturesEnabled}
 									prefix={<CheckCircle2 size="1em" />}
-									valueStyle={{ color: 'var(--color-success-text)' }}
+									styles={{ content: { color: 'var(--color-success-text)' } }}
 								/>
 							</Card>
 						</Col>

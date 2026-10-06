@@ -40,6 +40,7 @@ import {
 	type OAuthSecretRecord,
 } from '@/hooks/use-secrets-inventory';
 import { handleApiError } from '@/lib/error-handler';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { usePageTitle } from '@autional-cn/shared';
 import { useTranslation } from 'react-i18next';
 import {
@@ -514,7 +515,7 @@ export default function SystemSecretsInventoryPage() {
 			title: '前缀',
 			dataIndex: 'prefix',
 			key: 'prefix',
-			render: (v: string) => <code className="text-xs">{v}</code>,
+			render: (v: string) => (v ? <code className="text-xs">{v}</code> : '—'),
 		},
 		{
 			title: '租户',
@@ -790,7 +791,7 @@ export default function SystemSecretsInventoryPage() {
 						<PageError message="加载 API 密钥失败" retry={refetchApiKeys} className="mb-4" />
 					)}
 					<DataTable
-						rowKey="prefix"
+						rowKey="id"
 						columns={apiKeyColumns}
 						dataSource={apiKeys}
 						loading={apiKeysLoading}
@@ -1014,7 +1015,7 @@ function OverviewTab({
 	error: Error | null;
 	retry: () => void;
 }) {
-	if (error) return <PageError message="加载总览失败" retry={retry} />;
+	if (error) return <ApiErrorState error={error} title="加载总览失败" onRetry={retry} />;
 	if (!overview) return <PageLoading />;
 
 	const statusColors: Record<string, string> = {
@@ -1040,7 +1041,7 @@ function OverviewTab({
 						<Statistic
 							title="活跃"
 							value={overview.activeCount}
-							valueStyle={{ color: 'var(--color-success)' }}
+							styles={{ content: { color: 'var(--color-success)' } }}
 							prefix={<CheckCircle2 size="1em" />}
 						/>
 					</Card>
@@ -1050,7 +1051,7 @@ function OverviewTab({
 						<Statistic
 							title="已过期"
 							value={overview.expiredCount}
-							valueStyle={{ color: 'var(--color-warning)' }}
+							styles={{ content: { color: 'var(--color-warning)' } }}
 							prefix={<Clock size="1em" />}
 						/>
 					</Card>
@@ -1060,7 +1061,7 @@ function OverviewTab({
 						<Statistic
 							title="已吊销"
 							value={overview.revokedCount}
-							valueStyle={{ color: 'var(--color-danger)' }}
+							styles={{ content: { color: 'var(--color-danger)' } }}
 							prefix={<Ban size="1em" />}
 						/>
 					</Card>
@@ -1093,7 +1094,7 @@ function OverviewTab({
 											</Text>
 										</div>
 									</div>
-									<Statistic value={count} valueStyle={{ fontSize: 24 }} />
+									<Statistic value={count} styles={{ content: { fontSize: 24 } }} />
 								</div>
 							</Card>
 						</Col>

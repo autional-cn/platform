@@ -30,6 +30,13 @@ vi.mock('@autional-cn/shared', () => ({
 	usePageTitle: vi.fn(),
 }));
 
+// U412②：页面 message 已改走 '@/lib/antd-app'（消费 App 上下文），测试须桩掉避免真实调用
+vi.mock('@/lib/antd-app', () => ({
+	message: { success: vi.fn(), error: vi.fn(), warning: vi.fn(), info: vi.fn() },
+	modal: { confirm: vi.fn() },
+	notification: { success: vi.fn(), error: vi.fn() },
+}));
+
 import MinorsProtectionPage from '@/app/compliance/minors/page';
 
 describe('MinorsProtectionPage (PL-55a 保存二次确认)', () => {

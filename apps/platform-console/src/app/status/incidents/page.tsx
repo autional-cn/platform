@@ -249,6 +249,8 @@ export default function IncidentsPage() {
 				onOk={() => form.submit()}
 				width={640}
 				destroyOnHidden
+				// U412①：destroyOnHidden 弹窗首开前不渲染子树，forceRender 让表单随页挂载（消「未挂载即调用」告警）
+				forceRender
 			>
 				<Form form={form} layout="vertical" onFinish={handleSave}>
 					<Form.Item name="title" label="标题" rules={[{ required: true }]}>

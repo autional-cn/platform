@@ -114,8 +114,8 @@ export default function DashboardPage() {
 										value={kpi.value}
 										suffix={kpi.suffix}
 										prefix={kpi.icon}
-										valueStyle={
-											kpi.warning ? { color: 'var(--color-warning)' } : undefined
+										styles={
+											kpi.warning ? { content: { color: 'var(--color-warning)' } } : undefined
 										}
 									/>
 									<div className="mt-2 text-xs text-neutral-600">{kpi.note}</div>

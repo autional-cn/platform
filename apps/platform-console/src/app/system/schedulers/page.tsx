@@ -109,7 +109,7 @@ export default function SystemSchedulersPage() {
 								<Statistic
 									title={t('schedulers.statusRunning', '运行中')}
 									value={stats.running}
-									valueStyle={{ color: 'var(--color-success)' }}
+									styles={{ content: { color: 'var(--color-success)' } }}
 									prefix={<CheckCircle2 size="1em" />}
 								/>
 							</Card>
@@ -119,7 +119,7 @@ export default function SystemSchedulersPage() {
 								<Statistic
 									title={t('schedulers.statusPaused', '已暂停')}
 									value={stats.paused}
-									valueStyle={{ color: 'var(--color-warning)' }}
+									styles={{ content: { color: 'var(--color-warning)' } }}
 									prefix={<MinusCircle size="1em" />}
 								/>
 							</Card>
@@ -129,7 +129,7 @@ export default function SystemSchedulersPage() {
 								<Statistic
 									title={t('schedulers.statusFailed', '失败')}
 									value={stats.failed}
-									valueStyle={{ color: 'var(--color-danger)' }}
+									styles={{ content: { color: 'var(--color-danger)' } }}
 									prefix={<XCircle size="1em" />}
 								/>
 							</Card>
@@ -139,7 +139,7 @@ export default function SystemSchedulersPage() {
 								<Statistic
 									title={t('schedulers.statusDisabled', '已禁用')}
 									value={stats.disabled}
-									valueStyle={{ color: 'var(--color-text-disabled)' }}
+									styles={{ content: { color: 'var(--color-text-disabled)' } }}
 									prefix={<XCircle size="1em" />}
 								/>
 							</Card>

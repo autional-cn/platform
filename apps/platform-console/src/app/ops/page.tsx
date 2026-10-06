@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
-import { PageError } from '@autional-cn/ui/antd';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { Alert, ConsolePageHeader } from '@autional-cn/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional-cn/shared';
@@ -69,7 +69,7 @@ export default function OpsPage() {
 
 	return (
 		<div>
-			{error && <PageError message="加载运维状态失败" retry={refetch} className="mb-4" />}
+			{error && <ApiErrorState error={error} title="加载运维状态失败" onRetry={refetch} className="mb-4" />}
 
 			<ConsolePageHeader
 				title={t('ops.title', '运维视图')}
@@ -98,7 +98,7 @@ export default function OpsPage() {
 									title="健康服务"
 									value={healthData.servicesHealthy}
 									suffix={`/ ${healthData.servicesTotal}`}
-									valueStyle={{ color: 'var(--color-success-text)' }}
+									styles={{ content: { color: 'var(--color-success-text)' } }}
 									prefix={<CheckCircle2 size="1em" />}
 								/>
 							</Card>
@@ -108,7 +108,7 @@ export default function OpsPage() {
 								<Statistic
 									title="活跃事故"
 									value={healthData.activeIncidents}
-									valueStyle={{ color: healthData.activeIncidents > 0 ? 'var(--color-danger-text)' : undefined }}
+									styles={{ content: { color: healthData.activeIncidents > 0 ? 'var(--color-danger-text)' : undefined } }}
 									prefix={<AlertTriangle size="1em" />}
 								/>
 							</Card>

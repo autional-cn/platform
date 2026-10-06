@@ -151,7 +151,9 @@ export default function TenantsPage() {
 
 	const columns = [
 		{ title: '租户 ID', dataIndex: 'id', key: 'id', ellipsis: true },
-		{ title: '租户名称', dataIndex: 'name', key: 'name' },
+		// U414②：name 是租户标识（URL slug，见创建表单「租户标识」口径），显示名称单列展示
+		{ title: '租户标识', dataIndex: 'name', key: 'name' },
+		{ title: '显示名称', dataIndex: 'displayName', key: 'displayName', render: (v?: string) => v || '-' },
 		{ title: '域名', dataIndex: 'domain', key: 'domain', render: (v?: string) => v || '-' },
 		{
 			title: '状态',
@@ -308,6 +310,8 @@ export default function TenantsPage() {
 				}}
 				onOk={() => form.submit()}
 				destroyOnHidden
+				// U412①：destroyOnHidden 弹窗首开前不渲染子树，forceRender 让表单随页挂载（消「未挂载即调用」告警）
+				forceRender
 			>
 				<Form form={form} layout="vertical" onFinish={handleSave}>
 					<Form.Item name="name" label="租户标识" rules={[{ required: true }]} extra="创建后不可修改">

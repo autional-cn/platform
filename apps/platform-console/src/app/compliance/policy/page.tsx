@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Tabs, Card, Checkbox, Button, Tag, Space, Form, Input, Select, message, Progress, Row, Col, Statistic, Descriptions, Spin } from 'antd';
+import { Tabs, Card, Checkbox, Button, Tag, Space, Form, Input, Select, Progress, Row, Col, Statistic, Descriptions, Spin } from 'antd';
 import {
 	BadgeCheck,
 	CheckCircle2,
@@ -10,6 +10,7 @@ import {
 	XCircle,
 } from 'lucide-react';
 import { handleApiError } from '@/lib/error-handler';
+import { message } from '@/lib/antd-app';
 import { useAuthStore, extractItem, usePageTitle } from '@autional-cn/shared';
 import { PageError, DataTable, Modal } from '@autional-cn/ui/antd';
 import { ConsolePageHeader } from '@autional-cn/ui';
@@ -112,6 +113,8 @@ export default function CompliancePolicyPage() {
 	const [overrides, setOverrides] = useState<OverrideItem[]>([]);
 	const [readiness, setReadiness] = useState<Record<string, ReadinessItem>>({});
 	const [score, setScore] = useState<number | null>(null);
+	// U414③：score API 已下发 grade（A+/A/B/C/D），接渲染
+	const [scoreGrade, setScoreGrade] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [overrideModal, setOverrideModal] = useState(false);
@@ -191,6 +194,7 @@ export default function CompliancePolicyPage() {
 			const res = (await adminComplianceTenantsScoreByTenants(currentTenantId)) as any;
 			const payload = res?.data ?? res;
 			setScore(payload?.overallScore ?? payload?.overall_score ?? null);
+			setScoreGrade(payload?.grade ?? null);
 		} catch {
 			// 评分加载失败时保持默认
 		}
@@ -308,7 +312,7 @@ export default function CompliancePolicyPage() {
 							onChange={(v) => setSelectedIds(v as string[])}
 							style={{ width: '100%' }}
 						>
-							<Space direction="vertical" size="middle" style={{ width: '100%' }}>
+							<Space orientation="vertical" size="middle" style={{ width: '100%' }}>
 								{filteredStandards.map((std) => (
 									<Card key={std.id} size="small" hoverable>
 										<Checkbox value={std.id}>
@@ -407,12 +411,19 @@ export default function CompliancePolicyPage() {
 								<Space>
 									<span>差距分析</span>
 									{score != null && (
-										<Progress
-											type="circle"
-											percent={Math.round(score)}
-											size={40}
-											status={score >= 80 ? 'success' : score >= 60 ? 'normal' : 'exception'}
-										/>
+										<Space size={6}>
+											<Progress
+												type="circle"
+												percent={Math.round(score)}
+												size={40}
+												status={score >= 80 ? 'success' : score >= 60 ? 'normal' : 'exception'}
+											/>
+											{/* U414③：圆环数字补文本直读 + grade 接渲染 */}
+											<span>
+												合规评分 {Math.round(score)}/100
+												{scoreGrade ? ` · 评级 ${scoreGrade}` : ''}
+											</span>
+										</Space>
 									)}
 								</Space>
 							}
@@ -546,7 +557,7 @@ export default function CompliancePolicyPage() {
 							</div>
 						</Card>
 					) : (
-						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
+						<Space orientation="vertical" size="middle" style={{ width: '100%' }}>
 							{resolvedStandards.map((sid) => {
 								const r = readiness[sid];
 								return (

@@ -156,7 +156,7 @@ export default function FeatureGatesPage() {
 			>
 				门控判定按当前租户生效：先取套餐默认权益，存在租户覆盖时以覆盖为准。
 			</Alert>
-			<Space direction="vertical" size="large" style={{ width: '100%' }}>
+			<Space orientation="vertical" size="large" style={{ width: '100%' }}>
 				<Card title="套餐能力">
 					<DataTable
 						dataSource={planGates}

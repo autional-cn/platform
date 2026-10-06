@@ -346,6 +346,8 @@ export default function RobotDetailPage() {
 				onOk={() => form.submit()}
 				confirmLoading={updateMut.isPending}
 				destroyOnHidden
+				// U412①：destroyOnHidden 弹窗首开前不渲染子树，forceRender 让表单随页挂载（消「未挂载即调用」告警）
+				forceRender
 			>
 				<Form form={form} layout="vertical" onFinish={handleEdit}>
 					<Form.Item name="name" label="名称" rules={[{ required: true }]}>
@@ -408,6 +410,8 @@ export default function RobotDetailPage() {
 							]
 				}
 				destroyOnHidden
+				// U412①：destroyOnHidden 弹窗首开前不渲染子树，forceRender 让表单随页挂载（消「未挂载即调用」告警）
+				forceRender
 			>
 				{intentResult ? (
 					<div className="space-y-3">

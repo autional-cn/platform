@@ -153,7 +153,7 @@ export default function PlatformNotificationsPage() {
 								value={comm?.deliveryRate ? Math.round(comm.deliveryRate * 10000) / 100 : 0}
 								suffix="%"
 								precision={1}
-								valueStyle={{ color: (comm?.deliveryRate ?? 0) > 0.9 ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}
+								styles={{ content: { color: (comm?.deliveryRate ?? 0) > 0.9 ? 'var(--color-success-text)' : 'var(--color-danger-text)' } }}
 							/>
 						)}
 					</Card>
@@ -182,7 +182,7 @@ export default function PlatformNotificationsPage() {
 								suffix="%"
 								precision={1}
 								prefix={<Eye size="1em" className="text-success" />}
-								valueStyle={{ color: (notif?.readRate ?? 0) > 0.4 ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}
+								styles={{ content: { color: (notif?.readRate ?? 0) > 0.4 ? 'var(--color-success-text)' : 'var(--color-danger-text)' } }}
 							/>
 						)}
 					</Card>
