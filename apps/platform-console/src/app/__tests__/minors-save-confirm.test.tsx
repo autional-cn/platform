@@ -69,7 +69,9 @@ describe('MinorsProtectionPage (PL-55a 保存二次确认)', () => {
 		await waitFor(() => {
 			expect(mocks.putConfig).toHaveBeenCalledWith(
 				't-1',
-				expect.objectContaining({ dailyUsageLimitMin: 60 }),
+				// U407 回归锁：liveStream 开关必须全链贯通（回显 true → validateFields → payload）。
+				// 修前该键三重静默断链（表单键 typo + wire 键错位），payload 恒缺失/恒 false；任一环回归即红。
+				expect.objectContaining({ dailyUsageLimitMin: 60, liveStreamBlockedUnder16: true }),
 			);
 		});
 	}, 20000);

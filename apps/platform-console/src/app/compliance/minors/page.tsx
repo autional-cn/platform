@@ -61,7 +61,7 @@ interface MinorsFormValues {
 	night_mode_enabled?: boolean;
 	night_mode_start?: dayjs.Dayjs;
 	night_mode_end?: dayjs.Dayjs;
-	live_stream_blocked_under16?: boolean;
+	live_stream_blocked_under_16?: boolean;
 	content_filter_enabled?: boolean;
 	child_default_max_privacy?: boolean;
 	minor_data_retention_days?: number;
@@ -158,7 +158,7 @@ export default function MinorsProtectionPage() {
 				night_mode_end: res.nightModeEnd
 					? dayjs(res.nightModeEnd, 'HH:mm')
 					: dayjs('06:00', 'HH:mm'),
-				live_stream_blocked_under16: res.liveStreamBlockedUnder16,
+				live_stream_blocked_under_16: res.liveStreamBlockedUnder16,
 				content_filter_enabled: res.contentFilterEnabled,
 				child_default_max_privacy: res.childDefaultMaxPrivacy,
 				minor_data_retention_days: res.minorDataRetentionDays,
@@ -227,7 +227,7 @@ export default function MinorsProtectionPage() {
 				dailyUsageLimitMin: values.daily_usage_limit_min,
 				monthlySpendLimit: values.monthly_spend_limit,
 				nightModeEnabled: values.night_mode_enabled,
-				liveStreamBlockedUnder16: values.live_stream_blocked_under16,
+				liveStreamBlockedUnder16: values.live_stream_blocked_under_16,
 				contentFilterEnabled: values.content_filter_enabled,
 				childDefaultMaxPrivacy: values.child_default_max_privacy,
 				minorDataRetentionDays: values.minor_data_retention_days,
