@@ -416,7 +416,7 @@ export default function RobotDetailPage() {
 				{intentResult ? (
 					<div className="space-y-3">
 						<Text strong>已生成的 Intent 令牌：</Text>
-						<Paragraph copyable code className="break-all text-xs bg-neutral-50 p-3 rounded border">
+						<Paragraph copyable code className="break-all text-xs bg-neutral-50 p-3 rounded-xs border">
 							{intentResult}
 						</Paragraph>
 						<Text type="secondary" className="text-xs">

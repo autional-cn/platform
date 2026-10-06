@@ -86,7 +86,7 @@ export default function SecuritySettingsPage() {
 						</Descriptions.Item>
 					</Descriptions>
 
-					<div className="mb-4 p-3 bg-info-soft rounded text-sm text-info-text">
+					<div className="mb-4 p-3 bg-info-soft rounded-xs text-sm text-info-text">
 						<strong>SoD (职责分离)</strong> 决定 <code>admin</code> 角色能否查看审计数据详情：
 						<ul className="mt-1 ml-4 list-disc">
 							<li>

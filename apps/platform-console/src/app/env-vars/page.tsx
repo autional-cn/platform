@@ -75,7 +75,7 @@ export default function EnvVarsPage() {
 			key: 'key',
 			width: 320,
 			render: (v: string) => (
-				<code className="text-xs font-mono bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded">
+				<code className="text-xs font-mono bg-neutral-200 dark:bg-neutral-900 px-2 py-0.5 rounded-xs">
 					{v}
 				</code>
 			),

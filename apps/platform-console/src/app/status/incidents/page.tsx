@@ -323,7 +323,7 @@ export default function IncidentsPage() {
 						{drawerIncident.updates && drawerIncident.updates.length > 0 ? (
 							<div className="space-y-3 mb-6">
 								{drawerIncident.updates.map((u) => (
-									<div key={u.id} className="p-3 bg-neutral-50 dark:bg-neutral-900 rounded">
+									<div key={u.id} className="p-3 bg-neutral-50 dark:bg-neutral-900 rounded-xs">
 										<div className="flex items-center gap-2 mb-1">
 											<StatusBadge variant={statusBadge[u.status]}>
 												{statusLabels[u.status] || u.status}
