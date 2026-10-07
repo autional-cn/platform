@@ -10,7 +10,7 @@ import {
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle, useTenantSlug } from '@autional/shared';
-import { ConsolePageHeader, StatusBadge } from '@autional/ui';
+import { AppPageHeader, StatusBadge } from '@autional/ui';
 import { useSystemTenants } from '@/hooks/use-system-overview';
 import { useIncidents, useOverview } from '@/hooks/use-status';
 import { usePlatformNotificationStats } from '@/hooks/use-platform-stats';
@@ -100,7 +100,7 @@ export default function DashboardPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader title={t('dashboard.title', '平台仪表盘')} />
+			<AppPageHeader title={t('dashboard.title', '平台仪表盘')} />
 			<Row gutter={[16, 16]} className="mt-4">
 				{kpis.map((kpi) => (
 					<Col xs={24} sm={12} lg={6} key={kpi.route}>

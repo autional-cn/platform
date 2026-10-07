@@ -22,7 +22,7 @@ import {
 import { handleApiError } from '@/lib/error-handler';
 import { extractItem, usePageTitle } from '@autional/shared';
 import { PageError, DataTable, Modal } from '@autional/ui/antd';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
@@ -227,7 +227,7 @@ export default function AnnouncementsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('announcements.title', '平台公告')}
 				actions={
 					<>

@@ -15,7 +15,7 @@ import type { MaintenanceRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { formatDateTime } from '@/lib/format';
 import { PageError, DataTable, Modal } from '@autional/ui/antd';
-import { ConsolePageHeader, StatusBadge, type StatusVariant } from '@autional/ui';
+import { AppPageHeader, StatusBadge, type StatusVariant } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 
@@ -161,7 +161,7 @@ export default function MaintenancesPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('maintenances.title', '计划维护')}
 				actions={
 					<>

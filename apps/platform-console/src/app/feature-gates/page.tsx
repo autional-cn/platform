@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrentTenantId, usePageTitle } from '@autional/shared';
 import { DataTable } from '@autional/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { Card, Switch, Space, App, Spin, Tag, Popconfirm, Button } from 'antd';
 import { Lock } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -147,7 +147,7 @@ export default function FeatureGatesPage() {
 
 	return (
 		<div style={{ padding: 24 }}>
-			<ConsolePageHeader title={t('featureGates.title', '功能门控')} />
+			<AppPageHeader title={t('featureGates.title', '功能门控')} />
 			{/* PL-55：标明生效范围，避免误以为改的是平台全局（判定为「当前租户」） */}
 			<Alert
 				variant="info"

@@ -13,7 +13,7 @@ import {
 	usePlatformCommunicationStats,
 	usePlatformNotificationStats,
 } from '@/hooks/use-platform-stats';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { PageError, DataTable } from '@autional/ui/antd';
 import {
 	LineChart,
@@ -105,7 +105,7 @@ export default function PlatformNotificationsPage() {
 	return (
 		<div>
 			{/* PL-31：两卡数字来源不同服务、时间窗不同（消息=通信服务近 30 天；通知=站内全量累计），不注明会被当矛盾 */}
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('platformNotifications.title', '平台通信与通知')}
 				description={t(
 					'platformNotifications.scopeNote',

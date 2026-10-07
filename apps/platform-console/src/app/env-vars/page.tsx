@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 import { adminEnvVars } from '@autional/shared/generated/api';
-import { ConsolePageHeader, EmptyState } from '@autional/ui';
+import { AppPageHeader, EmptyState } from '@autional/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { queryKeys } from '@/lib/query-keys';
 
@@ -112,7 +112,7 @@ export default function EnvVarsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('envVars.title', '环境变量')}
 				description={t('envVars.subtitle', '查看各服务运行时加载的全部环境变量。')}
 			/>

@@ -81,7 +81,7 @@ vi.mock('@autional/ui', () => ({
 			{onRetry && <button onClick={onRetry}>Retry</button>}
 		</div>
 	),
-	ConsolePageHeader: ({ title, description }: { title: string; description?: string }) => (
+	AppPageHeader: ({ title, description }: { title: string; description?: string }) => (
 		<div>
 			<h1>{title}</h1>
 			{description && <p>{description}</p>}

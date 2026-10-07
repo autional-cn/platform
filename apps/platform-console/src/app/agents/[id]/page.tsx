@@ -9,7 +9,7 @@ import { usePageTitle, useTenantSlug } from '@autional/shared';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { ROUTE } from '@/lib/route-paths';
 import { buildNavHref } from '@/lib/nav';
-import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
+import { AppPageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, extractItem } from '@autional/shared';
 import { adminAgentsByAgents, adminAgentsByAgentsPut } from '@autional/shared/generated/api';
@@ -278,7 +278,7 @@ export default function AgentDetailPage() {
 					返回 Agent 列表
 				</Button>
 				<div className="flex items-center justify-between">
-					<ConsolePageHeader
+					<AppPageHeader
 						title={agent?.name || 'Agent 详情'}
 						description={agent?.description || (isLoading ? '加载中…' : '')}
 					/>

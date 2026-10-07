@@ -12,7 +12,7 @@ import {
 import { useOpsStatus, useHealth, useServiceHealth, type ServiceHealthItem } from '@/hooks/use-ops';
 import { ops, isGrafanaConfigured } from '@/lib/api.generated';
 import { ApiErrorState } from '@/components/ApiErrorState';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 
@@ -71,7 +71,7 @@ export default function OpsPage() {
 		<div>
 			{error && <ApiErrorState error={error} title="加载运维状态失败" onRetry={refetch} className="mb-4" />}
 
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('ops.title', '运维视图')}
 			/>
 

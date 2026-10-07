@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 import { DataTable } from '@autional/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { Card, Tabs, Tag, Input, Tooltip, Badge } from 'antd';
 import {
 	Cloud,
@@ -413,7 +413,7 @@ export default function SystemConfigPage() {
 			{/* PL-66：此前的「仅超级管理员可访问」红标与实际门禁不符
 			    （PlatformMemberGuard 对 super_admin 与 admin 均放行），与 URL/环境变量/调度器等
 			    同级页对齐后移除 */}
-			<ConsolePageHeader title={t('systemConfig.title', '系统配置')} />
+			<AppPageHeader title={t('systemConfig.title', '系统配置')} />
 			<Card>
 				<Tabs defaultActiveKey="services" items={tabItems} />
 			</Card>

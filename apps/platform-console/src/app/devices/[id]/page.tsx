@@ -7,7 +7,7 @@ import { Modal } from '@autional/ui/antd';
 import { ArrowLeft, Pencil } from 'lucide-react';
 import { usePageTitle, useTenantSlug } from '@autional/shared';
 import { ApiErrorState } from '@/components/ApiErrorState';
-import { ConsolePageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
+import { AppPageHeader, EmptyState, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient, extractItem } from '@autional/shared';
 import { adminIotsByIots } from '@autional/shared/generated/api';
@@ -130,7 +130,7 @@ export default function DeviceDetailPage() {
 					返回 Device 列表
 				</Button>
 				<div className="flex items-center justify-between">
-					<ConsolePageHeader
+					<AppPageHeader
 						title={device?.name || 'Device 详情'}
 						description={
 							device?.manufacturer

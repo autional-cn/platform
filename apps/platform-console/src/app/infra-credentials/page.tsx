@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 import { adminInfraCredentials } from '@autional/shared/generated/api';
-import { ConsolePageHeader, EmptyState, SectionCard } from '@autional/ui';
+import { AppPageHeader, EmptyState, SectionCard } from '@autional/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { queryKeys } from '@/lib/query-keys';
 
@@ -121,7 +121,7 @@ export default function InfraCredentialsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('infraCredentials.title', '基础设施凭证')}
 				description={t(
 					'infraCredentials.description',

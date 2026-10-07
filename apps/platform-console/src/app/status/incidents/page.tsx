@@ -16,7 +16,7 @@ import type { IncidentRecord } from '@/hooks/use-status';
 import { handleApiError } from '@/lib/error-handler';
 import { formatDateTime } from '@/lib/format';
 import { DataTable, Drawer, Modal, PageError } from '@autional/ui/antd';
-import { ConsolePageHeader, StatusBadge } from '@autional/ui';
+import { AppPageHeader, StatusBadge } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 import { severityBadge, severityLabels, statusBadge, statusLabels } from '@/lib/incident-meta';
@@ -182,7 +182,7 @@ export default function IncidentsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('incidents.title', '事故管理')}
 				actions={
 					<>

@@ -11,7 +11,7 @@ import {
 	XCircle,
 } from 'lucide-react';
 import { usePageTitle } from '@autional/shared';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { adminFeatureFlags } from '@autional/shared/generated/api';
 import { useQuery } from '@tanstack/react-query';
 import { ApiErrorState } from '@/components/ApiErrorState';
@@ -140,7 +140,7 @@ export default function FeatureFlagsPage() {
 	return (
 		<div>
 			<div className="mb-6">
-				<ConsolePageHeader
+				<AppPageHeader
 					title="功能开关"
 					description="跨服务功能开关配置矩阵 —— 全部 21 个服务总览"
 				/>

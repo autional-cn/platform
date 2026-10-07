@@ -22,7 +22,7 @@ import {
 	Trash2,
 } from 'lucide-react';
 import { PageLoading, PageError, DataTable, Modal } from '@autional/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import {
 	useSecretsInventoryOverview,
 	useSecretsInventoryKV,
@@ -840,7 +840,7 @@ export default function SystemSecretsInventoryPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('secretsInventory.title', '密钥清单')}
 				description={t('secretsInventory.description', '平台级密钥总览与管理')}
 			/>

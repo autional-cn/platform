@@ -12,7 +12,7 @@ import {
 	Users,
 	XCircle,
 } from 'lucide-react';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 import { useSystemServices, useSystemTenants, CATEGORY_LABELS } from '@/hooks/use-system-overview';
@@ -54,7 +54,7 @@ export default function SystemOverviewPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('systemOverview.title', '系统总览')}
 				description={t('systemOverview.subtitle', '全局服务健康、基础设施状态、租户概览与安全态势')}
 			/>

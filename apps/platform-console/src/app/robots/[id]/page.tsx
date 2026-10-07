@@ -23,7 +23,7 @@ import {
 	Play,
 } from 'lucide-react';
 import { usePageTitle, useTenantSlug } from '@autional/shared';
-import { ConsolePageHeader, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
+import { AppPageHeader, ErrorState, SectionCard, StatusBadge } from '@autional/ui';
 import { ApiErrorState } from '@/components/ApiErrorState';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { message } from '@/lib/antd-app';
@@ -212,7 +212,7 @@ export default function RobotDetailPage() {
 					返回 Robot 列表
 				</Button>
 				<div className="flex items-center justify-between">
-					<ConsolePageHeader
+					<AppPageHeader
 						title={robot?.name || 'Robot 详情'}
 						description={robot?.model ? `型号：${robot.model}` : isLoading ? '加载中…' : ''}
 					/>

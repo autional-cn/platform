@@ -8,7 +8,7 @@ import {
 	HelpCircle,
 	XCircle,
 } from 'lucide-react';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@autional/shared';
 import { useQuery } from '@tanstack/react-query';
@@ -42,7 +42,7 @@ export default function SystemRateLimitsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('rateLimits.title', '限流状态')}
 				description={t(
 					'rateLimits.subtitle',

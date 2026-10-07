@@ -13,7 +13,7 @@ import { handleApiError } from '@/lib/error-handler';
 import { message } from '@/lib/antd-app';
 import { useAuthStore, extractItem, usePageTitle } from '@autional/shared';
 import { PageError, DataTable, Modal } from '@autional/ui/antd';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { useTranslation } from 'react-i18next';
 import { useTenants } from '@/hooks/use-tenants';
 
@@ -632,7 +632,7 @@ export default function CompliancePolicyPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={
 					<span>
 						<BadgeCheck size="1em" style={{ marginRight: 8 }} />
